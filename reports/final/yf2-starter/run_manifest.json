@@ -1,0 +1,74 @@
+{
+  "schema_version": "2.0.0",
+  "generator_version": "2.0.0",
+  "package_version": "2.0.0",
+  "files": {
+    "alarm_events.csv": {
+      "sha256": "a26c88617edc4d7d363b952ffa826a9f8f610caaf6bfa7ec4365d01d3f138219",
+      "rows": 14
+    },
+    "alarm_incidents.csv": {
+      "sha256": "f9f8aa3fb4674c92ec150cf1a2552438148541ced65cddee22ca182d9c35e20d",
+      "rows": 4
+    },
+    "alarms.csv": {
+      "sha256": "a4065bcaca25e3b039c4f9dea39d634fc79115202cb85fd5d87c9b6d2df3669a",
+      "rows": 7
+    },
+    "evaluation_events.csv": {
+      "sha256": "d3a02ee35fdbbfedd7e7c7d2e57355001fbc1e1088e16c0d878136b7941e3f0d",
+      "rows": 10
+    },
+    "evaluation_metrics.csv": {
+      "sha256": "f84011d04a443b927df7294cc517c8f1818bcb19d51516f4215f784b91b0782e",
+      "rows": 59
+    },
+    "facilities.csv": {
+      "sha256": "c06ae2a9646c850ac29e3f506167fa46aa8ab43995b4d5d20167ef9c31fe3b6c",
+      "rows": 1
+    },
+    "ground_truth.csv": {
+      "sha256": "55a98e0e73c6dc6a1a46c2170871c57a43db3277b870ee5b08f46db0e62f20be",
+      "rows": 10
+    },
+    "operating_modes.csv": {
+      "sha256": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+      "rows": 4
+    },
+    "pipes.csv": {
+      "sha256": "4721996bdb5fa4c155175c54313252d54c4b89a8f7466474d449f026797ded85",
+      "rows": 24
+    },
+    "pumps.csv": {
+      "sha256": "94d56aee91fd3b0454dd7bc22df2cd83858449decafc268b632a043f7c0259a1",
+      "rows": 3
+    },
+    "scenario_definitions.csv": {
+      "sha256": "87f798332cffcff8a3fd4e2a0b04cea3d6bd4e65bbd01f1f4e1b6cc5324ecd71",
+      "rows": 10
+    },
+    "sensors.csv": {
+      "sha256": "be108304f301ec64a495d218a832583a5ac8dd776d7aeb0cc3e7dc4c2e35ab30",
+      "rows": 36
+    },
+    "simulation_runs.csv": {
+      "sha256": "3c800c4e597cf74dce63b98f2e3216002fa2b5f805f808217aeccb2410aff345",
+      "rows": 1
+    },
+    "tanks.csv": {
+      "sha256": "e99559de55c61642a5a6357b445aa63f7a76c1ea58801bf88d08da5ca7e31fd8",
+      "rows": 5
+    },
+    "telemetry.csv": {
+      "sha256": "fdbacb822ec71d3dc5cbe711edaef28c8a310370af27278528a2c7f35a543e0f",
+      "rows": 51840
+    },
+    "valves.csv": {
+      "sha256": "ab5b003ed513c3f761c618a8e4bf877d3e45f404c752393cfbd7de62628c8955",
+      "rows": 10
+    },
+    "config.json": {
+      "sha256": "936bcf19460a69024af8c758bc7a7ee8ef42281ac87049bf4558be769794c186"
+    }
+  }
+}

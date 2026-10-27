@@ -1,0 +1,21 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\ASUS\AppData\Local\Programs\Python\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: D:\PROJECTS\yottaflex
+plugins: anyio-4.13.0, asyncio-1.4.0, cov-7.1.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 11 items
+
+tests/test_generation.py::test_starter_generation PASSED                 [  9%]
+tests/test_generation.py::test_full_generation PASSED                    [ 18%]
+tests/test_generation.py::test_topology_validation PASSED                [ 27%]
+tests/test_generation.py::test_deterministic_generation PASSED           [ 36%]
+tests/test_ids.py::test_deterministic_ids PASSED                         [ 45%]
+tests/test_ids.py::test_id_formats PASSED                                [ 54%]
+tests/test_ids.py::test_id_state PASSED                                  [ 63%]
+tests/test_negative_scenarios.py::test_negative_scenarios PASSED         [ 72%]
+tests/test_physics.py::test_pump_curve PASSED                            [ 81%]
+tests/test_physics.py::test_tank_volume PASSED                           [ 90%]
+tests/test_physics.py::test_mass_balance PASSED                          [100%]
+
+============================= 11 passed in 3.24s ==============================

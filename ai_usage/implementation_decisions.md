@@ -1,4 +1,9 @@
-# Implementation Decisions
+# Implementation Decisions (Historical, Superseded)
+
+> **Superseded:** This file records the 1.x implementation decisions. It is retained for history.
+> The current 2.0 decisions, evidence and rejected alternatives are in
+> [`docs/implementation_decisions.md`](../docs/implementation_decisions.md). The 1.x review that
+> precedes the 2.0 changes is in [`docs/baseline_findings.md`](../docs/baseline_findings.md).
 
 ## Architecture
 - **Modular design**: Separated concerns into config, generation, simulation, detection, etc.

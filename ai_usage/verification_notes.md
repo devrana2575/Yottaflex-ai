@@ -1,4 +1,12 @@
-# Independent Verification Notes
+# Independent Verification Notes (Historical, Superseded)
+
+> **Historical record — not current evidence.** This audit was performed on the 1.x implementation
+> (version 1.0.0, 18 validation checks, 11 tests). Its 1,245-alarm-row result and its
+> `precision=0.010638` are the defective metric reproduced and explained in
+> [`docs/baseline_findings.md`](../docs/baseline_findings.md). The 2.0 results are in
+> [`docs/validation_report.md`](../docs/validation_report.md): 87 checks, 20 SQL assertions,
+> 61 tests, and separate event/point metrics. The Git publication note below is also historical;
+> no 2.0 work was pushed or published.
 
 **Date:** 2026-10-26  
 **Runtime:** Python 3.14.4, Windows  

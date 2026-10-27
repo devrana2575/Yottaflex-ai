@@ -1,0 +1,134 @@
+{
+  "description": "Byte-level reproducibility comparison of two clean full/default runs with seed 20261022, 24 h, 60 s.",
+  "run_a": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-full",
+  "run_b": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro",
+  "identical_file_count": 19,
+  "compared_file_count": 19,
+  "all_identical": true,
+  "configuration_hash_run_a": "d422f3bbee3dcadc",
+  "configuration_hash_run_b": "d422f3bbee3dcadc",
+  "telemetry_rows_run_a": 316800,
+  "telemetry_rows_run_b": 316800,
+  "files": {
+    "facilities.csv": {
+      "run_a_sha256": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
+      "run_b_sha256": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
+      "identical": true,
+      "bytes": 262
+    },
+    "pumps.csv": {
+      "run_a_sha256": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
+      "run_b_sha256": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
+      "identical": true,
+      "bytes": 1213
+    },
+    "tanks.csv": {
+      "run_a_sha256": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
+      "run_b_sha256": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
+      "identical": true,
+      "bytes": 1590
+    },
+    "valves.csv": {
+      "run_a_sha256": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
+      "run_b_sha256": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
+      "identical": true,
+      "bytes": 3123
+    },
+    "pipes.csv": {
+      "run_a_sha256": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
+      "run_b_sha256": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
+      "identical": true,
+      "bytes": 10153
+    },
+    "sensors.csv": {
+      "run_a_sha256": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
+      "run_b_sha256": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
+      "identical": true,
+      "bytes": 14595
+    },
+    "operating_modes.csv": {
+      "run_a_sha256": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+      "run_b_sha256": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+      "identical": true,
+      "bytes": 483
+    },
+    "telemetry.csv": {
+      "run_a_sha256": "fb634b7e31f60f425dfaeb3764ccf7c6db4453373ec926d9c1ddbc7c2f9d3e1f",
+      "run_b_sha256": "fb634b7e31f60f425dfaeb3764ccf7c6db4453373ec926d9c1ddbc7c2f9d3e1f",
+      "identical": true,
+      "bytes": 29361987
+    },
+    "scenario_definitions.csv": {
+      "run_a_sha256": "e333d6e83f54c897374a8dec2a76161f8a907d3e9bf17c64fa18896bafadc68a",
+      "run_b_sha256": "e333d6e83f54c897374a8dec2a76161f8a907d3e9bf17c64fa18896bafadc68a",
+      "identical": true,
+      "bytes": 2455
+    },
+    "ground_truth.csv": {
+      "run_a_sha256": "d373e31b33d3aef3aedf54396355d21691751ae47935882650770d07d93c723d",
+      "run_b_sha256": "d373e31b33d3aef3aedf54396355d21691751ae47935882650770d07d93c723d",
+      "identical": true,
+      "bytes": 2072
+    },
+    "alarms.csv": {
+      "run_a_sha256": "d0120b194e0b1939fa35d7de9c818493e0bd4471e3547265fe482a0a5958da10",
+      "run_b_sha256": "d0120b194e0b1939fa35d7de9c818493e0bd4471e3547265fe482a0a5958da10",
+      "identical": true,
+      "bytes": 3275
+    },
+    "alarm_events.csv": {
+      "run_a_sha256": "62d0ad5fe995b98e4b202bc675c07467ccda72d3750ad3fc0596180eb9b64e88",
+      "run_b_sha256": "62d0ad5fe995b98e4b202bc675c07467ccda72d3750ad3fc0596180eb9b64e88",
+      "identical": true,
+      "bytes": 2246
+    },
+    "alarm_incidents.csv": {
+      "run_a_sha256": "e22675491270cd59f87792d9e4cd6272ead984a20ba11d3bc0796f745d498ca4",
+      "run_b_sha256": "e22675491270cd59f87792d9e4cd6272ead984a20ba11d3bc0796f745d498ca4",
+      "identical": true,
+      "bytes": 1046
+    },
+    "evaluation_events.csv": {
+      "run_a_sha256": "2169e7cababcf3d680e48ddddcc4625180f703fe70e2915ffe448762df605e06",
+      "run_b_sha256": "2169e7cababcf3d680e48ddddcc4625180f703fe70e2915ffe448762df605e06",
+      "identical": true,
+      "bytes": 1807
+    },
+    "evaluation_metrics.json": {
+      "run_a_sha256": "66284142f8144dcc59ea3c2605a0f7622b2e98b280a73732f34f18feea282e7a",
+      "run_b_sha256": "66284142f8144dcc59ea3c2605a0f7622b2e98b280a73732f34f18feea282e7a",
+      "identical": true,
+      "bytes": 11951
+    },
+    "simulation_runs.csv": {
+      "run_a_sha256": "224e9e239b9b2fa3b991a3c3fec777801e032f3d5215ed0961bafe719334d147",
+      "run_b_sha256": "224e9e239b9b2fa3b991a3c3fec777801e032f3d5215ed0961bafe719334d147",
+      "identical": true,
+      "bytes": 1323
+    },
+    "simulation_metadata.json": {
+      "run_a_sha256": "9a728c5eef8283d9cbae07dc92537c38acb3a9678f39083601d2fc1fc884a530",
+      "run_b_sha256": "9a728c5eef8283d9cbae07dc92537c38acb3a9678f39083601d2fc1fc884a530",
+      "identical": true,
+      "bytes": 353
+    },
+    "evaluation_summary.md": {
+      "run_a_sha256": "62eb358318b490ea21ab14619ebeed6677d126a2f4e65ed8bf037da07f6f6487",
+      "run_b_sha256": "62eb358318b490ea21ab14619ebeed6677d126a2f4e65ed8bf037da07f6f6487",
+      "identical": true,
+      "bytes": 1107
+    },
+    "sql_query_report.json": {
+      "run_a_sha256": "6adbb60211af60cb3c180587495dc8351ee8949aab51fc540bb771326661fa0d",
+      "run_b_sha256": "6adbb60211af60cb3c180587495dc8351ee8949aab51fc540bb771326661fa0d",
+      "identical": true,
+      "bytes": 35234
+    }
+  },
+  "excluded_from_byte_comparison": {
+    "config.json": "absolute output/raw/reports/database paths differ; path-independent configuration_hash matches",
+    "evaluation_metrics.csv": "contains wall-clock evaluated_at per row",
+    "validation_results.csv": "contains wall-clock validated_at per row",
+    "run_manifest.json": "hashes timestamped evaluation_metrics.csv and path-bearing config.json"
+  }
+}

@@ -1,0 +1,88 @@
+validation_id,validation_type,test_case_id,status,entity_type,entity_id,description,details,validated_at
+VAL-000001,PRIMARY_KEY,PK-FACILITIES,PASS,facilities,,facility_id values are unique and present,rows=3,2026-10-27T13:31:52.786836+00:00
+VAL-000002,PRIMARY_KEY,PK-PUMPS,PASS,pumps,,pump_id values are unique and present,rows=20,2026-10-27T13:31:52.787223+00:00
+VAL-000003,PRIMARY_KEY,PK-TANKS,PASS,tanks,,tank_id values are unique and present,rows=30,2026-10-27T13:31:52.787633+00:00
+VAL-000004,PRIMARY_KEY,PK-VALVES,PASS,valves,,valve_id values are unique and present,rows=60,2026-10-27T13:31:52.788034+00:00
+VAL-000005,PRIMARY_KEY,PK-PIPES,PASS,pipes,,pipe_id values are unique and present,rows=135,2026-10-27T13:31:52.788454+00:00
+VAL-000006,PRIMARY_KEY,PK-SENSORS,PASS,sensors,,sensor_id values are unique and present,rows=220,2026-10-27T13:31:52.788773+00:00
+VAL-000007,PRIMARY_KEY,PK-OPERATING_MODES,PASS,operating_modes,,operating_mode_id values are unique and present,rows=4,2026-10-27T13:31:52.789064+00:00
+VAL-000008,FOREIGN_KEY,FK-FACILITY,PASS,,,Facility references are valid,,2026-10-27T13:31:52.790636+00:00
+VAL-000009,FOREIGN_KEY,FK-EQUIPMENT,PASS,,,Sensor equipment and pipe node references match equipment facilities,,2026-10-27T13:31:52.808945+00:00
+VAL-000010,TOPOLOGY,PIPE-ENDPOINTS,PASS,,,All pipe endpoints reference equipment nodes,,2026-10-27T13:31:52.813449+00:00
+VAL-000011,BOUNDS,TANK-BOUNDS,PASS,,,"Tank capacity, height and initial level are within physical bounds",,2026-10-27T13:31:52.813956+00:00
+VAL-000012,TOPOLOGY,FACILITY-CONNECTIVITY,PASS,,,Each facility equipment graph is connected,,2026-10-27T13:31:52.834587+00:00
+VAL-000013,SENSOR_SCHEMA,SENSOR-COMPOSITION,PASS,,,Every pump/tank/valve has the documented sensor roles,,2026-10-27T13:31:53.040148+00:00
+VAL-000014,SENSOR_SCHEMA,SENSOR-UNITS,PASS,,,Sensor types use their declared measurement units,,2026-10-27T13:31:53.042489+00:00
+VAL-000015,SCALE,MASTER-SCALE,PASS,,,Master-data counts match the configured scale,"actual={'facilities': 3, 'pumps': 20, 'tanks': 30, 'valves': 60}, expected={'facilities': 3, 'pumps': 20, 'tanks': 30, 'valves': 60}",2026-10-27T13:31:53.042552+00:00
+VAL-000016,SCALE,SENSOR-COUNT,PASS,,,Sensor count matches 2 pump + 4 tank + 1 valve sensors per equipment,"actual=220, expected=220",2026-10-27T13:31:53.042558+00:00
+VAL-000017,LINEAGE,SIMULATION-RUN-PRESENT,PASS,,,A completed simulation run record exists,rows=1,2026-10-27T13:31:53.042569+00:00
+VAL-000018,LINEAGE,SIMULATION-STATUS,PASS,,,Simulation run is marked COMPLETED,,2026-10-27T13:31:53.042831+00:00
+VAL-000019,LINEAGE,SIMULATION-VERSIONS,PASS,,,Schema and generator versions match the package configuration,"run_schema=2.0.0, package=2.0.0",2026-10-27T13:31:53.042847+00:00
+VAL-000020,LINEAGE,SIMULATION-SCENARIO-SET,PASS,,,Scenario set in the run record matches the configuration,,2026-10-27T13:31:53.042854+00:00
+VAL-000021,LINEAGE,SIMULATION-TIME-WINDOW,PASS,,,Run start/end match the configured simulation window,2026-01-01T00:00:00 .. 2026-01-02T00:00:00,2026-10-27T13:31:53.042907+00:00
+VAL-000022,LINEAGE,CONFIGURATION-HASH,PASS,,,Run configuration hash equals the saved configuration hash,,2026-10-27T13:31:53.043053+00:00
+VAL-000023,LINEAGE,MASTER-DATA-HASHES,PASS,,,Input manifest hashes match the generated master-data files,7 files,2026-10-27T13:31:53.044242+00:00
+VAL-000024,LINEAGE,SIMULATION-OUTCOME-COUNT,PASS,,,Outcome summary telemetry row count matches telemetry.csv,"summary=316740, actual=316740",2026-10-27T13:31:53.044282+00:00
+VAL-000025,TELEMETRY,TELEMETRY-PRESENT,PASS,,,Telemetry data exists,,2026-10-27T13:31:53.044296+00:00
+VAL-000026,TELEMETRY,TELEMETRY-COLUMNS,PASS,,,Telemetry contains the required observed-data columns,,2026-10-27T13:31:53.044330+00:00
+VAL-000027,ISOLATION,TELEMETRY-NO-GROUND-TRUTH,PASS,,,Telemetry contains no scenario or ground-truth label columns,,2026-10-27T13:31:53.044350+00:00
+VAL-000028,TELEMETRY,TELEMETRY-UNIQUE-ID,PASS,,,telemetry_id is unique,,2026-10-27T13:31:53.094777+00:00
+VAL-000029,TELEMETRY,TELEMETRY-UNIQUE-SAMPLE,PASS,,,"Each (sensor, timestamp) sample is unique",,2026-10-27T13:31:53.119507+00:00
+VAL-000030,TELEMETRY,TELEMETRY-TIMESTAMPS,PASS,,,All telemetry timestamps parse,,2026-10-27T13:31:53.167615+00:00
+VAL-000031,TELEMETRY,TELEMETRY-CADENCE,PASS,,,All samples lie on the configured cadence and cover the run window,"min=2026-01-01 00:00:00, max=2026-01-01 23:59:00, expected_last=2026-01-01 23:59:00",2026-10-27T13:31:53.178254+00:00
+VAL-000032,TELEMETRY,TELEMETRY-VALUES,PASS,,,Measured values are finite numbers,,2026-10-27T13:31:53.179639+00:00
+VAL-000033,TELEMETRY,TELEMETRY-QUALITY,PASS,,,Quality statuses use the documented vocabulary,,2026-10-27T13:31:53.185443+00:00
+VAL-000034,TELEMETRY,TELEMETRY-UNITS,PASS,,,Telemetry units match sensor metadata,,2026-10-27T13:31:53.226225+00:00
+VAL-000035,TELEMETRY,TELEMETRY-SENSOR-FK,PASS,,,Every telemetry row references a known sensor,,2026-10-27T13:31:53.234732+00:00
+VAL-000036,TELEMETRY,TELEMETRY-RUN-FK,PASS,,,Every telemetry row references the simulation run,,2026-10-27T13:31:53.242258+00:00
+VAL-000037,TELEMETRY,TELEMETRY-MODE-FK,PASS,,,Every operating mode reference is known,,2026-10-27T13:31:53.248815+00:00
+VAL-000038,TELEMETRY,TELEMETRY-COMPLETENESS,PASS,,,Missing samples are confined to labelled sensor-fault windows,,2026-10-27T13:31:53.264847+00:00
+VAL-000039,SCENARIO,SCENARIO-PRESENT,PASS,,,Scenario and ground-truth rows exist,,2026-10-27T13:31:53.265096+00:00
+VAL-000040,SCENARIO,SCENARIO-UNIQUE,PASS,,,Scenario and ground-truth identifiers are unique,,2026-10-27T13:31:53.265645+00:00
+VAL-000041,SCENARIO,SCENARIO-GROUND-TRUTH-ONE-TO-ONE,PASS,,,Every scenario definition has exactly one ground-truth row,"scenarios=15, truth=15",2026-10-27T13:31:53.265753+00:00
+VAL-000042,SCENARIO,SCENARIO-WINDOWS,PASS,,,"Scenario windows are valid, ordered and inside the run",,2026-10-27T13:31:53.267915+00:00
+VAL-000043,SCENARIO,SCENARIO-NORMAL-WINDOWS,PASS,,,Explicit NORMAL ground-truth windows exist,windows=8,2026-10-27T13:31:53.269674+00:00
+VAL-000044,SCENARIO,SCENARIO-WINDOW-DISJOINT,PASS,,,Positive and NORMAL windows do not overlap,,2026-10-27T13:31:53.271342+00:00
+VAL-000045,SCENARIO,SCENARIO-WINDOW-COVERAGE,PASS,,,NORMAL windows plus anomaly windows cover the run without unlabelled gaps,,2026-10-27T13:31:53.271482+00:00
+VAL-000046,SCENARIO,SCENARIO-SEVERITY,PASS,,,Scenario severities use the documented vocabulary,,2026-10-27T13:31:53.271771+00:00
+VAL-000047,SCENARIO,SCENARIO-EXPECTED-SENSORS,PASS,,,Expected sensors and affected equipment exist in master data,,2026-10-27T13:31:53.272972+00:00
+VAL-000048,PHYSICS,PHYSICS-HYDROSTATIC-PRESSURE,PASS,,,Tank pressure equals hydrostatic head within configured tolerance,worst_tolerance_ratio=0.040,2026-10-27T13:31:53.765145+00:00
+VAL-000049,PHYSICS,PHYSICS-PUMP-CURVE,PASS,,,Normal-window pump head-flow points follow the nominal curve,worst_p99.9_residual_pct=0.014,2026-10-27T13:31:54.037657+00:00
+VAL-000050,PHYSICS,PHYSICS-TANK-MASS-BALANCE,PASS,,,Normal-window tank flows balance the measured level change,worst_tolerance_ratio=0.109,2026-10-27T13:31:54.854419+00:00
+VAL-000051,PHYSICS,PHYSICS-LEAK-SIGNAL,PASS,,,Every leak injection produces a positive flow-balance residual,,2026-10-27T13:31:54.879493+00:00
+VAL-000052,PHYSICS,PHYSICS-PUMP-FAULT-SIGNAL,PASS,,,Blockage/degradation injections move the pump operating point off the nominal curve,,2026-10-27T13:31:54.912915+00:00
+VAL-000053,PHYSICS,PHYSICS-SENSOR-FAULT-SIGNAL,PASS,,,Bias/drift/stuck sensor injections create redundancy or temporal evidence,,2026-10-27T13:31:54.986361+00:00
+VAL-000054,ALARM,ALARM-PRESENT,PASS,,,Alarm episodes exist,rows=10,2026-10-27T13:31:54.987206+00:00
+VAL-000055,ALARM,ALARM-UNIQUE,PASS,,,alarm_id is unique,,2026-10-27T13:31:54.987551+00:00
+VAL-000056,ISOLATION,ALARM-NO-SCENARIO-ID,PASS,,,Alarm output carries no scenario identifier,,2026-10-27T13:31:54.987564+00:00
+VAL-000057,ALARM,ALARM-CATEGORY,PASS,,,"Alarm categories use PROCESS_FAULT, SENSOR_FAULT or UNCERTAIN",,2026-10-27T13:31:54.987625+00:00
+VAL-000058,ALARM,ALARM-SEVERITY,PASS,,,Alarm severities use the documented vocabulary,,2026-10-27T13:31:54.987672+00:00
+VAL-000059,ALARM,ALARM-OCCURRENCE,PASS,,,occurrence_count is at least one for every episode,,2026-10-27T13:31:54.987821+00:00
+VAL-000060,ALARM,ALARM-TIME-ORDER,PASS,,,Alarm episodes are ordered and inside the run,,2026-10-27T13:31:54.989255+00:00
+VAL-000061,ALARM,ALARM-EQUIPMENT-ATTRIBUTION,PASS,,,Alarm equipment attribution matches the sensor equipment,,2026-10-27T13:31:54.991777+00:00
+VAL-000062,ALARM,ALARM-HISTORY,PASS,,,Alarm event history identifiers are unique,rows=20,2026-10-27T13:31:54.992164+00:00
+VAL-000063,ALARM,ALARM-HISTORY-COMPLETE,PASS,,,Every alarm has CREATED and every resolved alarm has RESOLVED history,"missing_created=[], missing_resolved=[]",2026-10-27T13:31:54.995084+00:00
+VAL-000064,ALARM,ALARM-HISTORY-TIMESTAMPS,PASS,,,Alarm history timestamps are valid and within the run,,2026-10-27T13:31:54.995941+00:00
+VAL-000065,ALARM,ALARM-RULE-CATEGORY,PASS,,,Rule IDs map to the documented alarm categories,,2026-10-27T13:31:54.996998+00:00
+VAL-000066,EVALUATION,EVALUATION-PRESENT,PASS,,,evaluation_metrics.json exists,,2026-10-27T13:31:55.005610+00:00
+VAL-000067,EVALUATION,EVALUATION-SEPARATION,PASS,,,Point-level and event-level evaluations are separate and documented,,2026-10-27T13:31:55.005625+00:00
+VAL-000068,EVALUATION,EVENT-METRICS-PRESENT,PASS,,,Event-level metrics have all required fields,,2026-10-27T13:31:55.005636+00:00
+VAL-000069,EVALUATION,EVENT-DENOMINATORS,PASS,,,Event TPs and FNs partition the positive ground-truth events,"tp=7, fn=0, positives=7",2026-10-27T13:31:55.005644+00:00
+VAL-000070,EVALUATION,EVENT-FORMULAS,PASS,,,Event precision and recall are computed from their stated denominators,"precision=1.0, recall=1.0",2026-10-27T13:31:55.005657+00:00
+VAL-000071,EVALUATION,EVENT-FP-UNIT,PASS,,,"Event false positives are unmatched incidents, not raw alarm rows","fp=0, incidents=0",2026-10-27T13:31:55.005663+00:00
+VAL-000072,EVALUATION,EVENT-INCIDENT-ACCOUNTING,PASS,,,Alarm rows and incidents are accounted for without mixing units,"alarm_rows=10, incidents=7",2026-10-27T13:31:55.005674+00:00
+VAL-000073,EVALUATION,INCIDENT-ONE-TO-ONE,PASS,,,Each incident matches at most one ground-truth event and vice versa,matched=7,2026-10-27T13:31:55.008782+00:00
+VAL-000074,EVALUATION,INCIDENT-CLASSIFICATION,PASS,,,Incident classifications agree with event-level counts,"FA=0, unknown=0",2026-10-27T13:31:55.008793+00:00
+VAL-000075,EVALUATION,INCIDENT-SENSOR-PROCESS-SEPARATION,PASS,,,Sensor-fault ground-truth events are never matched by a process-only incident,,2026-10-27T13:31:55.010339+00:00
+VAL-000076,EVALUATION,POINT-LABEL-CONSISTENCY,PASS,,,Point confusion matrix contains only explicit labelled samples,"labelled=172200, matrix=172200",2026-10-27T13:31:55.010359+00:00
+VAL-000077,EVALUATION,POINT-FORMULAS,PASS,,,Point precision and recall are computed from explicit labelled samples,,2026-10-27T13:31:55.010367+00:00
+VAL-000078,EVALUATION,POINT-UNKNOWN-EXCLUDED,PASS,,,"Every telemetry row is labelled, unobserved or explicitly unknown","unknown=144540, labelled=172200, telemetry=316740",2026-10-27T13:31:55.520975+00:00
+VAL-000079,EVALUATION,EVALUATION-EVENTS-COUNT,PASS,,,Per-event evaluation rows match ground truth and event TP count,"rows=15, matched=7",2026-10-27T13:31:55.523258+00:00
+VAL-000080,EVALUATION,EVALUATION-METRICS-FLATTENED,PASS,,,Machine-readable flattened evaluation metrics exist,,2026-10-27T13:31:55.524728+00:00
+VAL-000081,EVALUATION,ZERO-DENOMINATOR,PASS,,,Zero denominators return null metrics instead of favourable zeros,"precision=None, recall=None",2026-10-27T13:31:55.527665+00:00
+VAL-000082,ISOLATION,DETECTOR-ISOLATION,PASS,,,Detector output is unchanged when scenario/ground-truth/physical columns are poisoned,"clean_alarms=0, poisoned_alarms=0",2026-10-27T13:32:04.484879+00:00
+VAL-000083,NEGATIVE,NEG-006-DUPLICATE-ALARMS,PASS,,,"Two overlapping alarm rows for one event count as one TP, not two","tp=1, incidents=1",2026-10-27T13:32:04.511271+00:00
+VAL-000084,NEGATIVE,NEG-007-IMPLAUSIBLE-SENSOR,PASS,,,"An implausible flow reading raises a sensor fault, not a process fault",,2026-10-27T13:32:04.535375+00:00
+VAL-000085,DATABASE,SQLITE-INTEGRITY,PASS,,,SQLite integrity and foreign-key checks pass,"integrity=ok, fk_violations=0",2026-10-27T13:32:05.502166+00:00
+VAL-000086,DATABASE,SQLITE-ROW-COUNTS,PASS,,,SQLite row counts match the exported CSV files,,2026-10-27T13:32:06.033836+00:00
+VAL-000087,DATABASE,SQLITE-EVALUATION-METRICS,PASS,,,SQLite evaluation metrics agree with evaluation_metrics.json,"db_tp=7.0, json_tp=7",2026-10-27T13:32:06.034375+00:00

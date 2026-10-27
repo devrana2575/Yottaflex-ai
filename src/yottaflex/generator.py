@@ -137,13 +137,16 @@ class DataGenerator:
             for i in range(facility_tank_count):
                 tank_id = self.id_gen.tank_id()
                 capacity = self.rng.uniform(100, 1000)  # m3
-                initial_level = self.rng.uniform(30, 70)  # %
-                
+                initial_level = self.rng.uniform(45, 60)  # %
+                # Vertical height is used for hydrostatic pressure redundancy.
+                height_m = self.rng.uniform(5, 15)
+
                 tank = {
                     'tank_id': tank_id,
                     'facility_id': facility['facility_id'],
                     'tank_name': f"TK-{tank_id.split('-')[1]}",
                     'capacity_m3': round(capacity, 2),
+                    'height_m': round(height_m, 2),
                     'initial_level_pct': round(initial_level, 2),
                     'lifecycle_state': 'ACTIVE'
                 }
@@ -244,77 +247,58 @@ class DataGenerator:
         self.pipes = all_pipes
     
     def _generate_sensors(self):
-        """Generate sensors for equipment."""
-        sensor_types_map = {
-            'PUMP': ['FLOW', 'PRESSURE'],
-            'TANK': ['LEVEL', 'PRESSURE'],
-            'VALVE': ['PRESSURE', 'FLOW'],
-            'PIPE': ['FLOW', 'PRESSURE']
-        }
+        """Generate sensors for equipment.
+
+        Sensor counts are intentionally unchanged from the original project
+        (two per pump, four per tank, one per valve).  Tanks now expose the two
+        flow measurements needed for a genuine mass balance, and valves use one
+        flow measurement instead of two unrelated measurements.
+        """
         units_map = {
             'FLOW': 'm3/h',
             'PRESSURE': 'bar',
             'LEVEL': '%',
-            'TEMPERATURE': 'C'
+            'TEMPERATURE': 'C',
         }
-        
-        sensors_per_facility = max(10, (len(self.pumps) + len(self.tanks) + len(self.valves)) // self.config.scale.facilities * 2)
+        # Sensor specifications: (type, role, accuracy range in % of reading).
+        specs = {
+            'PUMP': (('FLOW', 'discharge', (0.8, 1.5)), ('PRESSURE', 'discharge', (0.8, 1.5))),
+            'TANK': (
+                ('LEVEL', 'level', (0.10, 0.30)),
+                ('PRESSURE', 'pressure', (0.8, 1.5)),
+                ('FLOW', 'inlet', (0.8, 1.5)),
+                ('FLOW', 'outlet', (0.8, 1.5)),
+            ),
+            'VALVE': (('FLOW', 'through', (0.8, 1.5)),),
+        }
+        equipment_groups = (
+            ('PUMP', self.pumps, 'pump_id'),
+            ('TANK', self.tanks, 'tank_id'),
+            ('VALVE', self.valves, 'valve_id'),
+        )
         for facility in self.facilities:
             fac_id = facility['facility_id']
-            # Add sensors for all equipment in this facility
-            for pump in self.pumps:
-                if pump['facility_id'] != fac_id:
-                    continue
-                for stype in sensor_types_map.get('PUMP', []):
-                    sensor_id = self.id_gen.sensor_id()
-                    sensor = {
-                        'sensor_id': sensor_id,
-                        'facility_id': fac_id,
-                        'equipment_id': pump['pump_id'],
-                        'equipment_type': 'PUMP',
-                        'sensor_type': stype,
-                        'measurement_unit': units_map[stype],
-                        'sampling_interval_seconds': self.config.simulation.sampling_interval_seconds,
-                        'accuracy_tolerance': round(self.rng.uniform(0.5, 2.0), 2),
-                        'lifecycle_state': 'ACTIVE'
-                    }
-                    self.sensors.append(sensor)
-            
-            for tank in self.tanks:
-                if tank['facility_id'] != fac_id:
-                    continue
-                for stype in sensor_types_map.get('TANK', []):
-                    sensor_id = self.id_gen.sensor_id()
-                    sensor = {
-                        'sensor_id': sensor_id,
-                        'facility_id': fac_id,
-                        'equipment_id': tank['tank_id'],
-                        'equipment_type': 'TANK',
-                        'sensor_type': stype,
-                        'measurement_unit': units_map[stype],
-                        'sampling_interval_seconds': self.config.simulation.sampling_interval_seconds,
-                        'accuracy_tolerance': round(self.rng.uniform(0.5, 2.0), 2),
-                        'lifecycle_state': 'ACTIVE'
-                    }
-                    self.sensors.append(sensor)
-            
-            for valve in self.valves:
-                if valve['facility_id'] != fac_id:
-                    continue
-                for stype in sensor_types_map.get('VALVE', []):
-                    sensor_id = self.id_gen.sensor_id()
-                    sensor = {
-                        'sensor_id': sensor_id,
-                        'facility_id': fac_id,
-                        'equipment_id': valve['valve_id'],
-                        'equipment_type': 'VALVE',
-                        'sensor_type': stype,
-                        'measurement_unit': units_map[stype],
-                        'sampling_interval_seconds': self.config.simulation.sampling_interval_seconds,
-                        'accuracy_tolerance': round(self.rng.uniform(0.5, 2.0), 2),
-                        'lifecycle_state': 'ACTIVE'
-                    }
-                    self.sensors.append(sensor)
+            for equipment_type, records, key in equipment_groups:
+                for equipment in records:
+                    if equipment['facility_id'] != fac_id:
+                        continue
+                    for sensor_type, role, accuracy_range in specs[equipment_type]:
+                        sensor_id = self.id_gen.sensor_id()
+                        sensor = {
+                            'sensor_id': sensor_id,
+                            'facility_id': fac_id,
+                            'equipment_id': equipment[key],
+                            'equipment_type': equipment_type,
+                            'sensor_type': sensor_type,
+                            'sensor_role': role,
+                            'measurement_unit': units_map[sensor_type],
+                            'sampling_interval_seconds': self.config.simulation.sampling_interval_seconds,
+                            'accuracy_tolerance': round(
+                                self.rng.uniform(*accuracy_range), 3
+                            ),
+                            'lifecycle_state': 'ACTIVE',
+                        }
+                        self.sensors.append(sensor)
     
     def validate_topology(self) -> Tuple[bool, List[Dict]]:
         """Validate topology."""

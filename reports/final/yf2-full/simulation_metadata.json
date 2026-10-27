@@ -1,0 +1,11 @@
+{
+  "simulation_run_id": "SIM-2026-000001",
+  "duration_hours": 24.0,
+  "sampling_interval_seconds": 60,
+  "steps": 1440,
+  "sensor_count": 220,
+  "total_records": 316800,
+  "record_count_derivation": "220 sensors x 1440 samples = 316800 records",
+  "physics_model": "mass-consistent simplified water model",
+  "head_to_pressure_bar": 0.0981
+}

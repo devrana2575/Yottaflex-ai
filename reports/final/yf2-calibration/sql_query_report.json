@@ -1,0 +1,1076 @@
+[
+  {
+    "query_number": 1,
+    "label": "YottaFlex 2.0.0 analytical queries.",
+    "expectation": "nonempty",
+    "sql": "-- YottaFlex 2.0.0 analytical queries.\n-- Each statement declares a machine-checkable expectation used by `yottaflex run-sql`.\n\n-- Q1 | Master-data scale | expect=nonempty\nSELECT 'facilities' AS entity, COUNT(*) AS row_count FROM facilities\nUNION ALL SELECT 'pumps', COUNT(*) FROM pumps\nUNION ALL SELECT 'tanks', COUNT(*) FROM tanks\nUNION ALL SELECT 'valves', COUNT(*) FROM valves\nUNION ALL SELECT 'sensors', COUNT(*) FROM sensors\nUNION ALL SELECT 'telemetry', COUNT(*) FROM telemetry",
+    "row_count": 6,
+    "rows": [
+      {
+        "entity": "facilities",
+        "row_count": 3
+      },
+      {
+        "entity": "pumps",
+        "row_count": 20
+      },
+      {
+        "entity": "tanks",
+        "row_count": 30
+      },
+      {
+        "entity": "valves",
+        "row_count": 60
+      },
+      {
+        "entity": "sensors",
+        "row_count": 220
+      },
+      {
+        "entity": "telemetry",
+        "row_count": 316740
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 2,
+    "label": "Q2 | Highest-alarm equipment | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q2 | Highest-alarm equipment | expect=nonempty\nSELECT\n    equipment_id,\n    COUNT(*) AS alarm_episodes,\n    COUNT(DISTINCT simulation_run_id) AS runs_with_alarms,\n    SUM(occurrence_count) AS active_readings\nFROM alarms\nWHERE equipment_id IS NOT NULL\nGROUP BY equipment_id\nORDER BY alarm_episodes DESC, equipment_id\nLIMIT 20",
+    "row_count": 6,
+    "rows": [
+      {
+        "equipment_id": "TANK-001",
+        "alarm_episodes": 3,
+        "runs_with_alarms": 1,
+        "active_readings": 277
+      },
+      {
+        "equipment_id": "PUMP-001",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 230
+      },
+      {
+        "equipment_id": "PUMP-003",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 230
+      },
+      {
+        "equipment_id": "TANK-002",
+        "alarm_episodes": 1,
+        "runs_with_alarms": 1,
+        "active_readings": 30
+      },
+      {
+        "equipment_id": "TANK-003",
+        "alarm_episodes": 1,
+        "runs_with_alarms": 1,
+        "active_readings": 87
+      },
+      {
+        "equipment_id": "TANK-004",
+        "alarm_episodes": 1,
+        "runs_with_alarms": 1,
+        "active_readings": 48
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 3,
+    "label": "Q3 | Alarms by facility, category and severity | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q3 | Alarms by facility, category and severity | expect=nonempty\nSELECT\n    f.facility_id,\n    f.facility_name,\n    a.alarm_category,\n    a.severity,\n    COUNT(*) AS alarm_count\nFROM alarms a\nLEFT JOIN sensors s ON a.sensor_id = s.sensor_id\nLEFT JOIN facilities f ON s.facility_id = f.facility_id\nGROUP BY f.facility_id, f.facility_name, a.alarm_category, a.severity\nORDER BY f.facility_id, a.alarm_category, a.severity",
+    "row_count": 2,
+    "rows": [
+      {
+        "facility_id": "FAC-001",
+        "facility_name": "North Refinery Complex",
+        "alarm_category": "PROCESS_FAULT",
+        "severity": "HIGH",
+        "alarm_count": 6
+      },
+      {
+        "facility_id": "FAC-001",
+        "facility_name": "North Refinery Complex",
+        "alarm_category": "SENSOR_FAULT",
+        "severity": "MEDIUM",
+        "alarm_count": 4
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 4,
+    "label": "Q4 | Telemetry quality distribution | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q4 | Telemetry quality distribution | expect=nonempty\nSELECT\n    quality_status,\n    COUNT(*) AS reading_count,\n    COUNT(DISTINCT sensor_id) AS sensors\nFROM telemetry\nGROUP BY quality_status\nORDER BY reading_count DESC",
+    "row_count": 1,
+    "rows": [
+      {
+        "quality_status": "GOOD",
+        "reading_count": 316740,
+        "sensors": 220
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 5,
+    "label": "Q5 | Tank level operating envelope | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q5 | Tank level operating envelope | expect=nonempty\nSELECT\n    tk.tank_id,\n    tk.tank_name,\n    tk.capacity_m3,\n    tk.height_m,\n    ROUND(MIN(t.measured_value), 3) AS min_level_pct,\n    ROUND(MAX(t.measured_value), 3) AS max_level_pct,\n    ROUND(AVG(t.measured_value), 3) AS avg_level_pct\nFROM tanks tk\nJOIN sensors s\n  ON s.equipment_id = tk.tank_id\n AND s.equipment_type = 'TANK'\n AND s.sensor_type = 'LEVEL'\nJOIN telemetry t ON t.sensor_id = s.sensor_id\nGROUP BY tk.tank_id, tk.tank_name, tk.capacity_m3, tk.height_m\nORDER BY tk.tank_id",
+    "row_count": 30,
+    "rows": [
+      {
+        "tank_id": "TANK-001",
+        "tank_name": "TK-001",
+        "capacity_m3": 125.66,
+        "height_m": 8.05,
+        "min_level_pct": 45.396,
+        "max_level_pct": 55.678,
+        "avg_level_pct": 54.78
+      },
+      {
+        "tank_id": "TANK-002",
+        "tank_name": "TK-002",
+        "capacity_m3": 564.9,
+        "height_m": 11.65,
+        "min_level_pct": 54.99,
+        "max_level_pct": 56.105,
+        "avg_level_pct": 55.342
+      },
+      {
+        "tank_id": "TANK-003",
+        "tank_name": "TK-003",
+        "capacity_m3": 757.93,
+        "height_m": 9.68,
+        "min_level_pct": 49.264,
+        "max_level_pct": 57.905,
+        "avg_level_pct": 55.48
+      },
+      {
+        "tank_id": "TANK-004",
+        "tank_name": "TK-004",
+        "capacity_m3": 859.99,
+        "height_m": 14.02,
+        "min_level_pct": 46.763,
+        "max_level_pct": 63.008,
+        "avg_level_pct": 52.652
+      },
+      {
+        "tank_id": "TANK-005",
+        "tank_name": "TK-005",
+        "capacity_m3": 623.44,
+        "height_m": 5.45,
+        "min_level_pct": 45.74,
+        "max_level_pct": 54.597,
+        "avg_level_pct": 52.042
+      },
+      {
+        "tank_id": "TANK-006",
+        "tank_name": "TK-006",
+        "capacity_m3": 554.39,
+        "height_m": 10.14,
+        "min_level_pct": 45.2,
+        "max_level_pct": 54.538,
+        "avg_level_pct": 51.864
+      },
+      {
+        "tank_id": "TANK-007",
+        "tank_name": "TK-007",
+        "capacity_m3": 488.55,
+        "height_m": 8.39,
+        "min_level_pct": 51.862,
+        "max_level_pct": 54.895,
+        "avg_level_pct": 54.007
+      },
+      {
+        "tank_id": "TANK-008",
+        "tank_name": "TK-008",
+        "capacity_m3": 280.98,
+        "height_m": 11.41,
+        "min_level_pct": 55.184,
+        "max_level_pct": 59.814,
+        "avg_level_pct": 56.532
+      },
+      {
+        "tank_id": "TANK-009",
+        "tank_name": "TK-009",
+        "capacity_m3": 642.28,
+        "height_m": 11.71,
+        "min_level_pct": 55.123,
+        "max_level_pct": 58.397,
+        "avg_level_pct": 56.08
+      },
+      {
+        "tank_id": "TANK-010",
+        "tank_name": "TK-010",
+        "capacity_m3": 752.57,
+        "height_m": 7.8,
+        "min_level_pct": 55.123,
+        "max_level_pct": 58.902,
+        "avg_level_pct": 56.242
+      },
+      {
+        "tank_id": "TANK-011",
+        "tank_name": "TK-011",
+        "capacity_m3": 697.63,
+        "height_m": 10.15,
+        "min_level_pct": 48.858,
+        "max_level_pct": 54.763,
+        "avg_level_pct": 53.037
+      },
+      {
+        "tank_id": "TANK-012",
+        "tank_name": "TK-012",
+        "capacity_m3": 457.43,
+        "height_m": 13.18,
+        "min_level_pct": 55.034,
+        "max_level_pct": 57.02,
+        "avg_level_pct": 55.625
+      },
+      {
+        "tank_id": "TANK-013",
+        "tank_name": "TK-013",
+        "capacity_m3": 419.74,
+        "height_m": 13.37,
+        "min_level_pct": 54.971,
+        "max_level_pct": 56.082,
+        "avg_level_pct": 55.325
+      },
+      {
+        "tank_id": "TANK-014",
+        "tank_name": "TK-014",
+        "capacity_m3": 260.31,
+        "height_m": 9.66,
+        "min_level_pct": 52.44,
+        "max_level_pct": 54.936,
+        "avg_level_pct": 54.205
+      },
+      {
+        "tank_id": "TANK-015",
+        "tank_name": "TK-015",
+        "capacity_m3": 362.72,
+        "height_m": 14.97,
+        "min_level_pct": 47.258,
+        "max_level_pct": 54.687,
+        "avg_level_pct": 52.527
+      },
+      {
+        "tank_id": "TANK-016",
+        "tank_name": "TK-016",
+        "capacity_m3": 134.42,
+        "height_m": 14.54,
+        "min_level_pct": 54.524,
+        "max_level_pct": 55.056,
+        "avg_level_pct": 54.872
+      },
+      {
+        "tank_id": "TANK-017",
+        "tank_name": "TK-017",
+        "capacity_m3": 873.48,
+        "height_m": 7.67,
+        "min_level_pct": 54.945,
+        "max_level_pct": 55.416,
+        "avg_level_pct": 55.122
+      },
+      {
+        "tank_id": "TANK-018",
+        "tank_name": "TK-018",
+        "capacity_m3": 990.93,
+        "height_m": 10.11,
+        "min_level_pct": 54.984,
+        "max_level_pct": 56.438,
+        "avg_level_pct": 55.442
+      },
+      {
+        "tank_id": "TANK-019",
+        "tank_name": "TK-019",
+        "capacity_m3": 850.96,
+        "height_m": 12.5,
+        "min_level_pct": 46.83,
+        "max_level_pct": 54.662,
+        "avg_level_pct": 52.39
+      },
+      {
+        "tank_id": "TANK-020",
+        "tank_name": "TK-020",
+        "capacity_m3": 953.12,
+        "height_m": 14.27,
+        "min_level_pct": 51.454,
+        "max_level_pct": 54.894,
+        "avg_level_pct": 53.873
+      },
+      {
+        "tank_id": "TANK-021",
+        "tank_name": "TK-021",
+        "capacity_m3": 605.33,
+        "height_m": 7.46,
+        "min_level_pct": 47.258,
+        "max_level_pct": 54.66,
+        "avg_level_pct": 52.528
+      },
+      {
+        "tank_id": "TANK-022",
+        "tank_name": "TK-022",
+        "capacity_m3": 610.03,
+        "height_m": 9.32,
+        "min_level_pct": 45.25,
+        "max_level_pct": 54.567,
+        "avg_level_pct": 51.885
+      },
+      {
+        "tank_id": "TANK-023",
+        "tank_name": "TK-023",
+        "capacity_m3": 619.5,
+        "height_m": 9.04,
+        "min_level_pct": 46.319,
+        "max_level_pct": 54.616,
+        "avg_level_pct": 52.226
+      },
+      {
+        "tank_id": "TANK-024",
+        "tank_name": "TK-024",
+        "capacity_m3": 825.84,
+        "height_m": 13.77,
+        "min_level_pct": 49.676,
+        "max_level_pct": 54.783,
+        "avg_level_pct": 53.303
+      },
+      {
+        "tank_id": "TANK-025",
+        "tank_name": "TK-025",
+        "capacity_m3": 646.58,
+        "height_m": 12.32,
+        "min_level_pct": 47.919,
+        "max_level_pct": 54.682,
+        "avg_level_pct": 52.735
+      },
+      {
+        "tank_id": "TANK-026",
+        "tank_name": "TK-026",
+        "capacity_m3": 747.08,
+        "height_m": 10.31,
+        "min_level_pct": 50.667,
+        "max_level_pct": 54.867,
+        "avg_level_pct": 53.62
+      },
+      {
+        "tank_id": "TANK-027",
+        "tank_name": "TK-027",
+        "capacity_m3": 156.4,
+        "height_m": 6.53,
+        "min_level_pct": 54.062,
+        "max_level_pct": 55.04,
+        "avg_level_pct": 54.715
+      },
+      {
+        "tank_id": "TANK-028",
+        "tank_name": "TK-028",
+        "capacity_m3": 541.44,
+        "height_m": 9.03,
+        "min_level_pct": 48.017,
+        "max_level_pct": 54.712,
+        "avg_level_pct": 52.767
+      },
+      {
+        "tank_id": "TANK-029",
+        "tank_name": "TK-029",
+        "capacity_m3": 157.8,
+        "height_m": 9.73,
+        "min_level_pct": 55.177,
+        "max_level_pct": 59.492,
+        "avg_level_pct": 56.411
+      },
+      {
+        "tank_id": "TANK-030",
+        "tank_name": "TK-030",
+        "capacity_m3": 936.2,
+        "height_m": 9.03,
+        "min_level_pct": 55.111,
+        "max_level_pct": 58.292,
+        "avg_level_pct": 56.043
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 6,
+    "label": "Q6 | Pump flow deviation from nominal | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q6 | Pump flow deviation from nominal | expect=nonempty\nSELECT\n    p.pump_id,\n    p.pump_name,\n    p.nominal_flow_m3_h,\n    ROUND(AVG(t.measured_value), 3) AS avg_measured_flow,\n    ROUND(\n        ABS(AVG(t.measured_value) - p.nominal_flow_m3_h)\n        / p.nominal_flow_m3_h * 100.0,\n        3\n    ) AS deviation_pct\nFROM pumps p\nJOIN sensors s\n  ON s.equipment_id = p.pump_id\n AND s.equipment_type = 'PUMP'\n AND s.sensor_type = 'FLOW'\nJOIN telemetry t ON t.sensor_id = s.sensor_id\nGROUP BY p.pump_id, p.pump_name, p.nominal_flow_m3_h\nORDER BY deviation_pct DESC",
+    "row_count": 20,
+    "rows": [
+      {
+        "pump_id": "PUMP-003",
+        "pump_name": "P-003",
+        "nominal_flow_m3_h": 50.44,
+        "avg_measured_flow": 45.19,
+        "deviation_pct": 10.407
+      },
+      {
+        "pump_id": "PUMP-001",
+        "pump_name": "P-001",
+        "nominal_flow_m3_h": 151.96,
+        "avg_measured_flow": 136.689,
+        "deviation_pct": 10.049
+      },
+      {
+        "pump_id": "PUMP-020",
+        "pump_name": "P-020",
+        "nominal_flow_m3_h": 50.8,
+        "avg_measured_flow": 46.243,
+        "deviation_pct": 8.97
+      },
+      {
+        "pump_id": "PUMP-009",
+        "pump_name": "P-009",
+        "nominal_flow_m3_h": 72.25,
+        "avg_measured_flow": 65.787,
+        "deviation_pct": 8.946
+      },
+      {
+        "pump_id": "PUMP-012",
+        "pump_name": "P-012",
+        "nominal_flow_m3_h": 112.46,
+        "avg_measured_flow": 102.404,
+        "deviation_pct": 8.942
+      },
+      {
+        "pump_id": "PUMP-008",
+        "pump_name": "P-008",
+        "nominal_flow_m3_h": 102.16,
+        "avg_measured_flow": 93.034,
+        "deviation_pct": 8.933
+      },
+      {
+        "pump_id": "PUMP-005",
+        "pump_name": "P-005",
+        "nominal_flow_m3_h": 148.65,
+        "avg_measured_flow": 135.377,
+        "deviation_pct": 8.929
+      },
+      {
+        "pump_id": "PUMP-019",
+        "pump_name": "P-019",
+        "nominal_flow_m3_h": 165.69,
+        "avg_measured_flow": 150.903,
+        "deviation_pct": 8.924
+      },
+      {
+        "pump_id": "PUMP-002",
+        "pump_name": "P-002",
+        "nominal_flow_m3_h": 57.28,
+        "avg_measured_flow": 52.175,
+        "deviation_pct": 8.912
+      },
+      {
+        "pump_id": "PUMP-011",
+        "pump_name": "P-011",
+        "nominal_flow_m3_h": 64.24,
+        "avg_measured_flow": 58.521,
+        "deviation_pct": 8.902
+      },
+      {
+        "pump_id": "PUMP-014",
+        "pump_name": "P-014",
+        "nominal_flow_m3_h": 188.59,
+        "avg_measured_flow": 171.819,
+        "deviation_pct": 8.893
+      },
+      {
+        "pump_id": "PUMP-004",
+        "pump_name": "P-004",
+        "nominal_flow_m3_h": 79.83,
+        "avg_measured_flow": 72.732,
+        "deviation_pct": 8.892
+      },
+      {
+        "pump_id": "PUMP-006",
+        "pump_name": "P-006",
+        "nominal_flow_m3_h": 72.54,
+        "avg_measured_flow": 66.094,
+        "deviation_pct": 8.887
+      },
+      {
+        "pump_id": "PUMP-015",
+        "pump_name": "P-015",
+        "nominal_flow_m3_h": 60.83,
+        "avg_measured_flow": 55.438,
+        "deviation_pct": 8.863
+      },
+      {
+        "pump_id": "PUMP-018",
+        "pump_name": "P-018",
+        "nominal_flow_m3_h": 129.95,
+        "avg_measured_flow": 118.435,
+        "deviation_pct": 8.861
+      },
+      {
+        "pump_id": "PUMP-017",
+        "pump_name": "P-017",
+        "nominal_flow_m3_h": 199.08,
+        "avg_measured_flow": 181.473,
+        "deviation_pct": 8.844
+      },
+      {
+        "pump_id": "PUMP-016",
+        "pump_name": "P-016",
+        "nominal_flow_m3_h": 50.86,
+        "avg_measured_flow": 46.37,
+        "deviation_pct": 8.829
+      },
+      {
+        "pump_id": "PUMP-007",
+        "pump_name": "P-007",
+        "nominal_flow_m3_h": 50.76,
+        "avg_measured_flow": 46.279,
+        "deviation_pct": 8.828
+      },
+      {
+        "pump_id": "PUMP-010",
+        "pump_name": "P-010",
+        "nominal_flow_m3_h": 134.44,
+        "avg_measured_flow": 122.619,
+        "deviation_pct": 8.793
+      },
+      {
+        "pump_id": "PUMP-013",
+        "pump_name": "P-013",
+        "nominal_flow_m3_h": 164.8,
+        "avg_measured_flow": 150.381,
+        "deviation_pct": 8.749
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 7,
+    "label": "Q7 | Event-level ground-truth detection by type | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q7 | Event-level ground-truth detection by type | expect=nonempty\nSELECT\n    gt.issue_type,\n    COUNT(*) AS injected,\n    SUM(CASE WHEN ee.matched = 1 THEN 1 ELSE 0 END) AS detected,\n    ROUND(\n        SUM(CASE WHEN ee.matched = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*),\n        2\n    ) AS detection_rate_pct,\n    ROUND(AVG(CASE WHEN ee.matched = 1 THEN ee.latency_seconds END), 1) AS mean_latency_seconds\nFROM ground_truth gt\nLEFT JOIN evaluation_events ee ON ee.gt_id = gt.gt_id\nWHERE gt.issue_type <> 'NORMAL'\nGROUP BY gt.issue_type\nORDER BY gt.issue_type",
+    "row_count": 4,
+    "rows": [
+      {
+        "issue_type": "BLOCKAGE",
+        "injected": 1,
+        "detected": 1,
+        "detection_rate_pct": 100.0,
+        "mean_latency_seconds": 300.0
+      },
+      {
+        "issue_type": "LEAK",
+        "injected": 1,
+        "detected": 1,
+        "detection_rate_pct": 100.0,
+        "mean_latency_seconds": 420.0
+      },
+      {
+        "issue_type": "PUMP_DEGRADATION",
+        "injected": 1,
+        "detected": 1,
+        "detection_rate_pct": 100.0,
+        "mean_latency_seconds": 300.0
+      },
+      {
+        "issue_type": "SENSOR_FAULT",
+        "injected": 4,
+        "detected": 4,
+        "detection_rate_pct": 100.0,
+        "mean_latency_seconds": 1140.0
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 8,
+    "label": "Q8 | Event-level metrics with explicit denominators | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q8 | Event-level metrics with explicit denominators | expect=nonempty\nSELECT\n    evaluation_level,\n    scope,\n    metric_name,\n    metric_value\nFROM evaluation_metrics\nWHERE evaluation_level = 'EVENT'\n  AND scope = 'overall'\nORDER BY metric_name",
+    "row_count": 12,
+    "rows": [
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "f1_score",
+        "metric_value": 1.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "false_alarm_incident_count",
+        "metric_value": 0.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "false_negatives",
+        "metric_value": 0.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "false_positive_rate",
+        "metric_value": 0.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "false_positives",
+        "metric_value": 0.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "matched_event_count",
+        "metric_value": 7.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "missed_event_count",
+        "metric_value": 0.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "precision",
+        "metric_value": 1.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "recall",
+        "metric_value": 1.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "true_negatives",
+        "metric_value": 8.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "true_positives",
+        "metric_value": 7.0
+      },
+      {
+        "evaluation_level": "EVENT",
+        "scope": "overall",
+        "metric_name": "unknown_incident_count",
+        "metric_value": 0.0
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 9,
+    "label": "Q9 | Point-level metrics with explicit denominators | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q9 | Point-level metrics with explicit denominators | expect=nonempty\nSELECT\n    metric_name,\n    metric_value\nFROM evaluation_metrics\nWHERE evaluation_level = 'POINT'\n  AND scope = 'overall'\nORDER BY metric_name",
+    "row_count": 8,
+    "rows": [
+      {
+        "metric_name": "f1_score",
+        "metric_value": 0.9112107623318386
+      },
+      {
+        "metric_name": "false_negatives",
+        "metric_value": 92.0
+      },
+      {
+        "metric_name": "false_positive_rate",
+        "metric_value": 4.079254079254079e-05
+      },
+      {
+        "metric_name": "false_positives",
+        "metric_value": 7.0
+      },
+      {
+        "metric_name": "precision",
+        "metric_value": 0.9864077669902912
+      },
+      {
+        "metric_name": "recall",
+        "metric_value": 0.8466666666666667
+      },
+      {
+        "metric_name": "true_negatives",
+        "metric_value": 171593.0
+      },
+      {
+        "metric_name": "true_positives",
+        "metric_value": 508.0
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 10,
+    "label": "Q10 | Alarm incident classifications | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q10 | Alarm incident classifications | expect=nonempty\nSELECT\n    classification,\n    COUNT(*) AS incidents,\n    ROUND(AVG(latency_seconds), 1) AS mean_latency_seconds\nFROM alarm_incidents\nGROUP BY classification\nORDER BY classification",
+    "row_count": 1,
+    "rows": [
+      {
+        "classification": "MATCHED",
+        "incidents": 7,
+        "mean_latency_seconds": 797.1
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 11,
+    "label": "Q11 | Scenario windows by issue type and severity | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q11 | Scenario windows by issue type and severity | expect=nonempty\nSELECT\n    issue_type,\n    severity,\n    COUNT(*) AS windows,\n    MIN(start_time) AS first_start,\n    MAX(end_time) AS last_end\nFROM scenario_definitions\nGROUP BY issue_type, severity\nORDER BY issue_type, severity",
+    "row_count": 5,
+    "rows": [
+      {
+        "issue_type": "BLOCKAGE",
+        "severity": "light",
+        "windows": 1,
+        "first_start": "2026-01-01T08:00:00",
+        "last_end": "2026-01-01T10:00:00"
+      },
+      {
+        "issue_type": "LEAK",
+        "severity": "medium",
+        "windows": 1,
+        "first_start": "2026-01-01T03:00:00",
+        "last_end": "2026-01-01T05:00:00"
+      },
+      {
+        "issue_type": "NORMAL",
+        "severity": "normal",
+        "windows": 8,
+        "first_start": "2026-01-01T00:00:00",
+        "last_end": "2026-01-02T00:00:00"
+      },
+      {
+        "issue_type": "PUMP_DEGRADATION",
+        "severity": "medium",
+        "windows": 1,
+        "first_start": "2026-01-01T12:00:00",
+        "last_end": "2026-01-01T14:00:00"
+      },
+      {
+        "issue_type": "SENSOR_FAULT",
+        "severity": "medium",
+        "windows": 4,
+        "first_start": "2026-01-01T05:00:00",
+        "last_end": "2026-01-01T22:00:00"
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 12,
+    "label": "Q12 | Alarm history integrity problems | expect=zero_rows",
+    "expectation": "zero_rows",
+    "sql": "-- Q12 | Alarm history integrity problems | expect=zero_rows\nSELECT a.alarm_id\nFROM alarms a\nWHERE NOT EXISTS (\n        SELECT 1 FROM alarm_events e\n        WHERE e.alarm_id = a.alarm_id AND e.event_type = 'CREATED'\n    )\n   OR (\n        a.alarm_status = 'RESOLVED'\n        AND NOT EXISTS (\n            SELECT 1 FROM alarm_events e\n            WHERE e.alarm_id = a.alarm_id AND e.event_type = 'RESOLVED'\n        )\n    )",
+    "row_count": 0,
+    "rows": [],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 13,
+    "label": "Q13 | Matched incidents without a per-event evaluation row | expect=zero_rows",
+    "expectation": "zero_rows",
+    "sql": "-- Q13 | Matched incidents without a per-event evaluation row | expect=zero_rows\nSELECT i.incident_id\nFROM alarm_incidents i\nWHERE i.classification = 'MATCHED'\n  AND NOT EXISTS (\n      SELECT 1 FROM evaluation_events e\n      WHERE e.matched_incident_id = i.incident_id\n  )",
+    "row_count": 0,
+    "rows": [],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 14,
+    "label": "Q14 | Sensors with the fewest readings (missing-data review) | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q14 | Sensors with the fewest readings (missing-data review) | expect=nonempty\nSELECT\n    s.sensor_id,\n    s.equipment_id,\n    s.sensor_type,\n    s.sensor_role,\n    COUNT(t.telemetry_id) AS reading_count\nFROM sensors s\nLEFT JOIN telemetry t ON t.sensor_id = s.sensor_id\nGROUP BY s.sensor_id, s.equipment_id, s.sensor_type, s.sensor_role\nORDER BY reading_count ASC, s.sensor_id\nLIMIT 10",
+    "row_count": 10,
+    "rows": [
+      {
+        "sensor_id": "SNS-015",
+        "equipment_id": "TANK-001",
+        "sensor_type": "LEVEL",
+        "sensor_role": "level",
+        "reading_count": 1380
+      },
+      {
+        "sensor_id": "SNS-001",
+        "equipment_id": "PUMP-001",
+        "sensor_type": "FLOW",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-002",
+        "equipment_id": "PUMP-001",
+        "sensor_type": "PRESSURE",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-003",
+        "equipment_id": "PUMP-002",
+        "sensor_type": "FLOW",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-004",
+        "equipment_id": "PUMP-002",
+        "sensor_type": "PRESSURE",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-005",
+        "equipment_id": "PUMP-003",
+        "sensor_type": "FLOW",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-006",
+        "equipment_id": "PUMP-003",
+        "sensor_type": "PRESSURE",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-007",
+        "equipment_id": "PUMP-004",
+        "sensor_type": "FLOW",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-008",
+        "equipment_id": "PUMP-004",
+        "sensor_type": "PRESSURE",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      },
+      {
+        "sensor_id": "SNS-009",
+        "equipment_id": "PUMP-005",
+        "sensor_type": "FLOW",
+        "sensor_role": "discharge",
+        "reading_count": 1440
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 15,
+    "label": "Q15 | Simulation-run lineage and config hash | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q15 | Simulation-run lineage and config hash | expect=nonempty\nSELECT\n    simulation_run_id,\n    random_seed,\n    generator_version,\n    schema_version,\n    scenario_set,\n    sampling_interval_seconds,\n    configuration_hash,\n    status,\n    start_time,\n    end_time\nFROM simulation_runs\nORDER BY created_at DESC",
+    "row_count": 1,
+    "rows": [
+      {
+        "simulation_run_id": "SIM-2026-000001",
+        "random_seed": 20261022,
+        "generator_version": "2.0.0",
+        "schema_version": "2.0.0",
+        "scenario_set": "calibration",
+        "sampling_interval_seconds": 60,
+        "configuration_hash": "a293240d53c468c6",
+        "status": "COMPLETED",
+        "start_time": "2026-01-01T00:00:00",
+        "end_time": "2026-01-02T00:00:00"
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 16,
+    "label": "Q16 | Alarm rule/category distribution | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q16 | Alarm rule/category distribution | expect=nonempty\nSELECT\n    rule_id,\n    alarm_category,\n    COUNT(*) AS episodes,\n    SUM(occurrence_count) AS active_readings,\n    ROUND(AVG(occurrence_count), 1) AS mean_duration_samples\nFROM alarms\nGROUP BY rule_id, alarm_category\nORDER BY episodes DESC, rule_id",
+    "row_count": 7,
+    "rows": [
+      {
+        "rule_id": "RULE-005",
+        "alarm_category": "PROCESS_FAULT",
+        "episodes": 2,
+        "active_readings": 230,
+        "mean_duration_samples": 115.0
+      },
+      {
+        "rule_id": "RULE-007",
+        "alarm_category": "PROCESS_FAULT",
+        "episodes": 2,
+        "active_readings": 230,
+        "mean_duration_samples": 115.0
+      },
+      {
+        "rule_id": "RULE-010",
+        "alarm_category": "SENSOR_FAULT",
+        "episodes": 2,
+        "active_readings": 135,
+        "mean_duration_samples": 67.5
+      },
+      {
+        "rule_id": "RULE-002",
+        "alarm_category": "PROCESS_FAULT",
+        "episodes": 1,
+        "active_readings": 113,
+        "mean_duration_samples": 113.0
+      },
+      {
+        "rule_id": "RULE-003",
+        "alarm_category": "SENSOR_FAULT",
+        "episodes": 1,
+        "active_readings": 30,
+        "mean_duration_samples": 30.0
+      },
+      {
+        "rule_id": "RULE-006",
+        "alarm_category": "PROCESS_FAULT",
+        "episodes": 1,
+        "active_readings": 104,
+        "mean_duration_samples": 104.0
+      },
+      {
+        "rule_id": "RULE-009",
+        "alarm_category": "SENSOR_FAULT",
+        "episodes": 1,
+        "active_readings": 60,
+        "mean_duration_samples": 60.0
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 17,
+    "label": "Q17 | Largest positive tank mass-balance residuals | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q17 | Largest positive tank mass-balance residuals | expect=nonempty\nWITH tank_values AS (\n    SELECT\n        s.equipment_id,\n        t.timestamp,\n        t.physical_state_value AS value,\n        s.sensor_role\n    FROM telemetry t\n    JOIN sensors s ON s.sensor_id = t.sensor_id\n    WHERE s.equipment_type = 'TANK'\n      AND s.sensor_role IN ('level', 'inlet', 'outlet')\n),\nwide AS (\n    SELECT\n        timestamp,\n        equipment_id,\n        MAX(CASE WHEN sensor_role = 'level' THEN value END) AS level_pct,\n        MAX(CASE WHEN sensor_role = 'inlet' THEN value END) AS inlet_m3_h,\n        MAX(CASE WHEN sensor_role = 'outlet' THEN value END) AS outlet_m3_h\n    FROM tank_values\n    GROUP BY timestamp, equipment_id\n),\nlagged AS (\n    SELECT\n        w.equipment_id,\n        w.timestamp,\n        w.inlet_m3_h,\n        w.outlet_m3_h,\n        w.level_pct,\n        LAG(w.level_pct) OVER (\n            PARTITION BY w.equipment_id ORDER BY w.timestamp\n        ) AS previous_level_pct,\n        (\n            JULIANDAY(w.timestamp) - JULIANDAY(\n                LAG(w.timestamp) OVER (\n                    PARTITION BY w.equipment_id ORDER BY w.timestamp\n                )\n            )\n        ) * 24.0 AS dt_hours,\n        tk.capacity_m3\n    FROM wide w\n    JOIN tanks tk ON tk.tank_id = w.equipment_id\n)\nSELECT\n    equipment_id,\n    timestamp,\n    ROUND(inlet_m3_h - outlet_m3_h\n        - ((level_pct - previous_level_pct) / 100.0 * capacity_m3 / dt_hours), 3\n    ) AS balance_residual_m3_h\nFROM lagged\nWHERE previous_level_pct IS NOT NULL\n  AND dt_hours > 0\nORDER BY balance_residual_m3_h DESC\nLIMIT 10",
+    "row_count": 10,
+    "rows": [
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:57:00",
+        "balance_residual_m3_h": 6.304
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:48:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:49:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:50:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:53:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:56:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:59:00",
+        "balance_residual_m3_h": 6.303
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:41:00",
+        "balance_residual_m3_h": 6.302
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:44:00",
+        "balance_residual_m3_h": 6.302
+      },
+      {
+        "equipment_id": "TANK-001",
+        "timestamp": "2026-01-01T04:45:00",
+        "balance_residual_m3_h": 6.302
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 18,
+    "label": "Q18 | Ground-truth detection by severity | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q18 | Ground-truth detection by severity | expect=nonempty\nSELECT\n    gt.severity,\n    COUNT(*) AS events,\n    SUM(CASE WHEN ee.matched = 1 THEN 1 ELSE 0 END) AS detected,\n    ROUND(\n        SUM(CASE WHEN ee.matched = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*),\n        2\n    ) AS detection_rate_pct\nFROM ground_truth gt\nLEFT JOIN evaluation_events ee ON ee.gt_id = gt.gt_id\nWHERE gt.issue_type <> 'NORMAL'\nGROUP BY gt.severity\nORDER BY gt.severity",
+    "row_count": 2,
+    "rows": [
+      {
+        "severity": "light",
+        "events": 1,
+        "detected": 1,
+        "detection_rate_pct": 100.0
+      },
+      {
+        "severity": "medium",
+        "events": 6,
+        "detected": 6,
+        "detection_rate_pct": 100.0
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 19,
+    "label": "Q19 | SQLite foreign-key violations | expect=zero_rows",
+    "expectation": "zero_rows",
+    "sql": "-- Q19 | SQLite foreign-key violations | expect=zero_rows\nPRAGMA foreign_key_check",
+    "row_count": 0,
+    "rows": [],
+    "status": "PASS",
+    "reason": null
+  },
+  {
+    "query_number": 20,
+    "label": "Q20 | SQLite integrity check | expect=nonempty",
+    "expectation": "nonempty",
+    "sql": "-- Q20 | SQLite integrity check | expect=nonempty\nPRAGMA integrity_check",
+    "row_count": 1,
+    "rows": [
+      {
+        "integrity_check": "ok"
+      }
+    ],
+    "status": "PASS",
+    "reason": null
+  }
+]
