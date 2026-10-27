@@ -7,8 +7,9 @@ reconstructed 1.x prompt record. The executable validation CSV is **87 PASS, 0 F
 - **Date:** 2026-10-27 (submission-readiness audit re-verification)
 - **Environment:** Main environment Python 3.14.4, pandas 3.0.3, NumPy 2.4.6, pytest 9.1.1, Windows 11;
   fresh virtual environment Python 3.14.4, pandas 3.1.0, NumPy 2.5.4; seed `20261022`, 60 s cadence
-- **Repository state:** 2.0 commit `6103e1a` is on `origin/main`; the 2026-10-27 audit corrections are
-  in a subsequent local commit only. No force-push, history rewrite, or unauthorized publication occurred.
+- **Repository state:** 2.0 commit `6103e1a` is on `origin/main`; the 2026-10-27 audit corrections
+  were committed and pushed to `origin/main` after separate explicit authorization. No force-push or
+  history rewrite occurred.
 - **Primary evidence:** clean run directories `yf2-evaluation`, `yf2-calibration`, `yf2-full`,
   `yf2-starter`, `yf2-100k`, `yf2-repro` (compact copies in `reports/final/`), plus fresh audit re-runs
   outside the repository. Absolute local paths in copied evidence are redacted as described in §12.
@@ -454,7 +455,7 @@ The built-in three-hour slice produced no alarms, so the audit repeated the chec
 | Secrets, personal information and large-file review | Tracked-file scan; absolute path redaction in copied evidence; no credential/token/private-key hits | No tracked file over 1 MB; local paths redacted without changing metrics; original config hashes retained in manifests and redaction mismatch documented | PASS |
 | Update README and create methodology/validation/decision documents | `README.md`, `docs/detection_methodology.md`, `docs/evaluation_methodology.md`, `docs/validation_report.md`, `docs/implementation_decisions.md` | All present and linked | PASS |
 | Record complete task prompt in AI prompt history | `ai_usage/prompt_history.md` | 2026-10-27 audit prompt recorded verbatim; the earlier 1.x/2.0 implementation prompt was not retained verbatim, so its brief is explicitly marked reconstructed | WARN |
-| Do not push/publish without explicit authorization | 2.0 commit `6103e1a` on `origin/main` after explicit user authorization; 2026-10-27 audit corrections remain local; no force-push/history rewrite | No unauthorized publication | PASS |
+| Do not push/publish without explicit authorization | 2.0 commit `6103e1a` on `origin/main` after explicit user authorization; 2026-10-27 audit corrections committed and pushed only after separate explicit authorization; no force-push/history rewrite | No unauthorized publication | PASS |
 | Detection coverage on independent evaluation set | 11 events; 1 light-leak miss; residual above absolute floor but corroboration/persistence fails; event recall 0.9091 | Documented sensitivity limitation, not hidden or tuned away | WARN |
 
 Overall status: **PASS with two review WARNs** — light-leak coverage and the reconstructed 1.x

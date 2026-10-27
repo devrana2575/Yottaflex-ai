@@ -45,8 +45,9 @@
 - The audit fixed and covered two re-verified defects: pandas 3.1 mode-fill deprecation warning and
   point coverage counting unobserved positive rows as observed. The fixes did not change reported
   metrics.
-- Git: 2.0 commit `6103e1a` is on `origin/main` after explicit authorization; audit corrections were
-  committed locally only. No push, force-push, or history rewrite was performed for the audit.
+- Git: 2.0 commit `6103e1a` is on `origin/main` after explicit authorization; the audit corrections
+  were committed and pushed to `origin/main` after separate explicit authorization. No force-push or
+  history rewrite was performed.
 
 Current evidence is consolidated in [`docs/validation_report.md`](../docs/validation_report.md) and
 [`reports/final/`](../reports/final/). The 1.x notes below are retained as historical context.
@@ -148,6 +149,7 @@ Output directories differed, but the configuration hash is now independent of ou
 - The original development master prompt is represented only by a summary in `prompt_history.md`; this audit prompt is now recorded verbatim, and the file gives a template for subsequent prompts.
 - At the time of the 1.x verification, this workspace had no Git metadata. The target repository was
   subsequently confirmed empty, and the user's later explicit instruction authorized its first
-  publication. The 2.0 implementation is now commit `6103e1a` on `origin/main`; current audit
-  corrections are local. Earlier external publication history cannot be established.
+  publication. The 2.0 implementation is now commit `6103e1a` on `origin/main`; the audit
+  corrections were subsequently committed and pushed after separate explicit authorization. Earlier
+  external publication history cannot be established.
 - The root `out.txt` and `test_out.txt` are stale prior-run logs, not the results of this verification.

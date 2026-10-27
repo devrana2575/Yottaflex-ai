@@ -85,8 +85,8 @@
 - **SQLite.** Suitable for local analytics, not high-concurrency or very large-scale deployment.
 - **No real-time or dashboard.** Batch CLI only; the optional dashboard remains unimplemented.
 - **Publication status.** The 2.0 implementation was committed as `6103e1a` and published to
-  `origin/main` only after explicit authorization. The 2026-10-27 audit corrections remain in a
-  local commit; no force-push or history rewrite was performed.
+  `origin/main` only after explicit authorization. The 2026-10-27 audit corrections were committed
+  and pushed after separate explicit authorization; no force-push or history rewrite was performed.
 
 ## Interpretation guidance
 

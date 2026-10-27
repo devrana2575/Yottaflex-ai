@@ -25,7 +25,8 @@
 - **PowerShell / CLI** — clean-run execution and artifact comparison.
 - **Git** — repository and diff inspection. The 2.0 implementation was committed as `6103e1a` and
   pushed to `origin/main` only after explicit user authorization. The 2026-10-27 audit corrections
-  are in a local commit; no force-push or shared-history rewrite was performed.
+  were committed and pushed after separate explicit user authorization; no force-push or
+  shared-history rewrite was performed.
 
 ## Libraries
 

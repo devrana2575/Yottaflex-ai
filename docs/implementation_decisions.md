@@ -261,4 +261,5 @@ documented instead.
   `1e-13` without changing metrics (same-environment reruns are byte-identical).
 - No dashboard or real-time streaming was added.
 - The 2.0 implementation is commit `6103e1a` on `origin/main` after explicit authorization. The
-  2026-10-27 audit corrections remain local; no force-push or history rewrite was performed.
+  2026-10-27 audit corrections were committed and pushed after separate explicit authorization; no
+  force-push or history rewrite was performed.

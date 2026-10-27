@@ -420,5 +420,5 @@ See [`docs/assumptions.md`](docs/assumptions.md) for the full list and interpret
 This is a synthetic project for evaluation purposes. AI prompt history, tool usage and
 implementation decisions are recorded in [`ai_usage/`](ai_usage/). The 2.0 implementation was
 committed as `6103e1a` and published to `origin/main` only after explicit authorization. The
-2026-10-27 audit corrections are recorded in a subsequent local commit; no force-push, shared-history
-rewrite, or further publication occurred.
+2026-10-27 audit corrections were committed and pushed to `origin/main` after separate explicit
+authorization; no force-push or shared-history rewrite occurred.
