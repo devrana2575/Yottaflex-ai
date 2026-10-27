@@ -98,10 +98,10 @@
     "require_category_match": true,
     "label_scope": "explicit_windows"
   },
-  "output_dir": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro",
-  "raw_dir": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro\\raw",
-  "reports_dir": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro\\reports",
-  "database_path": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro\\yottaflex.db",
+  "output_dir": "<external-temp>\\yf2-repro",
+  "raw_dir": "<external-temp>\\yf2-repro\\raw",
+  "reports_dir": "<external-temp>\\yf2-repro\\reports",
+  "database_path": "<external-temp>\\yf2-repro\\yottaflex.db",
   "schema_version": "2.0.0",
   "generator_version": "2.0.0"
 }

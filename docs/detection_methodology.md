@@ -94,8 +94,9 @@ the evaluation scenarios:
 
 - Level noise floor is `0.03 pp`; a `0.30 pp / 5 min` decline is ten times the noise floor and
   corresponds to roughly `3.6 pp/h`. Medium leaks are `5% of capacity per hour` (about
-  `4-6 pp/h` for the generated tanks); the `1.5%/h` light leak is below the detection floor and is
-  intentionally left as a known miss.
+  `4-6 pp/h` for the generated tanks). The `1.5%/h` light leak produces a balance residual above
+  the absolute `5 m3/h` floor, but its 5-minute decline is only about `0.13 pp` and does not
+  reliably satisfy the `0.15 pp` corroboration condition for `480 s`; it is retained as a known miss.
 - Balance tolerance combines an absolute `5 m3/h` floor (sensor/model uncertainty at low flow) with
   an `8%` relative term. This avoids a tolerance that vanishes at low flow and avoids a fixed
   threshold that ignores tank size.
@@ -115,6 +116,13 @@ set. It is used to check that each mechanism is detectable and that the threshol
 obviously mis-scaled; it is not used to optimize a metric on the evaluation set. No threshold was
 changed after inspecting evaluation results. The sensor-fault latency allowance (3,600 s) was fixed
 before the evaluation run was inspected.
+
+The light-leak audit measured a 10-minute residual median of `8.32 m3/h` (mean `7.97`), with 82 of
+90 samples above the absolute `5 m3/h` floor, and a 5-minute decline median of `-0.131 pp`. The
+longest continuous active-and-corroborated run was `300 s`; the longest active run without
+corroboration was `420 s`. Both are below the `480 s` persistence requirement, so neither
+RULE-006 nor RULE-006U fired for this event. This is a persistence/corroboration limitation, not a failure of the
+absolute balance floor.
 
 ## 4. Sensor fault versus process fault versus uncertainty
 
@@ -166,8 +174,10 @@ recurrence becomes a separate incident and can be evaluated as such.
   use ground truth to know that the process is normal, so this is reported rather than suppressed.
 - A level/pressure disagreement is attributed to the pair, not to a specific sensor. The alarm is a
   sensor fault but the exact faulty device may require maintenance inspection.
-- A light leak below the balance/decline floor is not detected. In the evaluation set this is
-  `E-LEAK-01` (`1.5% of capacity/hour`); it is documented as a sensitivity limit, not tuned away.
+- The `1.5% of capacity/hour` light leak (`E-LEAK-01`) is not detected. Its balance residual is
+  above the absolute `5 m3/h` floor, but the decline corroboration and `480 s` persistence do not
+  both hold and RULE-002's `0.30 pp` trigger is not reached for this event. It is documented as a
+  corroboration/persistence sensitivity limit, not tuned away.
 - Point-level false positives occur at the tail of an episode after the physical anomaly ends,
   because the detector needs two clear readings and a grouping gap before resolving. This is
   visible in the point metrics and is not hidden by event-level grouping.

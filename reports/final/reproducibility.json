@@ -1,7 +1,10 @@
 {
-  "description": "Byte-level reproducibility comparison of two clean full/default runs with seed 20261022, 24 h, 60 s.",
-  "run_a": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-full",
-  "run_b": "C:\\Users\\ASUS\\AppData\\Local\\Temp\\opencode\\yf2-repro",
+  "description": "Byte-level reproducibility comparison of two independent full/default runs with seed 20261022, 24 h, 60 s; re-verified on 2026-10-27 during the submission-readiness audit after the audit fixes.",
+  "verified_on": "2026-10-27",
+  "run_a": "fresh external temp run A",
+  "run_b": "fresh external temp run B",
+  "path_note": "Run directories are outside the repository. Neutral labels replace absolute local paths; the path-independent configuration hash and all compared bytes and metrics are unchanged.",
+  "environment_note": "The 19/19 byte comparison was run within the main audit environment (pandas 3.0.3 / NumPy 2.4.6). A fresh pandas 3.1.0 / NumPy 2.5.4 environment reproduced all evaluation metrics and 17/19 artifacts; alarms.csv and sql_query_report.json differed only in peak_value floats at about 8e-13.",
   "identical_file_count": 19,
   "compared_file_count": 19,
   "all_identical": true,
@@ -9,6 +12,20 @@
   "configuration_hash_run_b": "d422f3bbee3dcadc",
   "telemetry_rows_run_a": 316800,
   "telemetry_rows_run_b": 316800,
+  "database_logical_comparison": {
+    "schema_tables": 19,
+    "populated_tables": 17,
+    "empty_legacy_tables": [
+      "detection_results",
+      "equipment_state_events"
+    ],
+    "integrity_check": "ok",
+    "foreign_key_violations": 0,
+    "all_populated_table_rows_identical_except": [
+      "evaluation_metrics.evaluated_at",
+      "validation_results.validated_at"
+    ]
+  },
   "files": {
     "facilities.csv": {
       "run_a_sha256": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",

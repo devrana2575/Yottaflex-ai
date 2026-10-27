@@ -326,6 +326,7 @@ class DetectionEngine:
         frame["mode"] = (
             frame["operating_mode_id"]
             .map(self.mode_map)
+            .astype("object")
             .fillna("NORMAL")
             if "operating_mode_id" in frame
             else "NORMAL"

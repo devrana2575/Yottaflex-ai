@@ -189,10 +189,12 @@ certainty would be false. A maintenance investigation is the correct next step.
 
 ### 4.6 What was not tuned
 
-The light evaluation leak (`E-LEAK-01`, 1.5% capacity/hour) is below the absolute/relative balance
-floor and the decline threshold. It is reported as a missed event. Lowering thresholds until it
-was detected would have been tuning on the evaluation set and would likely increase false alarms;
-the sensitivity floor is documented instead.
+The light evaluation leak (`E-LEAK-01`, 1.5% capacity/hour) has a balance residual above the
+absolute `5 m3/h` floor, but the 5-minute decline (`-0.131 pp` median) and persistence do not satisfy
+RULE-006's corroboration requirement, and RULE-002's `0.30 pp` trigger is not reached for this event. It is
+reported as a missed event. Lowering thresholds until it was detected would have been tuning on the
+evaluation set and would likely increase false alarms; the corroboration/persistence limitation is
+documented instead.
 
 ## 5. Data, schema and reporting decisions
 
@@ -200,8 +202,10 @@ the sensitivity floor is documented instead.
   attribution fields, scenario/ground-truth `severity` and `expected_sensor_ids`, append-only
   `alarm_events`, `alarm_incidents`, `evaluation_metrics`, `evaluation_events`, and
   `validation_results`. It removes the alarm `scenario_id`, which was a ground-truth leak.
-- **SQLite export is recreate-by-default** and exports 17 tables, including validation and
-  evaluation. `export-sql --append` remains available but is not used by the default pipeline.
+- **SQLite export is recreate-by-default** and exports 17 populated tables into the 19-table schema,
+  including validation and evaluation. The legacy `detection_results` and `equipment_state_events`
+  tables remain empty. `export-sql --append` remains available but is not used by the default
+  pipeline.
 - **SQL analytics** contain 20 statements. Each declares `expect=nonempty` or `expect=zero_rows`,
   and the runner fails the pipeline if an expectation is not met. The queries are read-only.
 - **Manifest** records SHA-256 and row counts for output CSVs and `config.json`.
@@ -219,12 +223,16 @@ the sensitivity floor is documented instead.
 - Added targeted tests for detection lifecycle/grouping/mode suppression/isolation, evaluation
   units and edge cases, data integrity, scenario injection, validation/SQL, integration and
   reproducibility.
-- Kept the original 11 tests; the detection engine still accepts telemetry without
-  `operating_mode_id` for backward compatibility.
+- Kept the original 11 tests; 51 targeted tests were added. The detection engine still accepts
+  telemetry without `operating_mode_id` for backward compatibility.
 - Added `pytest.ini` to prevent collection of non-Python `test_out.txt`.
 - Validation grew from 18 to 87 executable checks; each result is PASS/FAIL/WARN/NOT_IMPLEMENTED
   and is written to CSV/JSON.
-- Final test suite: **61 passed**.
+- The 2026-10-27 audit fixed two genuine defects found during re-verification: the operating-mode
+  mapping now casts to object before filling the `NORMAL` fallback (removing the pandas 3.1
+  deprecation warning), and point coverage now counts only observed positive rows. Regression
+  assertions cover both; neither change alters the final evaluation metrics.
+- Final test suite: **62 passed** in both the main environment and a fresh virtual environment.
 
 ## 7. Alternatives considered and rejected
 
@@ -243,10 +251,14 @@ the sensitivity floor is documented instead.
 ## 8. Known limitations
 
 - The simulator is simplified and synthetic; results do not establish real-plant performance.
-- The light evaluation leak is missed by design of the sensitivity floor.
+- The light evaluation leak is missed because the decline corroboration and persistence do not both
+  hold; the balance residual itself is above the absolute floor.
 - Point false positives occur at episode tails after anomaly end; point false negatives include
   detection latency and the light leak.
 - Sensor-fault localization can be ambiguous between redundant channels.
 - Event matching uses onset, not duration; point metrics carry duration/latency information.
+- Dependencies are lower-bounded; cross-version float serialization can change peak values at about
+  `1e-13` without changing metrics (same-environment reruns are byte-identical).
 - No dashboard or real-time streaming was added.
-- The repository remains uncommitted and was not pushed or published.
+- The 2.0 implementation is commit `6103e1a` on `origin/main` after explicit authorization. The
+  2026-10-27 audit corrections remain local; no force-push or history rewrite was performed.

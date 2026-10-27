@@ -116,11 +116,13 @@ exclude unknown and unobserved samples, and score predictions from the actual ep
 
 ## Persistence and reporting
 
-SQLite export recreates 17 tables by default: 7 master tables, simulation runs, scenarios, telemetry,
-ground truth, alarms, alarm events, incidents, evaluation metrics/events and validation results.
-`export-sql --append` is available but not used by the pipeline. `run_manifest.json` records SHA-256
-hashes and row counts; `validation_results.csv` and `evaluation_metrics.csv` contain wall-clock
-timestamps and are excluded from byte-for-byte reproducibility comparisons.
+SQLite export recreates the 19-table schema and writes 17 populated tables by default: 7 master
+tables, simulation runs, scenarios, telemetry, ground truth, alarms, alarm events, incidents,
+evaluation metrics/events and validation results. The legacy `detection_results` and
+`equipment_state_events` tables remain empty. `export-sql --append` is available but not used by the
+pipeline. `run_manifest.json` records SHA-256 hashes and row counts; `validation_results.csv` and
+`evaluation_metrics.csv` contain wall-clock timestamps and are excluded from byte-for-byte
+reproducibility comparisons.
 
 ## Verification layers
 

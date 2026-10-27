@@ -3,15 +3,15 @@
 This document records all prompts submitted to AI tools during the development of the YottaFlex project.
 
 ## Project: Industrial Pump, Tank, Valve and Flow Anomaly Detection Simulator
-**Candidate:** YottaFlex Candidate  
-**Date Started:** 2026-10-26  
+**Candidate:** YottaFlex Candidate
+**Date Started:** 2026-10-26
 **AI Tool:** OpenCode (Big Pickle model)
 
 ## Master Prompt
 
-**Timestamp:** 2026-10-26T19:56:00Z  
-**Tool:** OpenCode  
-**Task:** Complete implementation of YottaFlex simulator per specifications  
+**Timestamp:** 2026-10-26T19:56:00Z
+**Tool:** OpenCode
+**Task:** Complete implementation of YottaFlex simulator per specifications
 **Record status:** Summary only; the original verbatim prompt was not retained.
 
 The full master prompt provided detailed requirements for building a complete working solution including:
@@ -32,8 +32,8 @@ For each subsequent AI interaction, append the date/time, tool/model, task, and 
 
 ### Independent verification prompt
 
-**Timestamp:** 2026-10-26  
-**Tool:** Copilot SDK in VS Code  
+**Timestamp:** 2026-10-26
+**Tool:** Copilot SDK in VS Code
 **Task:** Independently verify the simulator, execute documented workflows and analytics, fix reproducible defects, and report evidence.
 
 > Perform a final independent verification of the Industrial Pump, Tank, Valve and Flow Anomaly Detection Simulator.
@@ -73,11 +73,11 @@ For each subsequent AI interaction, append the date/time, tool/model, task, and 
 
 ## 2.0 Improvement and Verification Session
 
-**Timestamp:** 2026-10-27  
-**Tool:** OpenCode  
-**Model:** DeepSeek V4.1 Flash Free  
+**Timestamp:** 2026-10-27
+**Tool:** OpenCode
+**Model:** DeepSeek V4.1 Flash Free
 **Task:** Improve and independently verify the existing YottaFlex anomaly-detection project without
-rebuilding it from scratch.  
+rebuilding it from scratch.
 **Record status:** The original verbatim prompt was not retained in the conversation record.
 The following is a detailed reconstruction of the session brief, not a quotation.
 
@@ -131,10 +131,11 @@ The following is a detailed reconstruction of the session brief, not a quotation
 - Split evaluation into event and point units, added explicit NORMAL windows, incident merging,
   one-to-one category/equipment/sensor/latency matching and unknown-label accounting.
 - Added `default`, `calibration`, `evaluation` and `compact` scenario sets.
-- Added 87 validation checks, 20 SQL assertions, 50 targeted tests (61 total) and reproducibility
+- Added 87 validation checks, 20 SQL assertions, 51 targeted tests (62 total) and reproducibility
   checks.
 - Final evaluation: 11 events, TP=10, FN=1, FP=0; event P/R/F1 = 1.0000/0.9091/0.9524. The miss is
-  the documented light-leak sensitivity floor.
+  the documented light-leak corroboration/persistence limitation; its balance residual is above the
+  absolute floor.
 - Wrote the methodology, decision, baseline, validation and handover documents; compact evidence is
   in `reports/final/`.
 
@@ -147,9 +148,89 @@ The following is a detailed reconstruction of the session brief, not a quotation
 - Final evidence: [`docs/validation_report.md`](../docs/validation_report.md)
 - Machine-readable evidence: [`reports/final/`](../reports/final/)
 
+## Submission-Readiness Audit Session
+
+- **Timestamp:** 2026-10-27
+- **Tool:** OpenCode
+- **Model:** DeepSeek V4.1 Flash Free
+- **Task:** Submission-readiness audit of the existing YottaFlex 2.0 repository.
+- **Record status:** Verbatim user prompt content copied from the audit request; markdown line wrapping
+  is normalized for readability. No system/developer harness instructions are included.
+
+```text
+Complete a submission-readiness audit of the existing YottaFlex 2.0 repository without rebuilding it. Re-run the workflows, verify the claims against generated artifacts, correct documentation that is stale or overstated, and fix genuine defects if found.
+
+Working directory: `D:\PROJECTS\yottaflex`.
+
+## Required audit
+
+1. Repository state and setup
+- Inspect Git status, remotes, latest commits, and whether the tree is clean.
+- Re-run the documented installation from a clean state: `pip install -r requirements.txt` and `pip install -e .`, plus CLI version/help.
+- Check `pyproject.toml`/`setup.py`, package metadata, entry points, Python version constraints, dependency pinning, relative-path assumptions, output-directory creation, and database initialization.
+- Run the full test suite and record exact pass/fail counts.
+
+2. Evaluation and results
+- Re-run the final evaluation workflow from a fresh output directory and compare metrics to the README.
+- Verify event-level TP/FN/FP and point-level TP/FP/TN/FN against generated CSV/JSON outputs, not just documentation.
+- Recalculate precision, recall, F1, and false-positive rate where feasible.
+- Reconcile any discrepancy in validation counts, PASS/WARN/FAIL labels, or test counts.
+- Check that validation checks actually execute real assertions and are not placeholders.
+
+3. Detection and data integrity
+- Verify topology, primary/foreign keys, flow conservation, units, sensor counts, and expected row counts.
+- Audit negative scenarios and confirm they fail for the intended reason.
+- Verify the detector cannot read ground truth or scenario labels.
+- Check the missed light-leak event and explain whether it is a threshold, labeling, or persistence issue. Do not tune thresholds to make it pass unless the existing detector is demonstrably wrong.
+- Verify seed determinism and reruns reproduce identical artifacts where expected.
+
+4. SQL and analytics
+- Execute all SQL queries and validate results, including joins and zero-row checks.
+- Confirm the database has expected tables and constraints, with no integrity or foreign-key violations.
+
+5. Documentation and AI-use records
+- Update `README.md`, validation report, methodology docs, decisions, assumptions, handover notes, and AI-use/prompt records if stale or inaccurate.
+- Make sure prompts, tool usage, and verification notes are truthful and complete. Preserve reconstructed labels where verbatim history is unavailable.
+- Check for secrets, personal information, and large files; remove or redact anything inappropriate without falsifying evidence.
+
+6. Final checks
+- Re-run validation, SQL, tests, and reproducibility workflow after any changes.
+- Run `git diff --check`.
+- Review final diff and commit audit changes locally. Do not push, force-push, rewrite shared history, or publish without separate authorization.
+- Report exact commands, observed results, remaining defects, and any WARN items separately from PASS counts.
+
+## Constraints
+- Preserve working features and the missed light-leak event; document limitations honestly.
+- Do not tune thresholds, remove scenarios, alter ground truth, or change matching rules to improve metrics.
+- Use existing architecture and code; do not rebuild the project.
+- Do not invent results. If something cannot be verified, say so.
+- Do not expose secrets or personal data in your final response.
+- Keep final response concise but evidence-rich.
+```
+
+### Audit work performed
+
+- Re-ran the main and fresh-environment test suites: **62 passed** in each.
+- Re-ran evaluation, validation and SQL; reproduced the reported event/point metrics and
+  **87 PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED** plus **20/20 SQL**.
+- Ran two fresh full/default runs after fixes: **19/19 deterministic artifacts byte-identical**
+  within the main environment; SQLite logical comparison passed. A fresh clean environment matched
+  all metrics and 17/19 artifacts, with last-bit `peak_value` differences in two files.
+- Re-ran negative controls, isolation poisoning, seed determinism and light-leak diagnostics.
+- Corrected stale counts, Git publication statements, light-leak wording, packaging/setup guidance,
+  local-path privacy, and AI-use records.
+- Fixed the pandas mode-fill deprecation and point-coverage counting defects; added regression
+  assertions. No thresholds, scenarios, ground truth or matching rules were changed.
+
+Current evidence: [`docs/validation_report.md`](../docs/validation_report.md),
+[`reports/final/`](../reports/final/), and the current audit section in
+[`verification_notes.md`](verification_notes.md).
+
 ## Notes
 - This is the initial implementation session
 - All code has been written by the AI agent following the specifications
 - Candidate should review and understand all implementation decisions
 - The 2.0 session brief above is reconstructed because the original verbatim prompt was not retained;
   it is not presented as a quotation
+- The 2026-10-27 submission-readiness prompt above is recorded as the current audit request; the
+  2.0 implementation prompt remains explicitly marked as reconstructed.

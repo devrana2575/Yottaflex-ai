@@ -1,15 +1,60 @@
-# Independent Verification Notes (Historical, Superseded)
+# Independent Verification Notes (Historical 1.x Record; 2.0 Audit Appended)
 
-> **Historical record — not current evidence.** This audit was performed on the 1.x implementation
-> (version 1.0.0, 18 validation checks, 11 tests). Its 1,245-alarm-row result and its
+> **Historical record — not current evidence for the 1.x numbers.** The 1.x audit below was performed
+> on version 1.0.0 (18 validation checks, 11 tests). Its 1,245-alarm-row result and
 > `precision=0.010638` are the defective metric reproduced and explained in
 > [`docs/baseline_findings.md`](../docs/baseline_findings.md). The 2.0 results are in
-> [`docs/validation_report.md`](../docs/validation_report.md): 87 checks, 20 SQL assertions,
-> 61 tests, and separate event/point metrics. The Git publication note below is also historical;
-> no 2.0 work was pushed or published.
+> [`docs/validation_report.md`](../docs/validation_report.md): 87 executable validation rows,
+> 20 SQL assertions, 62 tests, and separate event/point metrics. The Git publication note in the 1.x
+> section is historical; the current 2.0/audit status is recorded below.
 
-**Date:** 2026-10-26  
-**Runtime:** Python 3.14.4, Windows  
+## 2026-10-27 2.0 Submission-Readiness Audit (Current)
+
+- **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
+- **Scope:** Re-run the 2.0 workflows against generated artifacts, reconcile documentation, verify
+  isolation/negative controls/determinism, and fix only re-verified defects. No thresholds, scenarios,
+  ground truth, or matching rules were changed.
+
+**Commands and observed results:**
+
+- Main environment (`Python 3.14.4`, pandas `3.0.3`, NumPy `2.4.6`): `python -m pytest -q` →
+  **62 passed in 89.37 s** (final run). The main editable-install metadata was stale at `1.0.0`;
+  the audit refreshed it with `pip install -e . --no-deps`, after which `pip show yottaflex` and
+  `yottaflex --version` both reported `2.0.0`.
+- Fresh virtual environment (`Python 3.14.4`, pandas `3.1.0`, NumPy `2.5.4`):
+  `pip install -r requirements.txt`, `pip install -e .`, `yottaflex --version` → `2.0.0`;
+  full/evaluation pipeline → 316,740 rows, event TP/FN/FP `10/1/0`, point TP/FP/TN/FN
+  `844/10/112190/206`, validation `87 PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED`, SQL
+  `20/20`, SQLite integrity `ok`; `pytest -q` → **62 passed in 77.07 s** with no warning summary.
+- Fresh main-environment post-fix evaluation run: deterministic `alarms.csv`, `alarm_events.csv`,
+  `alarm_incidents.csv`, `evaluation_events.csv`, `evaluation_metrics.json`,
+  `evaluation_summary.md`, `simulation_metadata.json`, `simulation_runs.csv` and
+  `sql_query_report.json` were byte-identical to the stored evaluation evidence.
+- Two fresh full/default runs after the fixes in the main environment: 19/19 deterministic
+  artifacts byte-identical; configuration hash `d422f3bbee3dcadc`; 316,800 telemetry rows; SQLite
+  integrity `ok`, zero foreign-key violations; 17 populated tables logically identical except
+  wall-clock `evaluated_at`/`validated_at`. The clean pandas 3.1.0 / NumPy 2.5.4 environment matched
+  all metrics and 17/19 artifacts; `alarms.csv` and `sql_query_report.json` differed only in
+  `peak_value` floats at about `1e-13`.
+- Independent isolation check: poisoned scenario/ground-truth/physical columns over a four-hour
+  08:00-12:00 slice (52,800 rows) produced the same three alarms as the clean run.
+- Light leak: 10-minute residual median `8.32 m3/h` (82/90 samples above the absolute `5 m3/h`
+  floor); 5-minute decline median `-0.131 pp`; longest corroborated run `300 s`, longest
+  active-without-corroboration `420 s`, persistence `480 s`; neither RULE-006 nor RULE-006U fired
+  for this event.
+- The audit fixed and covered two re-verified defects: pandas 3.1 mode-fill deprecation warning and
+  point coverage counting unobserved positive rows as observed. The fixes did not change reported
+  metrics.
+- Git: 2.0 commit `6103e1a` is on `origin/main` after explicit authorization; audit corrections were
+  committed locally only. No push, force-push, or history rewrite was performed for the audit.
+
+Current evidence is consolidated in [`docs/validation_report.md`](../docs/validation_report.md) and
+[`reports/final/`](../reports/final/). The 1.x notes below are retained as historical context.
+
+---
+
+**Date:** 2026-10-26
+**Runtime:** Python 3.14.4, Windows
 **Seed:** 20261022
 
 ## Workflows actually run
@@ -101,5 +146,8 @@ Output directories differed, but the configuration hash is now independent of ou
 - Whole-repository Ruff reports 69 findings; the three rewritten core modules pass Ruff. Existing findings are primarily unused imports, older typing forms, and style issues.
 - The optional dashboard remains unimplemented.
 - The original development master prompt is represented only by a summary in `prompt_history.md`; this audit prompt is now recorded verbatim, and the file gives a template for subsequent prompts.
-- At the time of verification, this workspace had no Git metadata. The target repository was subsequently confirmed empty, and the user's later explicit instruction authorized its first publication. Earlier external publication history cannot be established.
+- At the time of the 1.x verification, this workspace had no Git metadata. The target repository was
+  subsequently confirmed empty, and the user's later explicit instruction authorized its first
+  publication. The 2.0 implementation is now commit `6103e1a` on `origin/main`; current audit
+  corrections are local. Earlier external publication history cannot be established.
 - The root `out.txt` and `test_out.txt` are stale prior-run logs, not the results of this verification.

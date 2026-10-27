@@ -20,13 +20,15 @@ industrial control system and not a validated digital twin.
 | ~100k configuration | 99,000 rows (220 sensors x 450 samples, 7.5 h) |
 | Primary independent evaluation | 11 events: TP=10, FN=1, FP=0; event precision=1.0, recall=0.9091, F1=0.9524 |
 | Point evaluation (evaluation set) | TP=844, FP=10, TN=112,190, FN=206; precision=0.9883, recall=0.8038 |
-| Validation | 87 PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED |
+| Validation | 87 executable PASS / 0 FAIL / 0 CSV WARN / 0 NOT_IMPLEMENTED; 2 review WARNs (tracked separately) |
 | SQL analytics | 20 statements, 20 PASS |
-| Tests | 61 passed |
-| Reproducibility | 19 deterministic artifacts byte-identical across two clean runs |
+| Tests | 62 passed |
+| Reproducibility | 19/19 artifacts byte-identical across two fresh runs in the same environment; clean pandas 3.1 run matched all metrics and 17/19 (last-bit peak floats) |
 
 The full evidence, including per-event results, false-alarm analysis and the requirement matrix, is
-in [`docs/validation_report.md`](docs/validation_report.md).
+in [`docs/validation_report.md`](docs/validation_report.md). The `87` count is the executable
+validation CSV only. The two review WARNs (light-leak coverage and reconstructed 1.x prompt history)
+are tracked there separately and are not added to that denominator.
 
 ## What Changed in 2.0
 
@@ -47,7 +49,7 @@ are:
   observed, not flagged by the injector.
 - **Four scenario sets.** `default`, `calibration`, `evaluation` and `compact`; calibration and
   evaluation use different windows, equipment and severities.
-- **Executable claims.** 87 validation checks, 20 SQL assertions and a 61-test suite run against
+- **Executable claims.** 87 validation checks, 20 SQL assertions and a 62-test suite run against
   generated artifacts.
 
 ## Architecture
@@ -66,7 +68,7 @@ yottaflex/
 │   ├── persistence.py     # SQLite export/query/integrity helpers
 │   ├── schema.py          # 2.0.0 DDL, constraints, indexes
 │   └── cli.py             # generate, simulate, detect, evaluate, validate, export-sql, run-sql, pipeline
-├── tests/                 # 61 tests
+├── tests/                 # 62 tests
 ├── sql/                   # 20 analytical statements with declared expectations
 ├── docs/                  # Methodology, decisions, baseline and validation evidence
 ├── reports/final/         # Compact final-run evidence from clean runs
@@ -75,9 +77,17 @@ yottaflex/
 
 ## Setup
 
-Requirements: Python 3.11 or newer, Windows/Linux/macOS.
+Requirements: Python 3.11 or newer, Windows/Linux/macOS. A fresh virtual environment is
+recommended:
 
 ```bash
+python -m venv .venv
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+# Linux/macOS
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install -e .
 ```
@@ -89,12 +99,17 @@ yottaflex --version
 yottaflex --help
 ```
 
+A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4) was installed and tested
+during the 2026-10-27 submission-readiness audit; the full pipeline, 87 validation checks, 20 SQL
+assertions and 62 tests passed. The package has no `pyproject.toml`; `setup.py` is the packaging
+metadata, and editable installation works with current pip/setuptools.
+
 ## Quick Start
 
 ### Default full pipeline (316,800 rows)
 
 ```bash
-yottaflex pipeline --mode full --seed 20261022 --output-dir data/processed/full-run
+yottaflex pipeline --mode full --seed 20261022 --output-dir <fresh-output-dir>/full-run
 ```
 
 The pipeline runs generate, simulate, detect, evaluate, validate, SQLite export and SQL checks, and
@@ -104,7 +119,7 @@ writes a manifest. It uses the `default` scenario set unless `--scenario-set` is
 
 ```bash
 yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation \
-  --output-dir data/processed/evaluation-run
+  --output-dir <fresh-output-dir>/evaluation-run
 ```
 
 The evaluation run has 316,740 telemetry rows because the labelled missing-sensor scenario removes
@@ -114,7 +129,7 @@ The evaluation run has 316,740 telemetry rows because the labelled missing-senso
 
 ```bash
 yottaflex pipeline --mode full --seed 20261022 --scenario-set compact --duration 7.5 \
-  --output-dir data/processed/compact-run
+  --output-dir <fresh-output-dir>/compact-run
 ```
 
 `compact` uses 450 one-minute samples, producing exactly 220 x 450 = 99,000 rows. The required
@@ -124,7 +139,7 @@ full-volume configuration remains 316,800 rows.
 
 ```bash
 yottaflex pipeline --mode full --seed 20261022 --scenario-set calibration \
-  --output-dir data/processed/calibration-run
+  --output-dir <fresh-output-dir>/calibration-run
 ```
 
 Calibration uses different events and severities from the evaluation set. It checks that each
@@ -135,13 +150,13 @@ mechanism is detectable; it is not the reported evaluation set.
 Use the same output directory for each step:
 
 ```bash
-yottaflex generate  --mode full --seed 20261022 --output-dir data/processed/full-run
-yottaflex simulate  --mode full --seed 20261022 --duration 24 --output-dir data/processed/full-run
-yottaflex detect    --output-dir data/processed/full-run
-yottaflex evaluate  --output-dir data/processed/full-run
-yottaflex validate  --output-dir data/processed/full-run
-yottaflex export-sql --output-dir data/processed/full-run
-yottaflex run-sql   --output-dir data/processed/full-run --sql-file sql/analysis_queries.sql
+yottaflex generate  --mode full --seed 20261022 --output-dir <fresh-output-dir>/full-run
+yottaflex simulate  --mode full --seed 20261022 --duration 24 --output-dir <fresh-output-dir>/full-run
+yottaflex detect    --output-dir <fresh-output-dir>/full-run
+yottaflex evaluate  --output-dir <fresh-output-dir>/full-run
+yottaflex validate  --output-dir <fresh-output-dir>/full-run
+yottaflex export-sql --output-dir <fresh-output-dir>/full-run
+yottaflex run-sql   --output-dir <fresh-output-dir>/full-run --sql-file sql/analysis_queries.sql
 ```
 
 ### Tests
@@ -224,7 +239,9 @@ Mechanisms:
 - **Sensor fault** - bias, drift, stuck value, or missing telemetry; the physical process stays normal.
 
 The evaluation set covers light, medium and severe process faults plus all four sensor-fault
-mechanisms. The light leak is deliberately below the documented sensitivity floor.
+mechanisms. The light leak is retained as a documented sensitivity miss: its balance residual is
+above the absolute `5 m3/h` floor, but the corroborating level-decline and persistence requirements
+are not met.
 
 ## Detection Rules
 
@@ -304,31 +321,44 @@ The defects are documented in [`docs/baseline_findings.md`](docs/baseline_findin
 | **full, evaluation** | **316,740** | **10 / 1 / 0** | **1.000 / 0.9091 / 0.9524** | **0.9883 / 0.8038** | **15 / 10** |
 
 The evaluation set is the primary independent result. The only missed event is the
-`1.5% of capacity/hour` light leak (CSV row `GT-000001`, scenario-matrix label `E-LEAK-01`), below
-the balance/decline sensitivity floor. All 8 NORMAL windows had no alarm incident. Event false
-positives are zero; the 10 point false positives are short episode tails after anomalies end, not
-alarm incidents in normal operation.
+`1.5% of capacity/hour` light leak (CSV row `GT-000001`, scenario-matrix label `E-LEAK-01`). Its
+10-minute balance residual is **above** the absolute `5 m3/h` floor (median `8.32 m3/h`; 82 of 90
+samples above it), but the 5-minute level decline is only `-0.131 pp` median, just below the
+`0.15 pp` corroboration trigger. The longest corroborated run was `300 s` and the longest
+active-without-corroboration run was `420 s`, both below the `480 s` persistence requirement;
+RULE-002's `0.30 pp` trigger did not fire for this event. The miss is a corroboration/persistence sensitivity
+limit, not a balance-floor failure, and is retained. All 8 NORMAL windows had no alarm incident.
+Event false positives are zero; the 10 point false positives are short episode tails after anomalies
+end, not alarm incidents in normal operation.
 
 Detailed per-event tables and false-alarm analysis are in
 [`docs/validation_report.md`](docs/validation_report.md).
 
 ## Validation, SQL and Tests
 
-- **87 validation checks** cover primary/foreign keys, topology, bounds, sensor composition,
-  lineage/config hashes, telemetry cadence/quality/completeness, scenarios and windows, physics,
-  alarm lifecycle, evaluation formulas, ground-truth isolation, negative cases and SQLite integrity.
-  Final result: 87 PASS.
+- **87 executable validation checks** cover primary/foreign keys, topology, bounds, sensor
+  composition, lineage/config hashes, telemetry cadence/quality/completeness, scenarios and windows,
+  physics, alarm lifecycle, evaluation formulas, ground-truth isolation, negative cases and SQLite
+  integrity. Final result: **87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED** in
+  `validation_results.csv`.
+- **Two review-level WARNs are tracked separately** and are not rows in that CSV: light-leak
+  detection coverage and the reconstructed 1.x prompt record. They are explained in
+  [`docs/validation_report.md`](docs/validation_report.md) §10.
 - **20 SQL statements** in `sql/analysis_queries.sql` each declare `expect=nonempty` or
   `expect=zero_rows`. The runner executes them and fails on an unmet expectation. Final result:
-  20 PASS.
-- **61 pytest tests** cover IDs, generation, physics, detection lifecycle/grouping/mode suppression/
+  **20 PASS**.
+- **62 pytest tests** cover IDs, generation, physics, detection lifecycle/grouping/mode suppression/
   isolation, evaluation units and zero denominators, data integrity, scenarios, validation, SQL and
-  reproducibility. Final result: 61 passed.
+  reproducibility. Final result: **62 passed** in the main environment; **62 passed** in a fresh
+  virtual environment. The audit also fixed a pandas 3.1 fill-value deprecation warning and a
+  point-coverage counter that counted unobserved positive rows as observed; regression assertions
+  were added.
 
 ## Reproducibility
 
-For a fixed seed (`20261022`), configuration and scenario set, the deterministic artifacts are
-byte-identical. Two clean full/default runs produced identical:
+For a fixed seed (`20261022`), configuration, scenario set and dependency environment, the
+deterministic artifacts are byte-identical. Two fresh full/default runs executed after the audit
+fixes in the main environment produced identical:
 
 - master data (7 CSVs), telemetry, scenario definitions and ground truth;
 - alarms, alarm history and incidents;
@@ -342,18 +372,30 @@ comparison includes 19 artifacts and is recorded in
 absolute output paths, and `evaluation_metrics.csv` / `validation_results.csv` contain wall-clock
 timestamps, so those files are excluded from byte-level comparison. `run_manifest.json` hashes
 those timestamped/path-bearing files and therefore also differs; its per-file hashes for
-deterministic artifacts match.
+deterministic artifacts match. The two SQLite databases also matched logically: 19 schema tables
+(17 populated, plus the legacy empty `detection_results` and `equipment_state_events`), `integrity_check`
+`ok`, zero foreign-key violations, and identical populated rows after excluding the wall-clock
+`evaluated_at` / `validated_at` columns. A fresh evaluation-set run after the audit fixes reproduced
+the stored `alarms.csv`, `alarm_events.csv`, `alarm_incidents.csv`, `evaluation_events.csv`,
+`evaluation_metrics.json`, `evaluation_summary.md`, `simulation_metadata.json`, `simulation_runs.csv`
+and `sql_query_report.json` byte-for-byte. The 19/19 comparison is within the main environment;
+a fresh pandas 3.1.0 / NumPy 2.5.4 environment reproduced every metric and 17/19 artifacts, with
+`alarms.csv` and its SQL report differing only in a few `peak_value` floats at about `8e-13`.
 
 ## Limitations
 
 - Synthetic data and simplified hydraulics; results do not establish real-plant performance.
 - Rule-based detection only; no machine learning.
-- Light leak below the sensitivity floor is intentionally missed (`E-LEAK-01`).
+- Light leak (`E-LEAK-01`) is a documented corroboration/persistence sensitivity miss: its balance
+  residual is above the absolute floor, but the decline corroboration and 480 s persistence do not
+  both hold. It is retained, not tuned away.
 - Point false positives are episode tails after anomaly end; point false negatives include detection
   latency and the light leak.
 - Sensor-fault localization can be ambiguous between redundant level/pressure channels.
 - Event matching scores onset and category, not duration; point metrics expose duration/latency.
 - No real-time streaming or dashboard; batch CLI only.
+- Dependencies are lower-bounded, not upper-pinned; within one environment reruns are byte-identical,
+  while cross-version peak floats can differ at about `1e-13` without changing metrics.
 - SQLite is suitable for local analytics, not high-concurrency deployment.
 
 See [`docs/assumptions.md`](docs/assumptions.md) for the full list and interpretation guidance.
@@ -376,5 +418,7 @@ See [`docs/assumptions.md`](docs/assumptions.md) for the full list and interpret
 ## License and AI-Use Disclosure
 
 This is a synthetic project for evaluation purposes. AI prompt history, tool usage and
-implementation decisions are recorded in [`ai_usage/`](ai_usage/). The workspace was not pushed or
-published as part of the 2.0 work.
+implementation decisions are recorded in [`ai_usage/`](ai_usage/). The 2.0 implementation was
+committed as `6103e1a` and published to `origin/main` only after explicit authorization. The
+2026-10-27 audit corrections are recorded in a subsequent local commit; no force-push, shared-history
+rewrite, or further publication occurred.

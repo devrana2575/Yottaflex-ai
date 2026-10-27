@@ -68,8 +68,9 @@
 
 - **Synthetic only.** No real plant data; the results are not evidence of field performance.
 - **Simplified physics.** Not a validated digital twin and not suitable for safety-critical use.
-- **Light leak sensitivity floor.** `E-LEAK-01` at 1.5% capacity/hour is below the balance/decline
-  thresholds. It is intentionally reported as a miss rather than tuned away.
+- **Light leak sensitivity.** `E-LEAK-01` at 1.5% capacity/hour has a balance residual above the
+  absolute floor, but its 5-minute decline and persistence do not satisfy the RULE-006 corroboration
+  requirement. It is intentionally reported as a miss rather than tuned away.
 - **Point tails.** Point FP includes samples between physical recovery and episode resolution;
   point FN includes detection latency and any missed event.
 - **Sensor localization.** Redundant level/pressure disagreement cannot identify the faulty channel
@@ -77,9 +78,15 @@
 - **Latency asymmetry.** Sensor-fault allowance is one hour; process allowance is ten minutes.
 - **Runtime.** The full 316,800-row pipeline takes roughly 40-60 s on the audit machine; the
   99,000-row compact run takes roughly 20 s.
+- **Cross-environment float serialization.** Dependencies are lower-bounded, not upper-pinned.
+  Same-environment reruns are byte-identical; a pandas 3.1.0 / NumPy 2.5.4 clean environment
+  reproduced all metrics and 17/19 artifacts, with two files differing only in `peak_value` floats
+  at about `1e-13`.
 - **SQLite.** Suitable for local analytics, not high-concurrency or very large-scale deployment.
 - **No real-time or dashboard.** Batch CLI only; the optional dashboard remains unimplemented.
-- **No GitHub publication.** The workspace was not committed or pushed as part of this task.
+- **Publication status.** The 2.0 implementation was committed as `6103e1a` and published to
+  `origin/main` only after explicit authorization. The 2026-10-27 audit corrections remain in a
+  local commit; no force-push or history rewrite was performed.
 
 ## Interpretation guidance
 

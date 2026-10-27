@@ -423,6 +423,9 @@ def test_missing_measurements_are_excluded_from_point_denominator():
     point = result["point_level"]
     assert point["positive_rows"] == 2
     assert point["unobserved_labelled_rows"] == 1
+    assert point["positive_rows_observed"] == 2
+    assert point["positive_rows_expected"] == 3.0
+    assert point["positive_row_coverage"] == pytest.approx(2.0 / 3.0)
     assert point["confusion_matrix"]["false_negatives"] == 2
 
 

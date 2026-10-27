@@ -7,13 +7,18 @@ in [`baseline_findings.md`](baseline_findings.md).
 ## 1. Setup
 
 ```bash
-cd D:\PROJECTS\yottaflex
+cd <repository-root>
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Linux/macOS:      source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install -e .
 yottaflex --version
 ```
 
-Expected version: `2.0.0`. Python 3.11+ is required; all reported runs used Python 3.14.4.
+Expected version: `2.0.0`. Python 3.11+ is required; all reported runs used Python 3.14.4. A fresh
+virtual environment (pandas 3.1.0 / NumPy 2.5.4) was verified during the audit.
 
 ## 2. Recommended Runs
 
@@ -21,22 +26,22 @@ Use a fresh output directory for each run.
 
 ```bash
 # Required full volume: 316,800 rows
-yottaflex pipeline --mode full --seed 20261022 --output-dir data/processed/full-run
+yottaflex pipeline --mode full --seed 20261022 --output-dir <fresh-output-dir>/full-run
 
 # Independent evaluation set: 316,740 rows (60 labelled missing rows)
 yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation \
-  --output-dir data/processed/evaluation-run
+  --output-dir <fresh-output-dir>/evaluation-run
 
 # Calibration set: different windows/equipment/severities
 yottaflex pipeline --mode full --seed 20261022 --scenario-set calibration \
-  --output-dir data/processed/calibration-run
+  --output-dir <fresh-output-dir>/calibration-run
 
 # ~100,000-row configuration: 99,000 rows
 yottaflex pipeline --mode full --seed 20261022 --scenario-set compact --duration 7.5 \
-  --output-dir data/processed/compact-run
+  --output-dir <fresh-output-dir>/compact-run
 
 # Small end-to-end run: 51,840 rows
-yottaflex pipeline --mode starter --seed 20261022 --output-dir data/processed/starter-run
+yottaflex pipeline --mode starter --seed 20261022 --output-dir <fresh-output-dir>/starter-run
 ```
 
 `pipeline` runs generate, simulate, detect, evaluate, validate, SQLite export and SQL checks. If a
@@ -45,13 +50,13 @@ step fails, the CLI exits non-zero; do not treat a partial directory as evidence
 Individual steps (same output directory):
 
 ```bash
-yottaflex generate   --mode full --seed 20261022 --output-dir data/processed/full-run
-yottaflex simulate   --mode full --seed 20261022 --duration 24 --output-dir data/processed/full-run
-yottaflex detect     --output-dir data/processed/full-run
-yottaflex evaluate   --output-dir data/processed/full-run
-yottaflex validate   --output-dir data/processed/full-run
-yottaflex export-sql --output-dir data/processed/full-run
-yottaflex run-sql    --output-dir data/processed/full-run --sql-file sql/analysis_queries.sql
+yottaflex generate   --mode full --seed 20261022 --output-dir <fresh-output-dir>/full-run
+yottaflex simulate   --mode full --seed 20261022 --duration 24 --output-dir <fresh-output-dir>/full-run
+yottaflex detect     --output-dir <fresh-output-dir>/full-run
+yottaflex evaluate   --output-dir <fresh-output-dir>/full-run
+yottaflex validate   --output-dir <fresh-output-dir>/full-run
+yottaflex export-sql --output-dir <fresh-output-dir>/full-run
+yottaflex run-sql    --output-dir <fresh-output-dir>/full-run --sql-file sql/analysis_queries.sql
 ```
 
 Tests:
@@ -175,19 +180,23 @@ raw alarm-row FP; it was not an event or point metric.
 Evaluation set details:
 
 - The only missed event is the 1.5% of capacity/hour light leak (`GT-000001`, matrix label
-  `E-LEAK-01`), below the balance/decline sensitivity floor.
+  `E-LEAK-01`). Its balance residual is above the absolute floor, but the 5-minute decline
+  corroboration and 480 s persistence do not both hold; it is a documented sensitivity miss, not a
+  balance-floor failure.
 - All 8 NORMAL windows were alarm-free at the incident level.
 - The 10 point false positives are 1-5 sample episode tails after events end. They are retained.
 - The 2 unknown predictions at SNS-003 11:00-11:01 are excluded and reported, not counted as FP.
 - Sensor-fault latency is longer (60-3,180 s) than process latency (240-360 s), by design.
-- All 87 validation checks, 20 SQL assertions and 61 tests pass.
+- All 87 executable validation rows, 20 SQL assertions and 62 tests pass. The two review-level
+  WARNs (light leak and reconstructed 1.x prompt) are tracked separately in the validation report;
+  they are not rows in the 87-row validation CSV.
 
 ## 9. Verification and Evidence
 
 ```bash
 python -m pytest -q
-yottaflex validate --output-dir data/processed/evaluation-run
-yottaflex run-sql --output-dir data/processed/evaluation-run \
+yottaflex validate --output-dir <fresh-output-dir>/evaluation-run
+yottaflex run-sql --output-dir <fresh-output-dir>/evaluation-run \
   --sql-file sql/analysis_queries.sql
 ```
 
@@ -200,9 +209,12 @@ Evidence:
   comparison.
 - [`reports/final/yf2-evaluation/`](../reports/final/yf2-evaluation/) — compact evaluation evidence.
 
-Two clean full/default runs produced 19 byte-identical deterministic artifacts and the same
-path-independent configuration hash (`d422f3bbee3dcadc`). `config.json` paths and wall-clock columns
-are expected to differ.
+Two fresh full/default audit runs after the fixes in the main environment produced 19 byte-identical
+deterministic artifacts and the same path-independent configuration hash (`d422f3bbee3dcadc`). The two SQLite databases also
+matched logically (19 schema tables, 17 populated; identical rows after excluding wall-clock
+`evaluated_at` / `validated_at`). `config.json` paths and wall-clock columns are expected to differ.
+A fresh pandas 3.1.0 / NumPy 2.5.4 environment reproduced all metrics and 17/19 artifacts; two files
+differed only in `peak_value` floats at about `1e-13` because dependencies are lower-bounded.
 
 ## 10. The Five Original Negative Tests and the Two Executable Guards
 
@@ -237,7 +249,8 @@ sensor fault, not a process fault).
 
 - Synthetic, simplified hydraulics; not a validated digital twin.
 - Rule-based detection only; no ML.
-- Light leak below the sensitivity floor is intentionally missed.
+- Light leak is a corroboration/persistence sensitivity miss; its balance residual is above the
+  absolute floor, but decline corroboration and 480 s persistence do not both hold.
 - Point false positives are episode tails; point false negatives include activation latency.
 - Sensor-fault localization can be ambiguous between redundant channels.
 - Event matching scores onset/category, not duration; point metrics carry duration/latency.

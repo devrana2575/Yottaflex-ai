@@ -1,13 +1,17 @@
 # Validation Report (YottaFlex 2.0.0)
 
-**Status:** PASS with one documented detection-coverage WARN (light leak sensitivity) and one
-documentation WARN (the original task prompt was reconstructed, not retained verbatim).
+**Status:** PASS with two review-level WARNs: the light-leak coverage limitation and the
+reconstructed 1.x prompt record. The executable validation CSV is **87 PASS, 0 FAIL, 0 WARN,
+0 NOT_IMPLEMENTED**; the two WARNs are not rows in that CSV and are not added to its denominator.
 
-**Date:** 2026-10-27  
-**Environment:** Python 3.14.4, pytest 9.1.1, Windows 11, seed `20261022`, 60 s cadence  
-**Repository state:** commit `f4b3f75` plus the uncommitted 2.0 changes; no push or publication  
-**Primary evidence:** clean run directories `yf2-evaluation`, `yf2-calibration`, `yf2-full`,
-`yf2-starter`, `yf2-100k`, `yf2-repro` (compact copies in `reports/final/`)
+- **Date:** 2026-10-27 (submission-readiness audit re-verification)
+- **Environment:** Main environment Python 3.14.4, pandas 3.0.3, NumPy 2.4.6, pytest 9.1.1, Windows 11;
+  fresh virtual environment Python 3.14.4, pandas 3.1.0, NumPy 2.5.4; seed `20261022`, 60 s cadence
+- **Repository state:** 2.0 commit `6103e1a` is on `origin/main`; the 2026-10-27 audit corrections are
+  in a subsequent local commit only. No force-push, history rewrite, or unauthorized publication occurred.
+- **Primary evidence:** clean run directories `yf2-evaluation`, `yf2-calibration`, `yf2-full`,
+  `yf2-starter`, `yf2-100k`, `yf2-repro` (compact copies in `reports/final/`), plus fresh audit re-runs
+  outside the repository. Absolute local paths in copied evidence are redacted as described in §12.
 
 ## 1. Executive Summary
 
@@ -25,14 +29,20 @@ two independent units:
 The primary independent evaluation set contains 11 positive events and 8 explicit NORMAL windows.
 Final result: **TP=10, FN=1, FP=0** at event level (precision `1.0000`, recall `0.9091`, F1
 `0.9524`) and **TP=844, FP=10, TN=112,190, FN=206** at point level (precision `0.9883`, recall
-`0.8038`, F1 `0.8866`). The only missed event is the `1.5% of capacity/hour` light leak, which is
-below the documented balance/decline sensitivity floor. All 8 NORMAL windows were alarm-free at the
-incident level. The 10 point false positives are short episode tails after anomalies end; they are
-retained and reported, not suppressed.
+`0.8038`, F1 `0.8866`). The only missed event is the `1.5% of capacity/hour` light leak. Its
+10-minute balance residual is above the absolute `5 m3/h` floor (median `8.32 m3/h`; 82/90 samples
+above it), but the 5-minute level decline is only `-0.131 pp` median, just below the `0.15 pp`
+corroboration trigger. The longest corroborated run was `300 s` and the longest
+active-without-corroboration run was `420 s`, both below the `480 s` persistence requirement;
+RULE-002's `0.30 pp` trigger did not fire for this event. The miss is therefore a corroboration/persistence
+sensitivity limit, not a balance-floor failure, and is retained. All 8 NORMAL windows were
+alarm-free at the incident level. The 10 point false positives are short episode tails after
+anomalies end; they are retained and reported, not suppressed.
 
-All 87 validation checks, all 20 SQL assertions and all 61 tests pass. Two clean full/default runs
-produced 19 byte-identical deterministic artifacts, and the path-independent configuration hash
-matched.
+All 87 executable validation rows pass, all 20 SQL assertions pass, and all 62 tests pass. The two
+review-level WARNs are tracked separately: light-leak coverage and the reconstructed 1.x prompt
+record. Two fresh full/default runs after the audit fixes produced 19 byte-identical deterministic
+artifacts, and the path-independent configuration hash matched.
 
 ## 2. Controls and Evidence Rules
 
@@ -41,7 +51,9 @@ matched.
 - **Same seed and cadence.** All reported runs use seed `20261022` and 60 s sampling.
 - **Ground truth isolated.** The detector selects only sensor ID, timestamp, measured value, quality
   status, operating mode and master metadata. Validation poisons scenario/ground-truth/physical
-  columns and confirms detector output is unchanged.
+  columns and confirms detector output is unchanged. Because the built-in three-hour poison slice
+  happened to produce zero alarms, the audit also poisoned a four-hour 08:00-12:00 slice (52,800
+  rows) that produced three alarms; clean and poisoned runs had identical alarm records.
 - **No alarm suppression.** Every episode is written. Evaluation classifies all incidents, including
   false alarms and unknowns.
 - **No denominator manipulation.** Event false positives are unmatched incidents. Unknown samples
@@ -147,8 +159,11 @@ latency because the event was missed.
 | GT-000011 | SENSOR_FAULT (missing) | medium | TANK-002 | SNS-019 | 21:00-22:00 | DETECTED | 60 s | 0 / 0 |
 
 The missed event is the scenario-matrix label `E-LEAK-01` (CSV row `GT-000001`), a 1.5% of
-capacity/hour leak. It is below the `max(5 m3/h, 8%)` balance floor and below the 0.30 pp / 5 min
-decline threshold. It is retained as a documented sensitivity limit rather than tuned away on the
+capacity/hour leak. Its 10-minute residual median is `8.32 m3/h` (82/90 samples above the absolute
+`5 m3/h` floor), but the 5-minute decline median is `-0.131 pp`, below the `0.15 pp` corroboration
+trigger; the longest corroborated run is `300 s` and the longest active-without-corroboration run is
+`420 s`, both below `480 s` persistence. RULE-002's `0.30 pp` trigger did not fire for this event. It is retained as
+a documented corroboration/persistence sensitivity limitation rather than tuned away on the
 evaluation set.
 
 The missing-sensor event removes all 60 expected samples, so there are no observed point rows to
@@ -204,7 +219,7 @@ These are one to five samples per tail. They are not event false alarms and are 
 
 | Cause | FN |
 |---|---:|
-| Light leak below sensitivity floor (GT-000001) | 90 |
+| Light leak (corroboration/persistence sensitivity; GT-000001) | 90 |
 | Process-event onset latency | 30 |
 | Sensor bias onset latency | 3 |
 | Sensor drift onset latency | 53 |
@@ -258,7 +273,8 @@ changed after the evaluation run was inspected.
 
 ### 7.1 Validation checks
 
-Final validation result (all five final runs): **87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED**.
+Final executable validation result (all five final runs): **87 PASS, 0 FAIL, 0 WARN,
+0 NOT_IMPLEMENTED**. The two review-level WARNs in §10 are not rows in this CSV.
 
 | Validation type | Checks | Status |
 |---|---:|---|
@@ -282,6 +298,13 @@ The 16 evaluation checks include event/point separation, denominator/formula che
 accounting, one-to-one matching, sensor/process separation, point label consistency, unknown
 exclusion and an executable zero-denominator case. The 3 isolation checks include a poison test
 that confirms detector output is unchanged when ground-truth/scenario/physical columns are altered.
+The built-in three-hour slice produced zero alarms, so the audit additionally re-ran the poison
+comparison on a four-hour slice with three alarms; the outputs were identical.
+
+The two `NEGATIVE` rows in the CSV are the extended controls `NEG-006` (duplicate alarm rows do not
+create duplicate event TPs) and `NEG-007` (an implausible flow reading is a sensor fault, not a
+process fault). The five original negative controls (`NEG-001` to `NEG-005`) are exercised by
+`tests/test_negative_scenarios.py`; they are part of the 62-test suite, not the 87-row CSV.
 
 ### 7.2 SQL analytics
 
@@ -311,20 +334,29 @@ database in every final run: **20 PASS, 0 FAIL**.
 | 19 | SQLite foreign-key violations | zero_rows | PASS, 0 rows |
 | 20 | SQLite integrity check | nonempty | PASS, 1 row |
 
-The SQLite export contains 17 tables, passes `PRAGMA integrity_check`, and has an empty
-`PRAGMA foreign_key_check`. Row counts match the CSV artifacts.
+The SQLite export writes 17 populated tables into a 19-table schema; the legacy
+`detection_results` and `equipment_state_events` tables are empty. The database passes
+`PRAGMA integrity_check`, has an empty `PRAGMA foreign_key_check`, and its exported row counts match
+the CSV artifacts. The join-bearing queries were reviewed and executed: Q3 left-joins alarms to
+sensors/facilities without dropping equipment-level alarms, Q5/Q6 aggregate the relevant
+tank/pump sensors to equipment, Q7 left-joins event evaluation to ground truth, Q13 checks that
+matched incidents have evaluation rows, and Q17 joins physical telemetry to tank metadata. No
+join fan-out or unexpected null-facility rows were observed in the final evaluation database.
 
 ### 7.3 Test suite
 
-`python -m pytest -q` → **61 passed in 90.17 s** on the final re-run. The original 11 tests are
-retained; 50 targeted tests were added for detection lifecycle/grouping/mode suppression/isolation,
-evaluation units and edge cases, data integrity, scenario injection, validation/SQL and
-integration/reproducibility.
+`python -m pytest -q` → **62 passed in 89.37 s** in the final main-environment run. The same suite
+under the fresh virtual environment (pandas 3.1.0 / NumPy 2.5.4) → **62 passed in 77.07 s** with no
+warnings. The original 11 tests are retained; 51 targeted tests were added for detection
+lifecycle/grouping/mode suppression/isolation, evaluation units and edge cases, data integrity,
+scenario injection, validation/SQL and integration/reproducibility. The audit fixes are covered by
+the updated point-coverage assertions and a missing-operating-mode regression test that treats
+pandas deprecation warnings as errors.
 
 ## 8. Reproducibility
 
-Two clean full/default runs (`yf2-full` and `yf2-repro`) were compared. **19 of 19 deterministic
-artifacts were byte-identical**, including:
+Two fresh full/default audit runs after the source fixes (`audit A` and `audit B`, external temp
+directories) were compared. **19 of 19 deterministic artifacts were byte-identical**, including:
 
 - 7 master-data CSVs: facilities, pumps, tanks, valves, pipes, sensors, operating modes;
 - telemetry, scenario definitions and ground truth;
@@ -343,7 +375,22 @@ Key hashes (identical in both runs):
 | `evaluation_metrics.json` | `66284142f8144dcc59ea3c2605a0f7622b2e98b280a73732f34f18feea282e7a` |
 
 The path-independent configuration hash is identical: `d422f3bbee3dcadc`. Telemetry row counts are
-316,800 in both runs.
+316,800 in both runs. The two SQLite databases matched logically: 19 schema tables, 17 populated
+plus the legacy empty `detection_results` and `equipment_state_events`; `PRAGMA integrity_check`
+returned `ok`, `PRAGMA foreign_key_check` returned no rows, and all populated table rows were
+identical after excluding the wall-clock `evaluation_metrics.evaluated_at` and
+`validation_results.validated_at` columns. A fresh post-fix evaluation-set run reproduced the stored
+`alarms.csv`, `alarm_events.csv`, `alarm_incidents.csv`, `evaluation_events.csv`,
+`evaluation_metrics.json`, `evaluation_summary.md`, `simulation_metadata.json`, `simulation_runs.csv`
+and `sql_query_report.json` byte-for-byte.
+
+**Cross-environment note:** The 19/19 byte comparison above is within one environment (main
+environment: pandas 3.0.3 / NumPy 2.4.6). A fresh virtual environment (pandas 3.1.0 / NumPy 2.5.4)
+reproduced all evaluation metrics, events, incidents and 17 of 19 artifacts exactly; `alarms.csv`
+and `sql_query_report.json` differed only in a few `peak_value` floats at about `8e-13` (maximum
+observed difference), caused by dependency-version floating-point serialization. Dependencies are
+lower-bounded rather than upper-pinned; this is a documented cross-environment caveat, not seed
+nondeterminism or a metrics difference.
 
 Files excluded from byte-level comparison:
 
@@ -371,7 +418,7 @@ Machine-readable evidence:
 | Telemetry, evaluation | 316,740 (60 labelled rows removed) | 316,740 | PASS |
 | Duplicate `(sensor, timestamp)` samples | 0 | 0 | PASS |
 | Unlabelled gaps in window coverage | 0 | 0 | PASS |
-| SQLite tables exported | 17 | 17 | PASS |
+| SQLite populated tables / schema tables | 17 / 19 | 17 / 19 (2 legacy empty) | PASS |
 | SQLite integrity / FK violations | ok / 0 | ok / 0 | PASS |
 
 Sensor composition was verified by validation: every pump has discharge flow and pressure; every
@@ -379,7 +426,9 @@ tank has level, pressure, inlet flow and outlet flow; every valve has through fl
 is preserved at 220 by using one valve flow sensor and four physically necessary tank sensors.
 
 Telemetry contains no scenario/ground-truth/expected-label columns. Alarms carry no `scenario_id`.
-Detector isolation is proven by the poison test, not only by inspecting column lists.
+Detector isolation was checked both by column inspection and by poisoning label/physical columns.
+The built-in three-hour slice produced no alarms, so the audit repeated the check on a four-hour,
+52,800-row slice with three alarms; clean and poisoned output was identical.
 
 ## 10. Requirement Matrix
 
@@ -394,18 +443,23 @@ Detector isolation is proven by the poison test, not only by inspecting column l
 | Calibration and evaluation scenario sets; deterministic seeds; no overfitting | `calibration` and `evaluation` sets differ; seed 20261022; `reports/final/summary.json` | Calibration 7/7 events; evaluation 10/11; no shared windows | PASS |
 | Ground truth isolated from detector inputs | `DETECTOR-ISOLATION` poison test; `TELEMETRY-NO-GROUND-TRUTH`; `ALARM-NO-SCENARIO-ID` | Output unchanged under poisoned label columns | PASS |
 | Sensor faults not automatically classified as process faults; uncertainty reported | RULE-006U `UNCERTAIN`; RULE-010 `REDUNDANCY_AMBIGUOUS`; category matching; 4/4 sensor events | Sensor faults detected as sensor faults; ambiguous attribution disclosed | PASS |
-| Preserve existing tests and add targeted tests | Original 11 tests retained; 50 added; `python -m pytest -q` | 61 passed | PASS |
+| Preserve existing tests and add targeted tests | Original 11 tests retained; 51 added; `python -m pytest -q` | 62 passed in both main and fresh environments | PASS |
 | 3 facilities, 20 pumps, 30 tanks, 60 valves | Master counts; `MASTER-SCALE`, `SENSOR-COUNT`; `reports/final/summary.json` | Exact counts reproduced | PASS |
 | ~100,000-row configuration while retaining 316,800-row full volume | `--scenario-set compact --duration 7.5`; 99,000 rows; default full 316,800 | Both volumes verified | PASS |
 | Run all SQL queries and validate actual results | `sql_query_report.json` for every run; 20 declared expectations; SQLite export | 20/20 PASS; zero-row assertions return 0 | PASS |
 | Machine-readable and readable reports with PASS/FAIL/WARN/NOT_IMPLEMENTED | `validation_results.csv`, `evaluation_metrics.json/csv`, `sql_query_report.json`, `evaluation_summary.md`, `reports/final/summary.json` | Reports generated and copied to `reports/final/` | PASS |
+| Clean install, packaging, CLI and database initialization | Fresh venv: `pip install -r requirements.txt`, `pip install -e .`, `yottaflex --version` 2.0.0, full/evaluation pipeline, SQLite integrity | 62 tests and pipeline passed under pandas 3.1.0 / NumPy 2.5.4 | PASS |
+| Reproducibility after the audit fixes | Two fresh full/default runs in the main environment; `reports/final/reproducibility.json`; DB logical comparison | 19/19 artifacts byte-identical within the environment; fresh pandas 3.1 env matched all metrics and 17/19 (last-bit peak floats); 17 populated tables logically identical except wall-clock columns | PASS |
+| Observed-only point coverage | `tests/test_evaluation.py::test_missing_measurements_are_excluded_from_point_denominator`; `positive_rows_observed` excludes missing quality/null measurements | Coverage counts 2 of 3 expected positive rows, not 3 of 3 | PASS |
+| Secrets, personal information and large-file review | Tracked-file scan; absolute path redaction in copied evidence; no credential/token/private-key hits | No tracked file over 1 MB; local paths redacted without changing metrics; original config hashes retained in manifests and redaction mismatch documented | PASS |
 | Update README and create methodology/validation/decision documents | `README.md`, `docs/detection_methodology.md`, `docs/evaluation_methodology.md`, `docs/validation_report.md`, `docs/implementation_decisions.md` | All present and linked | PASS |
-| Record complete task prompt in AI prompt history | `ai_usage/prompt_history.md` | Session brief reconstructed in detail; original verbatim text was not retained, so marked as reconstructed | WARN |
-| Do not push or publish to GitHub | `git remote -v` exists; no push/commit performed; all changes remain uncommitted | No publication | PASS |
-| Detection coverage on independent evaluation set | 11 events; 1 light-leak miss; event recall 0.9091 | Documented sensitivity floor, not hidden or tuned away | WARN |
+| Record complete task prompt in AI prompt history | `ai_usage/prompt_history.md` | 2026-10-27 audit prompt recorded verbatim; the earlier 1.x/2.0 implementation prompt was not retained verbatim, so its brief is explicitly marked reconstructed | WARN |
+| Do not push/publish without explicit authorization | 2.0 commit `6103e1a` on `origin/main` after explicit user authorization; 2026-10-27 audit corrections remain local; no force-push/history rewrite | No unauthorized publication | PASS |
+| Detection coverage on independent evaluation set | 11 events; 1 light-leak miss; residual above absolute floor but corroboration/persistence fails; event recall 0.9091 | Documented sensitivity limitation, not hidden or tuned away | WARN |
 
-Overall status: **PASS with two WARN items** — the light-leak sensitivity floor and the reconstructed
-prompt record. Neither is a fabricated success; both are explicit limitations.
+Overall status: **PASS with two review WARNs** — light-leak coverage and the reconstructed 1.x
+prompt record. These are not rows in the executable validation CSV and are not merged into its
+87-row denominator. Neither is a fabricated success; both are explicit limitations.
 
 ## 11. Interpretation and Limitations
 
@@ -420,11 +474,20 @@ prompt record. Neither is a fabricated success; both are explicit limitations.
   is meant to expose.
 - Sensor-fault latency is longer than process latency by design. A stuck sensor needs 30 minutes of
   evidence; a 3,600 s matching allowance reflects that, not leniency in counting.
-- The light leak is below the physical sensitivity floor. Lowering thresholds until it was detected
-  would be evaluation-set tuning and would likely increase false alarms.
+- The light leak's 10-minute residual is above the absolute `5 m3/h` floor, but the `0.15 pp`
+  decline corroboration and `480 s` persistence are not both met; RULE-002's `0.30 pp` trigger did
+  not fire for this event. Lowering thresholds until it was detected would be evaluation-set tuning and would
+  likely increase false alarms.
+- Point coverage now counts only observed positive rows. Missing/null measurements are excluded from
+  both the point denominators and the coverage numerator. The audit fix did not change the final
+  evaluation metrics because the missing-sensor scenario removes rows and the remaining labelled
+  rows are observed.
 - Sensor-fault localization can be ambiguous between level and pressure. The detector reports the
   ambiguity instead of asserting a specific faulty device.
 - The simulator is synthetic and simplified. These results do not establish real-plant performance.
+- Dependencies are lower-bounded, not upper-pinned. Within one environment, reruns are byte-identical;
+  across pandas/NumPy versions, peak floats can differ at about `1e-13` while all metrics and
+  classifications remain identical.
 - The original verbatim task prompt was not retained in the conversation record; the prompt history
   contains a detailed reconstruction and says so explicitly.
 
@@ -433,45 +496,62 @@ prompt record. Neither is a fabricated success; both are explicit limitations.
 From the repository root (PowerShell or bash; use a fresh output directory each time):
 
 ```bash
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Linux/macOS:      source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install -e .
+yottaflex --version
 
 # Default full run (316,800 rows)
-yottaflex pipeline --mode full --seed 20261022 --output-dir data/processed/full-run
+yottaflex pipeline --mode full --seed 20261022 --output-dir <fresh-output-dir>/full-run
 
 # Independent evaluation set (316,740 rows; 60 labelled missing rows)
 yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation \
-  --output-dir data/processed/evaluation-run
+  --output-dir <fresh-output-dir>/evaluation-run
 
 # Calibration set
 yottaflex pipeline --mode full --seed 20261022 --scenario-set calibration \
-  --output-dir data/processed/calibration-run
+  --output-dir <fresh-output-dir>/calibration-run
 
 # ~100,000-row compact configuration
 yottaflex pipeline --mode full --seed 20261022 --scenario-set compact --duration 7.5 \
-  --output-dir data/processed/compact-run
+  --output-dir <fresh-output-dir>/compact-run
 
 # Tests, validation, SQL
 python -m pytest -q
-yottaflex validate --output-dir data/processed/evaluation-run
-yottaflex run-sql --output-dir data/processed/evaluation-run \
+yottaflex validate --output-dir <fresh-output-dir>/evaluation-run
+yottaflex run-sql --output-dir <fresh-output-dir>/evaluation-run \
   --sql-file sql/analysis_queries.sql
 
 # Reproducibility: run the full/default pipeline twice and compare
-yottaflex pipeline --mode full --seed 20261022 --output-dir data/processed/repro-a
-yottaflex pipeline --mode full --seed 20261022 --output-dir data/processed/repro-b
+yottaflex pipeline --mode full --seed 20261022 --output-dir <fresh-output-dir>/repro-a
+yottaflex pipeline --mode full --seed 20261022 --output-dir <fresh-output-dir>/repro-b
 ```
 
-The independent comparison for this report used `yf2-full` and `yf2-repro` and is recorded in
-`reports/final/reproducibility.json`. Absolute paths in `config.json` and wall-clock fields in the
-timestamped CSVs are expected to differ between directories.
+The independent post-fix comparison used two external audit runs (`audit A` / `audit B`) and is
+recorded in `reports/final/reproducibility.json`; the stored `yf2-full` and `yf2-repro` evidence has
+the same deterministic hashes. Absolute paths in `config.json` and wall-clock fields in the
+timestamped CSVs are expected to differ between directories. A fresh virtual environment installed
+package metadata version `2.0.0`; the audit also refreshed the main environment's stale editable
+metadata from `1.0.0` to `2.0.0`.
+
+**Privacy redaction:** absolute local-path strings in copied evidence (`baseline_tests.txt`,
+`reports/final/reproducibility.json`, and the six `reports/final/yf2-*/config.json` and
+`pipeline.log` files) were replaced with neutral labels (`<external-temp>` / `<local-user>`). No
+reported metric, row count, status or log message was changed, and the path-independent
+configuration hash is unaffected. The redacted `config.json` copies no longer match the original
+`config.json` SHA-256 entries in their `run_manifest.json`; those original entries are retained and
+the difference is due solely to path redaction. No credentials, tokens, private keys or files over
+1 MB were found in tracked files.
 
 ## 13. Artifact Index
 
 | Artifact | Contents |
 |---|---|
 | `reports/final/summary.json` | Machine-readable metrics for all five final runs |
-| `reports/final/reproducibility.json` | 19-file hash comparison and config hashes |
+| `reports/final/reproducibility.json` | 19-file hash comparison, config hashes and DB logical comparison |
 | `reports/final/yf2-evaluation/evaluation_metrics.json` | Full nested evaluation result |
 | `reports/final/yf2-evaluation/evaluation_events.csv` | Per-event outcome/latency |
 | `reports/final/yf2-evaluation/alarm_incidents.csv` | Incident membership/classification |

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import warnings
+
 import pandas as pd
 
 from yottaflex.config import Config
@@ -137,6 +139,56 @@ def test_missing_rows_raise_sensor_gap_alarm():
     assert len(gap) == 1
     assert gap.iloc[0]["alarm_category"] == SENSOR_FAULT
     assert gap.iloc[0]["sensor_id"] == "SNS-001"
+
+
+def test_missing_mode_defaults_to_normal_without_deprecation_warning():
+    config = Config()
+    sensors = pd.DataFrame(
+        [
+            {
+                "sensor_id": "SNS-001",
+                "facility_id": "FAC-001",
+                "equipment_id": "PUMP-001",
+                "equipment_type": "PUMP",
+                "sensor_type": "FLOW",
+                "sensor_role": "discharge",
+                "measurement_unit": "m3/h",
+                "accuracy_tolerance": 1.0,
+                "sampling_interval_seconds": 60,
+                "lifecycle_state": "ACTIVE",
+            }
+        ]
+    )
+    pumps = pd.DataFrame(
+        [
+            {
+                "pump_id": "PUMP-001",
+                "facility_id": "FAC-001",
+                "nominal_flow_m3_h": 100.0,
+                "nominal_head_m": 50.0,
+            }
+        ]
+    )
+    telemetry = pd.DataFrame(
+        [
+            {
+                "sensor_id": "SNS-001",
+                "timestamp": "2026-01-01T00:00:00",
+                "measured_value": 90.0,
+                "quality_status": "GOOD",
+                "operating_mode_id": float("nan"),
+            }
+        ]
+    )
+    engine = DetectionEngine(
+        config,
+        {"sensors": sensors, "pumps": pumps, "tanks": pd.DataFrame()},
+        IDGenerator(),
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        frame = engine._frame("SNS-001", telemetry)
+    assert frame["mode"].tolist() == ["NORMAL"]
 
 
 def test_detector_ignores_ground_truth_columns(pipeline_dir):

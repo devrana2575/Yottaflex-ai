@@ -1,15 +1,15 @@
 YottaFlex pipeline: full / calibration
 Master data: 3 facilities, 20 pumps, 30 tanks, 60 valves, 220 sensors
-Telemetry: 316,740 rows (220 sensors x 1440 samples); scenarios: 15 windows 
+Telemetry: 316,740 rows (220 sensors x 1440 samples); scenarios: 15 windows
 ({'BLOCKAGE': 1, 'LEAK': 1, 'NORMAL': 8, 'PUMP_DEGRADATION': 1, 'SENSOR_FAULT':
 4})
-Alarms: 10 episodes ({'PROCESS_FAULT': 6, 'SENSOR_FAULT': 4}); history events: 
+Alarms: 10 episodes ({'PROCESS_FAULT': 6, 'SENSOR_FAULT': 4}); history events:
 20
 Event level: TP=7 FN=0 FP=0 precision=1.0000 recall=1.0000 F1=1.0000
 Point level: TP=508 FP=7 TN=171593 FN=92 precision=0.9864 recall=0.8467
-SQLite: C:\Users\ASUS\AppData\Local\Temp\opencode\yf2-calibration\yottaflex.db 
+SQLite: <external-temp>\yf2-calibration\yottaflex.db
 (integrity ok, 17 tables exported)
-    Validation Summary     
+    Validation Summary
 +-------------------------+
 | Status          | Count |
 |-----------------+-------|
@@ -18,8 +18,8 @@ SQLite: C:\Users\ASUS\AppData\Local\Temp\opencode\yf2-calibration\yottaflex.db
 | WARN            |     0 |
 | NOT_IMPLEMENTED |     0 |
 +-------------------------+
-SQLite: C:\Users\ASUS\AppData\Local\Temp\opencode\yf2-calibration\yottaflex.db 
+SQLite: <external-temp>\yf2-calibration\yottaflex.db
 (integrity ok, 17 tables exported)
-SQL: 20 statements, 20 passed, 0 failed; report: 
-C:\Users\ASUS\AppData\Local\Temp\opencode\yf2-calibration\sql_query_report.json
-Pipeline complete: C:\Users\ASUS\AppData\Local\Temp\opencode\yf2-calibration
+SQL: 20 statements, 20 passed, 0 failed; report:
+<external-temp>\yf2-calibration\sql_query_report.json
+Pipeline complete: <external-temp>\yf2-calibration

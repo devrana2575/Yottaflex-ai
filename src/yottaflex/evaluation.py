@@ -392,6 +392,16 @@ class Evaluator:
         frame["label"] = None
         frame["label_category"] = None
 
+        # A labelled row is only observed if its measurement is present and
+        # its quality status is not MISSING. Keep this mask separate from the
+        # labels so coverage counts observed positive samples, not merely rows
+        # whose timestamps fall inside a positive window.
+        observed_mask = pd.Series(True, index=frame.index)
+        if "measured_value" in frame:
+            observed_mask &= pd.to_numeric(frame["measured_value"], errors="coerce").notna()
+        if "quality_status" in frame:
+            observed_mask &= frame["quality_status"].fillna("MISSING") != "MISSING"
+
         for event in normals:
             mask = (frame["ts"] >= event.start) & (frame["ts"] < event.end)
             frame.loc[mask & frame["label"].isna(), "label"] = NEGATIVE
@@ -415,7 +425,7 @@ class Evaluator:
             )
             frame.loc[mask, "label"] = POSITIVE
             frame.loc[mask, "label_category"] = event.expected_category
-            positive_rows_observed += int(mask.sum())
+            positive_rows_observed += int((mask & observed_mask).sum())
 
         # Predictions: every alarm episode covers its sensor's sample range.
         for column in ("pred_any", "pred_process", "pred_sensor", "pred_uncertain"):
@@ -437,11 +447,7 @@ class Evaluator:
             elif category == UNCERTAIN:
                 frame.loc[mask, "pred_uncertain"] = True
 
-        observed = frame["label"].notna()
-        if "measured_value" in frame:
-            observed &= pd.to_numeric(frame["measured_value"], errors="coerce").notna()
-        if "quality_status" in frame:
-            observed &= frame["quality_status"].fillna("MISSING") != "MISSING"
+        observed = frame["label"].notna() & observed_mask
         unknown_predictions = int(
             (frame["label"].isna() & frame["pred_any"]).sum()
         )
