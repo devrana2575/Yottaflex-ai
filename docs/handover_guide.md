@@ -244,7 +244,7 @@ configuration hash (`d422f3bbee3dcadc`); at that time 17 tables were populated. 
 metrics; 19/23 artifacts were byte-identical, with three timestamp-only differences and one
 last-bit float report difference. The prior full/default clean-environment comparison remains
 17/19 artifacts with two files differing only in `peak_value` floats at about `1e-13`. The
-full/default and evaluation pipelines were not repeated in the 2026-10-28 clean environment.
+full/default and evaluation pipelines were not repeated in the 2026-10-28/29 clean environment.
 
 ## 10. The Five Original Negative Tests and the Two Executable Guards
 

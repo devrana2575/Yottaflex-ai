@@ -425,9 +425,10 @@ The clean pandas 3.1.0 / NumPy 2.5.4 environment regenerated the same 100,000 ro
 87/87 validation PASS, 20/20 SQL PASS and identical event/point metrics. Compared with the main
 environment, 19/23 deterministic artifacts were byte-identical; three differed only in wall-clock
 fields, and `sql_query_report.json` differed only in last-bit floating-point values. The SQLite
-comparison found 17/19 tables exactly equal; `telemetry` and `evaluation_metrics` differed only at
-about `1e-15`, with no semantic or metric difference. The full/default and evaluation pipelines were
-not repeated in the clean environment.
+comparison found 16/19 tables exactly equal and 17/19 after removing timestamp columns;
+`telemetry` and `evaluation_metrics` differed only at about `7e-15`/`1e-16`, leaving all 19
+logically equal with no semantic or metric difference. The full/default and evaluation pipelines
+were not repeated in the clean environment.
 
 ### 8.2 Prior full/default comparison (2026-10-27)
 
@@ -533,7 +534,7 @@ allocation and publication authorization record, is in
 | Machine-readable and readable reports with PASS/FAIL/WARN/NOT_IMPLEMENTED | `validation_results.csv`, `evaluation_metrics.json/csv`, `sql_query_report.json`, `evaluation_summary.md`, `reports/final/summary.json` | Reports generated and copied to `reports/final/` | PASS |
 | Clean install, packaging, CLI and database initialization | Fresh 2026-10-28 virtual environment: `python -m venv`, `python -m pip install -e .`, `python -m pip install pytest`, `yottaflex --version`, exact-100k pipeline and SQLite checks | 68/68 tests passed; CLI and pipeline completed under pandas 3.1.0 / NumPy 2.5.4; SQLite integrity `ok`, zero FK violations | PASS |
 | Reproducibility after the audit fixes | 2026-10-27 full/default reproduction plus 2026-10-28 exact-100k `yf-repro-100k/a,b` and final `exact-a/b`; `reports/final/reproducibility.json` and `reproducibility_100k.json` | Prior 19/19 full/default; final exact 100k 20/23 byte-identical, 3 timestamp-only differences logically equal; 18 populated tables logically identical | PASS |
-| Cross-version exact-100k rerun | Fresh pandas 3.1.0 / NumPy 2.5.4 environment; exact-100k pipeline; compare counts, metrics and artifacts | Same 100,000/341/87/20 results and metrics; 19/23 artifacts byte-identical; 3 timestamp-only plus one last-bit float report difference; 17/19 DB tables exactly equal | PASS |
+| Cross-version exact-100k rerun | Fresh pandas 3.1.0 / NumPy 2.5.4 environment; exact-100k pipeline; compare counts, metrics and artifacts | Same 100,000/341/87/20 results and metrics; 19/23 artifacts byte-identical; 3 timestamp-only plus one last-bit float report difference; raw SQLite 16/19 exact, 17/19 after timestamp removal, 19/19 logically equal with two float-only tables | WARN |
 | Cross-version full/default and evaluation pipelines | Not repeated in the fresh environment | Main-environment evidence only; documented as a limitation | WARN |
 | Observed-only point coverage | `tests/test_evaluation.py::test_missing_measurements_are_excluded_from_point_denominator`; `positive_rows_observed` excludes missing quality/null measurements | Coverage counts 2 of 3 expected positive rows, not 3 of 3 | PASS |
 | Secrets, personal information and large-file review | Tracked-file scan; absolute path redaction in copied evidence; no credential/token/private-key hits | No tracked file over 1 MB; local paths redacted without changing metrics; original config hashes retained in manifests and redaction mismatch documented | PASS |
