@@ -1,0 +1,10 @@
+scenario_id,simulation_run_id,issue_type,severity,affected_equipment_id,affected_sensor_id,expected_sensor_ids,start_time,end_time,injection_parameters,expected_observable
+SCN-000001,SIM-2026-000001,LEAK,medium,TANK-001,,"[""SNS-015""]",2026-01-01T01:30:00,2026-01-01T03:00:00,"{""leak_fraction_capacity_per_hour"": 0.05, ""severity"": ""medium""}",Sustained level/pressure decline and positive flow-balance residual
+SCN-000002,SIM-2026-000001,BLOCKAGE,light,PUMP-002,,"[""SNS-003""]",2026-01-01T03:30:00,2026-01-01T04:30:00,"{""flow_factor"": 0.85, ""pressure_factor"": 1.15, ""severity"": ""light""}",Flow reduction with above-curve discharge pressure
+SCN-000003,SIM-2026-000001,PUMP_DEGRADATION,medium,PUMP-003,,"[""SNS-005""]",2026-01-01T05:00:00,2026-01-01T06:12:00,"{""flow_factor"": 0.8, ""head_factor"": 0.72, ""severity"": ""medium""}",Operating point below the nominal pump curve
+SCN-000004,SIM-2026-000001,SENSOR_FAULT,medium,TANK-003,SNS-023,"[""SNS-023""]",2026-01-01T06:30:00,2026-01-01T07:12:00,"{""bias_pct"": 6.0, ""severity"": ""medium""}",Level/pressure redundancy disagreement
+SCN-000005,SIM-2026-000001,NORMAL,normal,,,[],2026-01-01T00:00:00,2026-01-01T01:30:00,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}",No injected anomaly; operating values within normal variation
+SCN-000006,SIM-2026-000001,NORMAL,normal,,,[],2026-01-01T03:00:00,2026-01-01T03:30:00,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}",No injected anomaly; operating values within normal variation
+SCN-000007,SIM-2026-000001,NORMAL,normal,,,[],2026-01-01T04:30:00,2026-01-01T05:00:00,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}",No injected anomaly; operating values within normal variation
+SCN-000008,SIM-2026-000001,NORMAL,normal,,,[],2026-01-01T06:12:00,2026-01-01T06:30:00,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}",No injected anomaly; operating values within normal variation
+SCN-000009,SIM-2026-000001,NORMAL,normal,,,[],2026-01-01T07:12:00,2026-01-01T07:35:00,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}",No injected anomaly; operating values within normal variation

@@ -1,10 +1,11 @@
 {
   "simulation": {
     "start_time": "2026-01-01T00:00:00",
-    "duration_hours": 7.5,
+    "duration_hours": 7.583333333333333,
     "sampling_interval_seconds": 60,
     "time_step_seconds": 60,
     "random_seed": 20261022,
+    "telemetry_target_rows": 100000,
     "gravity_m_s2": 9.81,
     "water_density_kg_m3": 1000.0,
     "fluid_viscosity_pa_s": 0.001,
@@ -35,7 +36,7 @@
     "valves": 60
   },
   "scenarios": {
-    "scenario_set": "compact",
+    "scenario_set": "baseline",
     "enable_leaks": true,
     "enable_blockages": true,
     "enable_pump_degradation": true,
@@ -98,10 +99,10 @@
     "require_category_match": true,
     "label_scope": "explicit_windows"
   },
-  "output_dir": "<external-temp>\\yf2-100k",
-  "raw_dir": "<external-temp>\\yf2-100k\\raw",
-  "reports_dir": "<external-temp>\\yf2-100k\\reports",
-  "database_path": "<external-temp>\\yf2-100k\\yottaflex.db",
+  "output_dir": "<external-temp>/repro-100k-a",
+  "raw_dir": "<external-temp>/repro-100k-a\\raw",
+  "reports_dir": "<external-temp>/repro-100k-a\\reports",
+  "database_path": "<external-temp>/repro-100k-a\\yottaflex.db",
   "schema_version": "2.0.0",
   "generator_version": "2.0.0"
 }

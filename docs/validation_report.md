@@ -1,10 +1,11 @@
 # Validation Report (YottaFlex 2.0.0)
 
-**Status:** PASS with four review-level WARNs: the light-leak coverage limitation, the reconstructed
-prompt records (1.x and 2026-10-28), the cross-version clean-environment rerun not being repeated for
-this remediation, and publication pending explicit authorization. The executable validation CSV is
-**87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED**; these review WARNs are not rows in that CSV and are
-not added to its denominator.
+**Status:** PASS with review-level caveats: light-leak coverage, reconstructed prompt records (1.x
+and 2026-10-28), and the cross-version clean-environment rerun not being repeated for this
+remediation (NOT VERIFIED); ignored local generated outputs remain a repository-hygiene caveat.
+Publication was explicitly authorized on 2026-10-28. The executable validation CSV is **87 PASS, 0
+FAIL, 0 WARN, 0 NOT_IMPLEMENTED**; these review caveats are not rows in that CSV and are not added to
+its denominator.
 
 - **Date:** 2026-10-27 submission-readiness audit; re-verified and extended 2026-10-28 for the
   exact 100k/state-history/portable-export remediation.
@@ -13,11 +14,11 @@ not added to its denominator.
   60 s cadence. The 2026-10-28 runs used the main environment; the pandas 3.1 clean environment was
   not recreated.
 - **Repository state:** 2.0 commit `6103e1a` and the 2026-10-27 audit corrections are on `origin/main`.
-  The 2026-10-28 remediation is committed locally after review; publication is pending explicit
-  confirmation in the current prompt and is not claimed as pushed. No force-push or history rewrite
-  was performed.
+  The 2026-10-28 remediation was committed locally and, after the user explicitly authorized
+  publication with the prompt `push`, pushed to `origin/main` after the final audit. No force-push or
+  history rewrite was performed.
 - **Primary evidence:** clean run directories `yf2-evaluation`, `yf2-calibration`, `yf2-full`,
-  `yf2-starter`, `yf2-100k` (historical compact 99k), plus fresh 2026-10-28
+  `yf2-starter`, `yf2-100k` (exact 100k), `yf2-compact-99k` (historical compact 99k), plus fresh 2026-10-28
   `yf-final-eval`, `yf-final-full`, `yf-100k-dev`, `yf-repro-100k/a` and `yf-repro-100k/b`;
   compact copies in `reports/final/`. Absolute local paths in copied evidence are redacted as
   described in §12.
@@ -49,9 +50,10 @@ alarm-free at the incident level. The 10 point false positives are short episode
 anomalies end; they are retained and reported, not suppressed.
 
 All 87 executable validation rows pass, all 20 SQL assertions pass, and all 68 tests pass in the
-main environment. Four review-level WARNs are tracked separately: light-leak coverage, the
-reconstructed prompt records, the un-repeated cross-version clean-environment rerun, and publication
-pending explicit authorization. The 2026-10-28 remediation added an exact 100k baseline with
+main environment. Review-level caveats are tracked separately: light-leak coverage, the reconstructed
+prompt records, the un-repeated cross-version clean-environment rerun (NOT VERIFIED), and ignored
+local generated outputs. Publication was explicitly authorized on 2026-10-28. The 2026-10-28
+remediation added an exact 100k baseline with
 100,000 real telemetry rows, a populated append-only `equipment_state_events` table (341 rows in
 that baseline), and CSV/JSON/SQLite/portable-SQL export verification. Two fresh exact-100k runs
 produced 20/23 byte-identical files; the other three differed only in wall-clock
@@ -107,8 +109,8 @@ documented in [`baseline_findings.md`](baseline_findings.md); the main ones were
 |---|---|---|---|---:|---:|---:|---:|---:|---|---|---|
 | `yf2-starter` | starter | default | 24 h | 51,840 | n/a (pre-remediation) | 10 | 7 | 4 | 87 PASS | 20 PASS |
 | `yf2-full` | full | default | 24 h | 316,800 | n/a (pre-remediation) | 10 | 7 | 4 | 87 PASS | 20 PASS |
-| `yf2-100k` (historical) | full | compact | 7.5 h | 99,000 | n/a (pre-remediation) | 9 | 7 | 4 | 87 PASS | 20 PASS |
-| `yf-100k-dev` / `yf-repro-100k-a,b` | full | baseline | 7.583 h | 100,000 | 341 | 9 | 107 | 62 | 87 PASS | 20 PASS |
+| `yf2-compact-99k` (historical) | full | compact | 7.5 h | 99,000 | n/a (pre-remediation) | 9 | 7 | 4 | 87 PASS | 20 PASS |
+| `yf2-100k` (exact) / `yf-repro-100k-a,b` | full | baseline | 7.583 h | 100,000 | 341 | 9 | 107 | 62 | 87 PASS | 20 PASS |
 | `yf2-calibration` | full | calibration | 24 h | 316,740 | 347 | 15 | 10 | 7 | 87 PASS | 20 PASS |
 | `yf2-evaluation` / `yf-final-eval` | full | evaluation | 24 h | 316,740 | 355 | 19 | 15 | 10 | 87 PASS | 20 PASS |
 
@@ -294,7 +296,8 @@ changed after the evaluation run was inspected.
 ### 7.1 Validation checks
 
 Final executable validation result (all final runs, including the exact 100k baseline): **87 PASS,
-0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED**. The four review-level WARNs in §10 are not rows in this CSV.
+0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED**. The seven final validation CSVs aggregate 609/609 PASS
+(87 each). The review-level caveats in section 10 are not rows in this CSV.
 
 | Validation type | Checks | Status |
 |---|---:|---|
@@ -365,7 +368,7 @@ join fan-out or unexpected null-facility rows were observed in the final evaluat
 
 ### 7.3 Test suite
 
-`python -m pytest -q` → **68 passed in 44.25 s** in the 2026-10-28 main-environment run. The prior
+`python -m pytest -q` → **68 passed** in the 2026-10-28 main-environment run. The prior
 62-test suite passed in the 2026-10-27 main and fresh environments; the fresh environment was not
 recreated for the remediation. The original 11 tests are retained and extended with exact-target
 allocation, 100k cadence/FK, state-history transition/reference, invalid-transition, JSON/SQL
@@ -490,7 +493,7 @@ The built-in three-hour slice produced no alarms, so the audit repeated the chec
 ## 10. Requirement Matrix
 
 The detailed requirement-to-evidence matrix, including the five negative controls, exact-100k
-allocation and publication boundary, is in
+allocation and publication authorization record, is in
 [`docs/requirement_matrix.md`](requirement_matrix.md). The summary below is retained for continuity.
 
 | Requirement | Evidence | Result | Status |
@@ -515,8 +518,8 @@ allocation and publication boundary, is in
 | Observed-only point coverage | `tests/test_evaluation.py::test_missing_measurements_are_excluded_from_point_denominator`; `positive_rows_observed` excludes missing quality/null measurements | Coverage counts 2 of 3 expected positive rows, not 3 of 3 | PASS |
 | Secrets, personal information and large-file review | Tracked-file scan; absolute path redaction in copied evidence; no credential/token/private-key hits | No tracked file over 1 MB; local paths redacted without changing metrics; original config hashes retained in manifests and redaction mismatch documented | PASS |
 | Update README and create methodology/validation/decision documents | `README.md`, `docs/detection_methodology.md`, `docs/evaluation_methodology.md`, `docs/validation_report.md`, `docs/implementation_decisions.md` | All present and linked | PASS |
-| Record complete task prompt in AI prompt history | `ai_usage/prompt_history.md`; `ai_usage/prompts/2026-10-28-remediation.md` | Current remediation prompt recorded verbatim; 2026-10-27 audit prompt recorded verbatim; the earlier 1.x/2.0 implementation prompt was not retained verbatim and remains explicitly reconstructed | WARN |
-| Do not push/publish without explicit authorization | `6103e1a` and 2026-10-27 corrections are on `origin/main` after prior authorizations; 2026-10-28 remediation is committed locally after review | Publication pending explicit confirmation; no force-push/history rewrite; push not claimed | WARN |
+| Record complete task prompt in AI prompt history | `ai_usage/prompt_history.md`; `ai_usage/prompts/2026-10-28-remediation.md` | Latest publication-authorization prompt `push` recorded verbatim; 2026-10-27 audit prompt recorded verbatim; the prior 2026-10-28 remediation and earlier 1.x/2.0 implementation prompts remain explicitly reconstructed | WARN |
+| Do not push/publish without explicit authorization | `6103e1a` and 2026-10-27 corrections are on `origin/main` after prior authorizations; the user explicitly authorized the 2026-10-28 push with the prompt `push` | Final push to `origin/main` after the audit; no force-push/history rewrite | PASS |
 | Detection coverage on independent evaluation set | 11 events; 1 light-leak miss; residual above absolute floor but corroboration/persistence fails; event recall 0.9091 | Documented sensitivity limitation, not hidden or tuned away | WARN |
 | Populate real equipment state history | `equipment_state_events` in CSV/SQLite/JSON/SQL; 341 rows in 100k baseline; allowed-transition tests | Initialization + scenario transitions only; no placeholder rows; transitions, refs, timestamps and DB count verified | PASS |
 | Field-level documentation for all ten core entities | `docs/data_dictionary.md` | Types, keys, constraints, units, defaults, relationships, cardinality, lifecycle and history documented; state-history table covered | PASS |
@@ -524,11 +527,10 @@ allocation and publication boundary, is in
 | State transitions validated | `state_history.py`; `test_equipment_state_history_is_append_only_and_valid`; invalid-transition test | Allowed transitions enforced; invalid PUMP ACTIVE?LEAKING rejected | PASS |
 | Negative scenarios and unrelated data intact | `tests/test_negative_scenarios.py`; five NEG controls | 5/5 PASS; baseline shapes unchanged after each copy-based control | PASS |
 
-Overall status: **PASS with four review WARNs** — light-leak coverage, the reconstructed prompt
-records, the cross-version clean-environment rerun not being repeated, and publication pending
-explicit authorization. These are not rows in the executable validation CSV and are not merged into
-its 87-row denominator. None is a fabricated success; each is an explicit limitation or
-authorization boundary.
+Overall status: **PASS with review-level caveats**: light-leak coverage (WARN), reconstructed prompt
+records (WARN), ignored local generated outputs (WARN), and the cross-version clean-environment rerun
+not being repeated (NOT VERIFIED). These are not rows in the executable validation CSV and are not
+merged into its 87-row denominator. None is a fabricated success; each is an explicit limitation.
 
 ## 11. Interpretation and Limitations
 
@@ -632,10 +634,10 @@ the difference is due solely to path redaction. No credentials, tokens, private 
 
 | Artifact | Contents |
 |---|---|
-| `reports/final/summary.json` | Machine-readable metrics for all five prior final runs |
+| `reports/final/summary.json` | Machine-readable metrics, validation reconciliation and review caveats for all final runs |
 | `reports/final/reproducibility.json` | Prior 19-file full/default hash comparison, config hashes and DB logical comparison |
 | `reports/final/reproducibility_100k.json` | 2026-10-28 exact-100k two-run hash/logical comparison and artifact counts |
-| `reports/final/baseline_100k/` | Compact exact-100k evidence: config, metadata, validation, metrics, SQL report, state events, hash manifest |
+| `reports/final/yf2-100k/` | Compact exact-100k evidence: redacted config, metadata, telemetry count/hash manifest, master CSVs, alarms, evaluation events, validation, metrics, SQL report, state events and hash summary |
 | `docs/requirement_matrix.md` | Requirement-to-implementation/evidence/status matrix and review caveats |
 | `ai_usage/prompts/2026-10-28-remediation.md` | Reconstructed 2026-10-28 prompt record; verbatim source not retained |
 | `reports/final/yf2-evaluation/evaluation_metrics.json` | Full nested evaluation result |
@@ -649,7 +651,7 @@ the difference is due solely to path redaction. No credentials, tokens, private 
 | `reports/final/yf2-evaluation/pipeline.log` | Clean-run console log |
 | `reports/final/yf2-full/` | Default full-run evidence |
 | `reports/final/yf2-starter/` | Starter-run evidence |
-| `reports/final/yf2-100k/` | Compact 99,000-row evidence |
+| `reports/final/yf2-compact-99k/` | Historical compact 99,000-row evidence |
 | `reports/final/yf2-calibration/` | Calibration evidence |
 | `reports/final/yf2-repro/` | Second full/default reproducibility run |
 | `docs/baseline_findings.md` | Pre-change audit |

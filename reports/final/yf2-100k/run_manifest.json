@@ -4,23 +4,27 @@
   "package_version": "2.0.0",
   "files": {
     "alarm_events.csv": {
-      "sha256": "08b07feefd9bcc84f5075b271c5bafcfc1318f9fb6180748da37b07163eb3d08",
-      "rows": 14
+      "sha256": "073c2b9765cd0e624acf17c16a284ae5b61e8cf2342d600937719098a693dc85",
+      "rows": 114
     },
     "alarm_incidents.csv": {
-      "sha256": "0ee93f6a49af67376a4a026633773ac5a3dedd4d642c3f9dce166f3ab6fea3f9",
-      "rows": 4
+      "sha256": "7eb79e0df9cf6f4376374231cfd632af3b9790f31e800375207878f6f02e263a",
+      "rows": 62
     },
     "alarms.csv": {
-      "sha256": "df857dd29f950e966b5f223a5770333cb1dba565ae0425dc2015b299f7e78261",
-      "rows": 7
+      "sha256": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
+      "rows": 107
+    },
+    "equipment_state_events.csv": {
+      "sha256": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
+      "rows": 341
     },
     "evaluation_events.csv": {
-      "sha256": "2e8d1029410c6b528f8406b009f41ea22fc2838407847ff5d2e474df791c1940",
+      "sha256": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
       "rows": 9
     },
     "evaluation_metrics.csv": {
-      "sha256": "2cd51780464d04c167651676a906176629613e0f0801c8ba0842cd47c865a013",
+      "sha256": "ceffa74ad162cacf6c2c50df4718dd4d7f37a0bf15e9545281799f8e0ac0a8ec",
       "rows": 64
     },
     "facilities.csv": {
@@ -28,7 +32,7 @@
       "rows": 3
     },
     "ground_truth.csv": {
-      "sha256": "276903757ea30bda2fb04c067e2e89b85701936334847d7a10e0568f810b7947",
+      "sha256": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
       "rows": 9
     },
     "operating_modes.csv": {
@@ -44,7 +48,7 @@
       "rows": 20
     },
     "scenario_definitions.csv": {
-      "sha256": "eb8959e395c3645cbb16eace466540b98be1c6350de5c9b1592cb49b7d720430",
+      "sha256": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
       "rows": 9
     },
     "sensors.csv": {
@@ -52,7 +56,7 @@
       "rows": 220
     },
     "simulation_runs.csv": {
-      "sha256": "1b840facb0cd78183f5d3ced3a6b30117a83f1c7fe6a3291950851955d706985",
+      "sha256": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
       "rows": 1
     },
     "tanks.csv": {
@@ -60,15 +64,15 @@
       "rows": 30
     },
     "telemetry.csv": {
-      "sha256": "79dcdbec9109016d3db73bf90b5361bd57ea359f1f59880a4d96114521224fc7",
-      "rows": 99000
+      "sha256": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
+      "rows": 100000
     },
     "valves.csv": {
       "sha256": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
       "rows": 60
     },
     "config.json": {
-      "sha256": "55505cc754476c9fbeec453bd714891c42661e1a011d7c02327a3050340c57cb"
+      "sha256": "026358faa384650787d490c76c25bbbe23fe22038be522dd06c6279d8b9fb9e6"
     }
   }
 }

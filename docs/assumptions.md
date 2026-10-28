@@ -109,9 +109,9 @@
   for the lifecycle master value.
 - **Publication status.** The 2.0 implementation was committed as `6103e1a` and published to
   `origin/main` only after explicit authorization. The 2026-10-27 audit corrections were committed
-  and pushed after separate explicit authorization. The 2026-10-28 remediation is committed locally
-  after review; publication is pending explicit confirmation in the current prompt and has not been
-  claimed as pushed.
+  and pushed after separate explicit authorization. The 2026-10-28 remediation was committed locally
+  and pushed to `origin/main` after the user explicitly authorized publication with the prompt
+  `push`; no force-push or history rewrite was performed.
 
 ## Interpretation guidance
 

@@ -22,28 +22,28 @@
     "f1_score": 1.0,
     "false_positive_rate": 0.0,
     "false_positive_rate_denominator": "normal windows with an alarm / all normal windows",
-    "total_alarm_events": 7,
-    "alarm_incident_count": 4,
+    "total_alarm_events": 107,
+    "alarm_incident_count": 62,
     "matched_incident_count": 4,
-    "unmatched_incident_count": 0,
+    "unmatched_incident_count": 58,
     "false_alarm_incident_count": 0,
-    "unknown_incident_count": 0,
-    "unmatched_alarm_event_count": 0,
+    "unknown_incident_count": 58,
+    "unmatched_alarm_event_count": 100,
     "matched_alarm_event_count": 7,
     "corroborating_alarm_event_count": 3,
     "false_positive_window_count": 0,
     "true_negative_window_count": 5,
     "detection_latency_seconds": {
       "values": [
-        300.0,
+        360.0,
         300.0,
         300.0,
         180.0
       ],
-      "mean": 270.0,
+      "mean": 285.0,
       "median": 300.0,
       "min": 180.0,
-      "max": 300.0
+      "max": 360.0
     },
     "matching_policy": {
       "unit": "alarm incident (overlapping alarm episodes for one equipment merged)",
@@ -72,50 +72,50 @@
       "missing_measurement_policy": "Rows with null measured_value or quality_status=MISSING are excluded as unobserved."
     },
     "confusion_matrix": {
-      "true_positives": 246,
+      "true_positives": 245,
       "false_positives": 5,
-      "true_negatives": 40915,
-      "false_negatives": 18,
-      "precision": 0.9800796812749004,
-      "recall": 0.9318181818181818,
-      "f1_score": 0.9553398058252428,
-      "false_positive_rate": 0.00012218963831867058
+      "true_negatives": 41915,
+      "false_negatives": 19,
+      "precision": 0.98,
+      "recall": 0.928030303030303,
+      "f1_score": 0.9533073929961089,
+      "false_positive_rate": 0.00011927480916030534
     },
     "overall": {
-      "true_positives": 246,
+      "true_positives": 245,
       "false_positives": 5,
-      "true_negatives": 40915,
-      "false_negatives": 18,
-      "precision": 0.9800796812749004,
-      "recall": 0.9318181818181818,
-      "f1_score": 0.9553398058252428,
-      "false_positive_rate": 0.00012218963831867058
+      "true_negatives": 41915,
+      "false_negatives": 19,
+      "precision": 0.98,
+      "recall": 0.928030303030303,
+      "f1_score": 0.9533073929961089,
+      "false_positive_rate": 0.00011927480916030534
     },
     "process_faults": {
-      "true_positives": 207,
+      "true_positives": 206,
       "false_positives": 5,
-      "true_negatives": 40915,
-      "false_negatives": 15,
-      "precision": 0.9764150943396226,
-      "recall": 0.9324324324324325,
-      "f1_score": 0.9539170506912442,
-      "false_positive_rate": 0.00012218963831867058
+      "true_negatives": 41915,
+      "false_negatives": 16,
+      "precision": 0.976303317535545,
+      "recall": 0.9279279279279279,
+      "f1_score": 0.9515011547344111,
+      "false_positive_rate": 0.00011927480916030534
     },
     "sensor_faults": {
       "true_positives": 39,
       "false_positives": 0,
-      "true_negatives": 40920,
+      "true_negatives": 41920,
       "false_negatives": 3,
       "precision": 1.0,
       "recall": 0.9285714285714286,
       "f1_score": 0.962962962962963,
       "false_positive_rate": 0.0
     },
-    "labelled_rows": 41184,
+    "labelled_rows": 42184,
     "positive_rows": 264,
-    "negative_rows": 40920,
+    "negative_rows": 41920,
     "label_counts": {
-      "NEGATIVE": 40920,
+      "NEGATIVE": 41920,
       "POSITIVE": 264
     },
     "unknown_samples": 57816,
@@ -142,7 +142,7 @@
       "missed": 0,
       "recall": 1.0,
       "detection_rate": 1.0,
-      "mean_detection_latency_seconds": 300.0
+      "mean_detection_latency_seconds": 360.0
     },
     "PUMP_DEGRADATION": {
       "injected": 1,
@@ -168,7 +168,7 @@
       "missed": 0,
       "recall": 1.0,
       "detection_rate": 1.0,
-      "mean_detection_latency_seconds": 300.0
+      "mean_detection_latency_seconds": 320.0
     },
     "SENSOR_FAULT": {
       "injected": 1,
@@ -194,7 +194,7 @@
       "missed": 0,
       "recall": 1.0,
       "detection_rate": 1.0,
-      "mean_detection_latency_seconds": 260.0
+      "mean_detection_latency_seconds": 280.0
     }
   },
   "per_event": [
@@ -207,13 +207,13 @@
         "SNS-015"
       ],
       "expected_alarm_category": "PROCESS_FAULT",
-      "start_time": "2026-01-01T02:00:00",
-      "end_time": "2026-01-01T03:30:00",
+      "start_time": "2026-01-01T01:30:00",
+      "end_time": "2026-01-01T03:00:00",
       "is_positive": true,
       "is_normal": false,
       "matched": true,
-      "matched_incident_id": "INC-000003",
-      "latency_seconds": 300.0,
+      "matched_incident_id": "INC-000009",
+      "latency_seconds": 360.0,
       "outcome": "DETECTED"
     },
     {
@@ -225,8 +225,8 @@
         "SNS-003"
       ],
       "expected_alarm_category": "PROCESS_FAULT",
-      "start_time": "2026-01-01T03:48:00",
-      "end_time": "2026-01-01T04:48:00",
+      "start_time": "2026-01-01T03:30:00",
+      "end_time": "2026-01-01T04:30:00",
       "is_positive": true,
       "is_normal": false,
       "matched": true,
@@ -266,7 +266,7 @@
       "is_positive": true,
       "is_normal": false,
       "matched": true,
-      "matched_incident_id": "INC-000004",
+      "matched_incident_id": "INC-000010",
       "latency_seconds": 180.0,
       "outcome": "DETECTED"
     },
@@ -278,7 +278,7 @@
       "expected_sensors": [],
       "expected_alarm_category": "NORMAL",
       "start_time": "2026-01-01T00:00:00",
-      "end_time": "2026-01-01T02:00:00",
+      "end_time": "2026-01-01T01:30:00",
       "is_positive": false,
       "is_normal": true,
       "matched": false,
@@ -293,8 +293,8 @@
       "affected_equipment_id": null,
       "expected_sensors": [],
       "expected_alarm_category": "NORMAL",
-      "start_time": "2026-01-01T03:30:00",
-      "end_time": "2026-01-01T03:48:00",
+      "start_time": "2026-01-01T03:00:00",
+      "end_time": "2026-01-01T03:30:00",
       "is_positive": false,
       "is_normal": true,
       "matched": false,
@@ -309,7 +309,7 @@
       "affected_equipment_id": null,
       "expected_sensors": [],
       "expected_alarm_category": "NORMAL",
-      "start_time": "2026-01-01T04:48:00",
+      "start_time": "2026-01-01T04:30:00",
       "end_time": "2026-01-01T05:00:00",
       "is_positive": false,
       "is_normal": true,
@@ -342,7 +342,7 @@
       "expected_sensors": [],
       "expected_alarm_category": "NORMAL",
       "start_time": "2026-01-01T07:12:00",
-      "end_time": "2026-01-01T07:30:00",
+      "end_time": "2026-01-01T07:35:00",
       "is_positive": false,
       "is_normal": true,
       "matched": false,

@@ -10,7 +10,7 @@ Point-level and event-level metrics are separate units and are not combined.
 | matched_event_count | 4.0000 |
 | missed_event_count | 0.0000 |
 | false_alarm_incident_count | 0.0000 |
-| unknown_incident_count | 0.0000 |
+| unknown_incident_count | 58.0000 |
 | precision | 1.0000 |
 | recall | 1.0000 |
 | f1_score | 1.0000 |
@@ -20,13 +20,13 @@ Point-level and event-level metrics are separate units and are not combined.
 
 | Metric | Value |
 |---|---|
-| true_positives | 246.0000 |
+| true_positives | 245.0000 |
 | false_positives | 5.0000 |
-| true_negatives | 40915.0000 |
-| false_negatives | 18.0000 |
-| precision | 0.9801 |
-| recall | 0.9318 |
-| f1_score | 0.9553 |
+| true_negatives | 41915.0000 |
+| false_negatives | 19.0000 |
+| precision | 0.9800 |
+| recall | 0.9280 |
+| f1_score | 0.9533 |
 | false_positive_rate | 0.0001 |
 
 ## By scenario type

@@ -263,8 +263,23 @@ Current evidence: [`docs/validation_report.md`](../docs/validation_report.md),
 
 - [`docs/requirement_matrix.md`](../docs/requirement_matrix.md)
 - [`docs/validation_report.md`](../docs/validation_report.md)
-- [`reports/final/baseline_100k/`](../reports/final/baseline_100k/)
+- [`reports/final/yf2-100k/`](../reports/final/yf2-100k/)
+- [`reports/final/yf2-compact-99k/`](../reports/final/yf2-compact-99k/)
 - [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json)
+
+## 2026-10-28 Publication Authorization
+
+- **Timestamp:** 2026-10-28 (recorded from the live conversation; exact wall-clock time not supplied)
+- **Tool:** OpenCode
+- **Model:** DeepSeek V4.1 Flash Free
+- **Task:** Authorize publication of the reviewed remediation to the configured GitHub remote.
+- **Record status:** **VERBATIM** — the prompt text is preserved exactly.
+- **Prompt:**
+  > push
+
+This authorization supersedes the earlier "publication remains pending" status for the final push.
+The push destination was confirmed as `https://github.com/devrana2575/Yottaflex-ai.git`; no
+force-push or history rewrite was used.
 
 ## Notes
 - This is the initial implementation session
@@ -275,4 +290,5 @@ Current evidence: [`docs/validation_report.md`](../docs/validation_report.md),
 - The 2026-10-27 submission-readiness prompt above is recorded verbatim.
 - The 2026-10-28 remediation prompt is reconstructed from the retained requirement summary; the
   original verbatim text was not available. The 2.0 implementation prompt remains explicitly marked
-  as reconstructed. Prompt completeness is therefore a documented WARN, not a claim of completeness.
+  as reconstructed. The later 2026-10-28 `push` authorization is recorded verbatim. Prompt
+  completeness for the earlier records remains a documented WARN, not a claim of completeness.

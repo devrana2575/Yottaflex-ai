@@ -1,14 +1,30 @@
 {
   "artifact_sha256": {
-    "config.redacted.json": "cb36ceb07f56e7dcdb2d98d881080b4f9ddbc1aa851cc429e82bcaa01ccc01ff",
+    "alarm_events.csv": "073c2b9765cd0e624acf17c16a284ae5b61e8cf2342d600937719098a693dc85",
+    "alarm_incidents.csv": "7eb79e0df9cf6f4376374231cfd632af3b9790f31e800375207878f6f02e263a",
+    "alarms.csv": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
+    "config.json": "93539d8664bb7b87e58f04e925c11b1075beff5e5ff49f3c7795e9e9a2448832",
     "equipment_state_events.csv": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
-    "evaluation_metrics.csv": "7ca1ca22f2fe2837489288303b899916b75501f09f9a9fa55cc81cc343fa046b",
+    "evaluation_events.csv": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
+    "evaluation_metrics.csv": "ceffa74ad162cacf6c2c50df4718dd4d7f37a0bf15e9545281799f8e0ac0a8ec",
     "evaluation_metrics.json": "a9820c60e2775be1784201e28ff3807292f13663b7255a10231eb4fa301fd987",
     "evaluation_summary.md": "a7556f7a6dfa768a52ee37d072b6a499ef8b6a56dedc98c5cb6bedf95ac49c14",
+    "facilities.csv": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
+    "ground_truth.csv": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
+    "operating_modes.csv": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+    "pipes.csv": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
+    "pumps.csv": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
+    "run_manifest.json": "1b92a9b9d0a01d19b0b24b1a90509e5f3f8128dce346e7b1d7a1fb325f3e6dbd",
+    "scenario_definitions.csv": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
+    "sensors.csv": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
     "simulation_metadata.json": "199ab94e98adc9dc036fad1bf9594cdf812f818623ca06afab3684bd4996f017",
+    "simulation_runs.csv": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
     "sql_query_report.json": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
-    "validation_results.csv": "ac9f851ca1fc3a8d46d3db7d17afb13444c53462cbc97145c7771c879af04299",
-    "validation_summary.json": "b67e9a5c65c8951b8f972473d9860dc8d7314690faea633089920ee765ba7dd0"
+    "tanks.csv": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
+    "telemetry_manifest.json": "a6089a8b72c3109c0bb8716f552015c7705889a6e925666792d0781a336c3414",
+    "validation_results.csv": "3c627c0e6cd9a660e704441ace8f741c96c5d85d44b7d8a6fe573d35433052ed",
+    "validation_summary.json": "a5d5dd028e875f602b8215dbadb6cbcb7f882708b1391bb3df4b902838f7ed79",
+    "valves.csv": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc"
   },
   "duration_hours": 7.583333333333333,
   "event_level": {
@@ -143,7 +159,7 @@
     "unknown_samples": 57816,
     "unobserved_labelled_rows": 0
   },
-  "run": "yf-repro-100k/a",
+  "run": "yf2-100k (fresh external repro-100k-a)",
   "sampling_interval_seconds": 60,
   "scenario_set": "baseline",
   "seed": 20261022,
@@ -169,5 +185,6 @@
     "pass": 87,
     "rows": 87,
     "warn": 0
-  }
+  },
+  "evidence_note": "Compact evidence from an exact-100k run. telemetry.csv is external; telemetry_manifest.json records its directly measured row count and SHA-256."
 }

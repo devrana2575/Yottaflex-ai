@@ -28,7 +28,7 @@
       },
       {
         "entity": "telemetry",
-        "row_count": 99000
+        "row_count": 100000
       }
     ],
     "status": "PASS",
@@ -39,8 +39,80 @@
     "label": "Q2 | Highest-alarm equipment | expect=nonempty",
     "expectation": "nonempty",
     "sql": "-- Q2 | Highest-alarm equipment | expect=nonempty\nSELECT\n    equipment_id,\n    COUNT(*) AS alarm_episodes,\n    COUNT(DISTINCT simulation_run_id) AS runs_with_alarms,\n    SUM(occurrence_count) AS active_readings\nFROM alarms\nWHERE equipment_id IS NOT NULL\nGROUP BY equipment_id\nORDER BY alarm_episodes DESC, equipment_id\nLIMIT 20",
-    "row_count": 4,
+    "row_count": 20,
     "rows": [
+      {
+        "equipment_id": "TANK-019",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-020",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-021",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-022",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-023",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-024",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-025",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-026",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-027",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-028",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-029",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
+      {
+        "equipment_id": "TANK-030",
+        "alarm_episodes": 4,
+        "runs_with_alarms": 1,
+        "active_readings": 4
+      },
       {
         "equipment_id": "PUMP-002",
         "alarm_episodes": 2,
@@ -54,16 +126,40 @@
         "active_readings": 134
       },
       {
-        "equipment_id": "TANK-001",
+        "equipment_id": "PUMP-015",
         "alarm_episodes": 2,
         "runs_with_alarms": 1,
-        "active_readings": 159
+        "active_readings": 2
       },
       {
-        "equipment_id": "TANK-003",
-        "alarm_episodes": 1,
+        "equipment_id": "PUMP-016",
+        "alarm_episodes": 2,
         "runs_with_alarms": 1,
-        "active_readings": 39
+        "active_readings": 2
+      },
+      {
+        "equipment_id": "PUMP-017",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 2
+      },
+      {
+        "equipment_id": "PUMP-018",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 2
+      },
+      {
+        "equipment_id": "PUMP-019",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 2
+      },
+      {
+        "equipment_id": "PUMP-020",
+        "alarm_episodes": 2,
+        "runs_with_alarms": 1,
+        "active_readings": 2
       }
     ],
     "status": "PASS",
@@ -74,7 +170,7 @@
     "label": "Q3 | Alarms by facility, category and severity | expect=nonempty",
     "expectation": "nonempty",
     "sql": "-- Q3 | Alarms by facility, category and severity | expect=nonempty\nSELECT\n    f.facility_id,\n    f.facility_name,\n    a.alarm_category,\n    a.severity,\n    COUNT(*) AS alarm_count\nFROM alarms a\nLEFT JOIN sensors s ON a.sensor_id = s.sensor_id\nLEFT JOIN facilities f ON s.facility_id = f.facility_id\nGROUP BY f.facility_id, f.facility_name, a.alarm_category, a.severity\nORDER BY f.facility_id, a.alarm_category, a.severity",
-    "row_count": 2,
+    "row_count": 4,
     "rows": [
       {
         "facility_id": "FAC-001",
@@ -89,6 +185,20 @@
         "alarm_category": "SENSOR_FAULT",
         "severity": "MEDIUM",
         "alarm_count": 1
+      },
+      {
+        "facility_id": "FAC-002",
+        "facility_name": "South Processing Plant",
+        "alarm_category": "SENSOR_FAULT",
+        "severity": "MEDIUM",
+        "alarm_count": 28
+      },
+      {
+        "facility_id": "FAC-003",
+        "facility_name": "East Distribution Hub",
+        "alarm_category": "SENSOR_FAULT",
+        "severity": "MEDIUM",
+        "alarm_count": 72
       }
     ],
     "status": "PASS",
@@ -103,7 +213,7 @@
     "rows": [
       {
         "quality_status": "GOOD",
-        "reading_count": 99000,
+        "reading_count": 100000,
         "sensors": 220
       }
     ],
@@ -122,27 +232,27 @@
         "tank_name": "TK-001",
         "capacity_m3": 125.66,
         "height_m": 8.05,
-        "min_level_pct": 47.979,
+        "min_level_pct": 47.973,
         "max_level_pct": 55.678,
-        "avg_level_pct": 54.68
+        "avg_level_pct": 54.686
       },
       {
         "tank_id": "TANK-002",
         "tank_name": "TK-002",
         "capacity_m3": 564.9,
         "height_m": 11.65,
-        "min_level_pct": 55.394,
+        "min_level_pct": 55.372,
         "max_level_pct": 56.105,
-        "avg_level_pct": 55.701
+        "avg_level_pct": 55.698
       },
       {
         "tank_id": "TANK-003",
         "tank_name": "TK-003",
         "capacity_m3": 757.93,
         "height_m": 9.68,
-        "min_level_pct": 56.103,
+        "min_level_pct": 56.097,
         "max_level_pct": 62.305,
-        "avg_level_pct": 57.437
+        "avg_level_pct": 57.423
       },
       {
         "tank_id": "TANK-004",
@@ -150,8 +260,8 @@
         "capacity_m3": 859.99,
         "height_m": 14.02,
         "min_level_pct": 46.763,
-        "max_level_pct": 51.756,
-        "avg_level_pct": 49.616
+        "max_level_pct": 51.788,
+        "avg_level_pct": 49.64
       },
       {
         "tank_id": "TANK-005",
@@ -159,8 +269,8 @@
         "capacity_m3": 623.44,
         "height_m": 5.45,
         "min_level_pct": 45.74,
-        "max_level_pct": 51.327,
-        "avg_level_pct": 48.935
+        "max_level_pct": 51.354,
+        "avg_level_pct": 48.961
       },
       {
         "tank_id": "TANK-006",
@@ -168,8 +278,8 @@
         "capacity_m3": 554.39,
         "height_m": 10.14,
         "min_level_pct": 45.2,
-        "max_level_pct": 51.067,
-        "avg_level_pct": 48.572
+        "max_level_pct": 51.105,
+        "avg_level_pct": 48.6
       },
       {
         "tank_id": "TANK-007",
@@ -177,35 +287,35 @@
         "capacity_m3": 488.55,
         "height_m": 8.39,
         "min_level_pct": 51.862,
-        "max_level_pct": 53.801,
-        "avg_level_pct": 52.966
+        "max_level_pct": 53.805,
+        "avg_level_pct": 52.975
       },
       {
         "tank_id": "TANK-008",
         "tank_name": "TK-008",
         "capacity_m3": 280.98,
         "height_m": 11.41,
-        "min_level_pct": 56.898,
+        "min_level_pct": 56.864,
         "max_level_pct": 59.814,
-        "avg_level_pct": 58.144
+        "avg_level_pct": 58.13
       },
       {
         "tank_id": "TANK-009",
         "tank_name": "TK-009",
         "capacity_m3": 642.28,
         "height_m": 11.71,
-        "min_level_pct": 56.287,
+        "min_level_pct": 56.277,
         "max_level_pct": 58.397,
-        "avg_level_pct": 57.213
+        "avg_level_pct": 57.204
       },
       {
         "tank_id": "TANK-010",
         "tank_name": "TK-010",
         "capacity_m3": 752.57,
         "height_m": 7.8,
-        "min_level_pct": 56.528,
+        "min_level_pct": 56.521,
         "max_level_pct": 58.902,
-        "avg_level_pct": 57.546
+        "avg_level_pct": 57.535
       },
       {
         "tank_id": "TANK-011",
@@ -213,26 +323,26 @@
         "capacity_m3": 697.63,
         "height_m": 10.15,
         "min_level_pct": 48.858,
-        "max_level_pct": 52.562,
-        "avg_level_pct": 50.976
+        "max_level_pct": 52.597,
+        "avg_level_pct": 50.994
       },
       {
         "tank_id": "TANK-012",
         "tank_name": "TK-012",
         "capacity_m3": 457.43,
         "height_m": 13.18,
-        "min_level_pct": 55.74,
+        "min_level_pct": 55.735,
         "max_level_pct": 57.02,
-        "avg_level_pct": 56.282
+        "avg_level_pct": 56.276
       },
       {
         "tank_id": "TANK-013",
         "tank_name": "TK-013",
         "capacity_m3": 419.74,
         "height_m": 13.37,
-        "min_level_pct": 55.312,
+        "min_level_pct": 55.31,
         "max_level_pct": 56.082,
-        "avg_level_pct": 55.666
+        "avg_level_pct": 55.663
       },
       {
         "tank_id": "TANK-014",
@@ -240,8 +350,8 @@
         "capacity_m3": 260.31,
         "height_m": 9.66,
         "min_level_pct": 52.44,
-        "max_level_pct": 54.079,
-        "avg_level_pct": 53.37
+        "max_level_pct": 54.08,
+        "avg_level_pct": 53.377
       },
       {
         "tank_id": "TANK-015",
@@ -249,8 +359,8 @@
         "capacity_m3": 362.72,
         "height_m": 14.97,
         "min_level_pct": 47.258,
-        "max_level_pct": 51.922,
-        "avg_level_pct": 49.932
+        "max_level_pct": 51.966,
+        "avg_level_pct": 49.954
       },
       {
         "tank_id": "TANK-016",
@@ -259,7 +369,7 @@
         "height_m": 14.54,
         "min_level_pct": 54.524,
         "max_level_pct": 54.914,
-        "avg_level_pct": 54.736
+        "avg_level_pct": 54.737
       },
       {
         "tank_id": "TANK-017",
@@ -268,16 +378,16 @@
         "height_m": 7.67,
         "min_level_pct": 55.093,
         "max_level_pct": 55.416,
-        "avg_level_pct": 55.25
+        "avg_level_pct": 55.249
       },
       {
         "tank_id": "TANK-018",
         "tank_name": "TK-018",
         "capacity_m3": 990.93,
         "height_m": 10.11,
-        "min_level_pct": 55.477,
+        "min_level_pct": 55.474,
         "max_level_pct": 56.438,
-        "avg_level_pct": 55.906
+        "avg_level_pct": 55.902
       },
       {
         "tank_id": "TANK-019",
@@ -285,8 +395,8 @@
         "capacity_m3": 850.96,
         "height_m": 12.5,
         "min_level_pct": 46.83,
-        "max_level_pct": 51.746,
-        "avg_level_pct": 49.65
+        "max_level_pct": 51.767,
+        "avg_level_pct": 49.669
       },
       {
         "tank_id": "TANK-020",
@@ -294,8 +404,8 @@
         "capacity_m3": 953.12,
         "height_m": 14.27,
         "min_level_pct": 51.454,
-        "max_level_pct": 53.643,
-        "avg_level_pct": 52.69
+        "max_level_pct": 53.65,
+        "avg_level_pct": 52.699
       },
       {
         "tank_id": "TANK-021",
@@ -303,8 +413,8 @@
         "capacity_m3": 605.33,
         "height_m": 7.46,
         "min_level_pct": 47.258,
-        "max_level_pct": 51.941,
-        "avg_level_pct": 49.932
+        "max_level_pct": 51.963,
+        "avg_level_pct": 49.95
       },
       {
         "tank_id": "TANK-022",
@@ -312,8 +422,8 @@
         "capacity_m3": 610.03,
         "height_m": 9.32,
         "min_level_pct": 45.25,
-        "max_level_pct": 51.136,
-        "avg_level_pct": 48.611
+        "max_level_pct": 51.162,
+        "avg_level_pct": 48.634
       },
       {
         "tank_id": "TANK-023",
@@ -321,8 +431,8 @@
         "capacity_m3": 619.5,
         "height_m": 9.04,
         "min_level_pct": 46.319,
-        "max_level_pct": 51.528,
-        "avg_level_pct": 49.314
+        "max_level_pct": 51.584,
+        "avg_level_pct": 49.334
       },
       {
         "tank_id": "TANK-024",
@@ -330,8 +440,8 @@
         "capacity_m3": 825.84,
         "height_m": 13.77,
         "min_level_pct": 49.676,
-        "max_level_pct": 52.917,
-        "avg_level_pct": 51.523
+        "max_level_pct": 52.92,
+        "avg_level_pct": 51.535
       },
       {
         "tank_id": "TANK-025",
@@ -339,8 +449,8 @@
         "capacity_m3": 646.58,
         "height_m": 12.32,
         "min_level_pct": 47.919,
-        "max_level_pct": 52.19,
-        "avg_level_pct": 50.356
+        "max_level_pct": 52.209,
+        "avg_level_pct": 50.372
       },
       {
         "tank_id": "TANK-026",
@@ -348,8 +458,8 @@
         "capacity_m3": 747.08,
         "height_m": 10.31,
         "min_level_pct": 50.667,
-        "max_level_pct": 53.296,
-        "avg_level_pct": 52.172
+        "max_level_pct": 53.323,
+        "avg_level_pct": 52.182
       },
       {
         "tank_id": "TANK-027",
@@ -357,8 +467,8 @@
         "capacity_m3": 156.4,
         "height_m": 6.53,
         "min_level_pct": 54.062,
-        "max_level_pct": 54.747,
-        "avg_level_pct": 54.415
+        "max_level_pct": 54.75,
+        "avg_level_pct": 54.417
       },
       {
         "tank_id": "TANK-028",
@@ -366,26 +476,26 @@
         "capacity_m3": 541.44,
         "height_m": 9.03,
         "min_level_pct": 48.017,
-        "max_level_pct": 52.232,
-        "avg_level_pct": 50.424
+        "max_level_pct": 52.286,
+        "avg_level_pct": 50.44
       },
       {
         "tank_id": "TANK-029",
         "tank_name": "TK-029",
         "capacity_m3": 157.8,
         "height_m": 9.73,
-        "min_level_pct": 56.713,
+        "min_level_pct": 56.711,
         "max_level_pct": 59.492,
-        "avg_level_pct": 57.89
+        "avg_level_pct": 57.88
       },
       {
         "tank_id": "TANK-030",
         "tank_name": "TK-030",
         "capacity_m3": 936.2,
         "height_m": 9.03,
-        "min_level_pct": 56.269,
+        "min_level_pct": 56.265,
         "max_level_pct": 58.292,
-        "avg_level_pct": 57.14
+        "avg_level_pct": 57.132
       }
     ],
     "status": "PASS",
@@ -402,141 +512,141 @@
         "pump_id": "PUMP-003",
         "pump_name": "P-003",
         "nominal_flow_m3_h": 50.44,
-        "avg_measured_flow": 43.677,
-        "deviation_pct": 13.408
+        "avg_measured_flow": 43.705,
+        "deviation_pct": 13.352
       },
       {
         "pump_id": "PUMP-002",
         "pump_name": "P-002",
         "nominal_flow_m3_h": 57.28,
-        "avg_measured_flow": 50.325,
-        "deviation_pct": 12.142
-      },
-      {
-        "pump_id": "PUMP-011",
-        "pump_name": "P-011",
-        "nominal_flow_m3_h": 64.24,
-        "avg_measured_flow": 56.854,
-        "deviation_pct": 11.497
+        "avg_measured_flow": 50.346,
+        "deviation_pct": 12.106
       },
       {
         "pump_id": "PUMP-009",
         "pump_name": "P-009",
         "nominal_flow_m3_h": 72.25,
-        "avg_measured_flow": 63.953,
-        "deviation_pct": 11.484
+        "avg_measured_flow": 63.979,
+        "deviation_pct": 11.448
+      },
+      {
+        "pump_id": "PUMP-011",
+        "pump_name": "P-011",
+        "nominal_flow_m3_h": 64.24,
+        "avg_measured_flow": 56.886,
+        "deviation_pct": 11.447
       },
       {
         "pump_id": "PUMP-008",
         "pump_name": "P-008",
         "nominal_flow_m3_h": 102.16,
-        "avg_measured_flow": 90.446,
-        "deviation_pct": 11.467
-      },
-      {
-        "pump_id": "PUMP-012",
-        "pump_name": "P-012",
-        "nominal_flow_m3_h": 112.46,
-        "avg_measured_flow": 99.621,
-        "deviation_pct": 11.416
+        "avg_measured_flow": 90.473,
+        "deviation_pct": 11.44
       },
       {
         "pump_id": "PUMP-010",
         "pump_name": "P-010",
         "nominal_flow_m3_h": 134.44,
-        "avg_measured_flow": 119.097,
-        "deviation_pct": 11.413
+        "avg_measured_flow": 119.162,
+        "deviation_pct": 11.364
+      },
+      {
+        "pump_id": "PUMP-012",
+        "pump_name": "P-012",
+        "nominal_flow_m3_h": 112.46,
+        "avg_measured_flow": 99.683,
+        "deviation_pct": 11.361
       },
       {
         "pump_id": "PUMP-007",
         "pump_name": "P-007",
         "nominal_flow_m3_h": 50.76,
-        "avg_measured_flow": 45.105,
-        "deviation_pct": 11.141
+        "avg_measured_flow": 45.116,
+        "deviation_pct": 11.119
       },
       {
         "pump_id": "PUMP-014",
         "pump_name": "P-014",
         "nominal_flow_m3_h": 188.59,
-        "avg_measured_flow": 167.693,
-        "deviation_pct": 11.081
+        "avg_measured_flow": 167.789,
+        "deviation_pct": 11.03
       },
       {
         "pump_id": "PUMP-013",
         "pump_name": "P-013",
         "nominal_flow_m3_h": 164.8,
-        "avg_measured_flow": 146.586,
-        "deviation_pct": 11.052
+        "avg_measured_flow": 146.677,
+        "deviation_pct": 10.997
       },
       {
         "pump_id": "PUMP-006",
         "pump_name": "P-006",
         "nominal_flow_m3_h": 72.54,
-        "avg_measured_flow": 64.579,
-        "deviation_pct": 10.974
+        "avg_measured_flow": 64.588,
+        "deviation_pct": 10.963
       },
       {
         "pump_id": "PUMP-005",
         "pump_name": "P-005",
         "nominal_flow_m3_h": 148.65,
-        "avg_measured_flow": 132.396,
-        "deviation_pct": 10.934
-      },
-      {
-        "pump_id": "PUMP-015",
-        "pump_name": "P-015",
-        "nominal_flow_m3_h": 60.83,
-        "avg_measured_flow": 54.288,
-        "deviation_pct": 10.754
+        "avg_measured_flow": 132.421,
+        "deviation_pct": 10.918
       },
       {
         "pump_id": "PUMP-004",
         "pump_name": "P-004",
         "nominal_flow_m3_h": 79.83,
-        "avg_measured_flow": 71.282,
-        "deviation_pct": 10.708
+        "avg_measured_flow": 71.298,
+        "deviation_pct": 10.688
+      },
+      {
+        "pump_id": "PUMP-015",
+        "pump_name": "P-015",
+        "nominal_flow_m3_h": 60.83,
+        "avg_measured_flow": 54.405,
+        "deviation_pct": 10.561
       },
       {
         "pump_id": "PUMP-016",
         "pump_name": "P-016",
         "nominal_flow_m3_h": 50.86,
-        "avg_measured_flow": 45.456,
-        "deviation_pct": 10.625
-      },
-      {
-        "pump_id": "PUMP-017",
-        "pump_name": "P-017",
-        "nominal_flow_m3_h": 199.08,
-        "avg_measured_flow": 178.358,
-        "deviation_pct": 10.409
+        "avg_measured_flow": 45.55,
+        "deviation_pct": 10.44
       },
       {
         "pump_id": "PUMP-001",
         "pump_name": "P-001",
         "nominal_flow_m3_h": 151.96,
-        "avg_measured_flow": 136.234,
-        "deviation_pct": 10.349
+        "avg_measured_flow": 136.269,
+        "deviation_pct": 10.325
+      },
+      {
+        "pump_id": "PUMP-017",
+        "pump_name": "P-017",
+        "nominal_flow_m3_h": 199.08,
+        "avg_measured_flow": 178.72,
+        "deviation_pct": 10.227
       },
       {
         "pump_id": "PUMP-018",
         "pump_name": "P-018",
         "nominal_flow_m3_h": 129.95,
-        "avg_measured_flow": 116.507,
-        "deviation_pct": 10.344
+        "avg_measured_flow": 116.745,
+        "deviation_pct": 10.161
       },
       {
         "pump_id": "PUMP-019",
         "pump_name": "P-019",
         "nominal_flow_m3_h": 165.69,
-        "avg_measured_flow": 148.642,
-        "deviation_pct": 10.289
+        "avg_measured_flow": 148.943,
+        "deviation_pct": 10.107
       },
       {
         "pump_id": "PUMP-020",
         "pump_name": "P-020",
         "nominal_flow_m3_h": 50.8,
-        "avg_measured_flow": 45.581,
-        "deviation_pct": 10.274
+        "avg_measured_flow": 45.67,
+        "deviation_pct": 10.098
       }
     ],
     "status": "PASS",
@@ -561,7 +671,7 @@
         "injected": 1,
         "detected": 1,
         "detection_rate_pct": 100.0,
-        "mean_latency_seconds": 300.0
+        "mean_latency_seconds": 360.0
       },
       {
         "issue_type": "PUMP_DEGRADATION",
@@ -658,7 +768,7 @@
         "evaluation_level": "EVENT",
         "scope": "overall",
         "metric_name": "unknown_incident_count",
-        "metric_value": 0.0
+        "metric_value": 58.0
       }
     ],
     "status": "PASS",
@@ -673,15 +783,15 @@
     "rows": [
       {
         "metric_name": "f1_score",
-        "metric_value": 0.9553398058252428
+        "metric_value": 0.9533073929961088
       },
       {
         "metric_name": "false_negatives",
-        "metric_value": 18.0
+        "metric_value": 19.0
       },
       {
         "metric_name": "false_positive_rate",
-        "metric_value": 0.0001221896383186
+        "metric_value": 0.0001192748091603
       },
       {
         "metric_name": "false_positives",
@@ -689,19 +799,19 @@
       },
       {
         "metric_name": "precision",
-        "metric_value": 0.9800796812749004
+        "metric_value": 0.98
       },
       {
         "metric_name": "recall",
-        "metric_value": 0.9318181818181818
+        "metric_value": 0.928030303030303
       },
       {
         "metric_name": "true_negatives",
-        "metric_value": 40915.0
+        "metric_value": 41915.0
       },
       {
         "metric_name": "true_positives",
-        "metric_value": 246.0
+        "metric_value": 245.0
       }
     ],
     "status": "PASS",
@@ -712,12 +822,17 @@
     "label": "Q10 | Alarm incident classifications | expect=nonempty",
     "expectation": "nonempty",
     "sql": "-- Q10 | Alarm incident classifications | expect=nonempty\nSELECT\n    classification,\n    COUNT(*) AS incidents,\n    ROUND(AVG(latency_seconds), 1) AS mean_latency_seconds\nFROM alarm_incidents\nGROUP BY classification\nORDER BY classification",
-    "row_count": 1,
+    "row_count": 2,
     "rows": [
       {
         "classification": "MATCHED",
         "incidents": 4,
-        "mean_latency_seconds": 270.0
+        "mean_latency_seconds": 285.0
+      },
+      {
+        "classification": "UNKNOWN",
+        "incidents": 58,
+        "mean_latency_seconds": null
       }
     ],
     "status": "PASS",
@@ -734,22 +849,22 @@
         "issue_type": "BLOCKAGE",
         "severity": "light",
         "windows": 1,
-        "first_start": "2026-01-01T03:48:00",
-        "last_end": "2026-01-01T04:48:00"
+        "first_start": "2026-01-01T03:30:00",
+        "last_end": "2026-01-01T04:30:00"
       },
       {
         "issue_type": "LEAK",
         "severity": "medium",
         "windows": 1,
-        "first_start": "2026-01-01T02:00:00",
-        "last_end": "2026-01-01T03:30:00"
+        "first_start": "2026-01-01T01:30:00",
+        "last_end": "2026-01-01T03:00:00"
       },
       {
         "issue_type": "NORMAL",
         "severity": "normal",
         "windows": 5,
         "first_start": "2026-01-01T00:00:00",
-        "last_end": "2026-01-01T07:30:00"
+        "last_end": "2026-01-01T07:35:00"
       },
       {
         "issue_type": "PUMP_DEGRADATION",
@@ -797,74 +912,74 @@
     "row_count": 10,
     "rows": [
       {
-        "sensor_id": "SNS-001",
-        "equipment_id": "PUMP-001",
-        "sensor_type": "FLOW",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_id": "SNS-121",
+        "equipment_id": "TANK-019",
+        "sensor_type": "LEVEL",
+        "sensor_role": "level",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-002",
-        "equipment_id": "PUMP-001",
+        "sensor_id": "SNS-122",
+        "equipment_id": "TANK-019",
         "sensor_type": "PRESSURE",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "pressure",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-003",
-        "equipment_id": "PUMP-002",
+        "sensor_id": "SNS-123",
+        "equipment_id": "TANK-019",
         "sensor_type": "FLOW",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "inlet",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-004",
-        "equipment_id": "PUMP-002",
-        "sensor_type": "PRESSURE",
-        "sensor_role": "discharge",
-        "reading_count": 450
-      },
-      {
-        "sensor_id": "SNS-005",
-        "equipment_id": "PUMP-003",
+        "sensor_id": "SNS-124",
+        "equipment_id": "TANK-019",
         "sensor_type": "FLOW",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "outlet",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-006",
-        "equipment_id": "PUMP-003",
+        "sensor_id": "SNS-125",
+        "equipment_id": "TANK-020",
+        "sensor_type": "LEVEL",
+        "sensor_role": "level",
+        "reading_count": 454
+      },
+      {
+        "sensor_id": "SNS-126",
+        "equipment_id": "TANK-020",
         "sensor_type": "PRESSURE",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "pressure",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-007",
-        "equipment_id": "PUMP-004",
+        "sensor_id": "SNS-127",
+        "equipment_id": "TANK-020",
         "sensor_type": "FLOW",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "inlet",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-008",
-        "equipment_id": "PUMP-004",
-        "sensor_type": "PRESSURE",
-        "sensor_role": "discharge",
-        "reading_count": 450
-      },
-      {
-        "sensor_id": "SNS-009",
-        "equipment_id": "PUMP-005",
+        "sensor_id": "SNS-128",
+        "equipment_id": "TANK-020",
         "sensor_type": "FLOW",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_role": "outlet",
+        "reading_count": 454
       },
       {
-        "sensor_id": "SNS-010",
-        "equipment_id": "PUMP-005",
-        "sensor_type": "PRESSURE",
-        "sensor_role": "discharge",
-        "reading_count": 450
+        "sensor_id": "SNS-129",
+        "equipment_id": "VALVE-021",
+        "sensor_type": "FLOW",
+        "sensor_role": "through",
+        "reading_count": 454
+      },
+      {
+        "sensor_id": "SNS-130",
+        "equipment_id": "VALVE-022",
+        "sensor_type": "FLOW",
+        "sensor_role": "through",
+        "reading_count": 454
       }
     ],
     "status": "PASS",
@@ -882,12 +997,12 @@
         "random_seed": 20261022,
         "generator_version": "2.0.0",
         "schema_version": "2.0.0",
-        "scenario_set": "compact",
+        "scenario_set": "baseline",
         "sampling_interval_seconds": 60,
-        "configuration_hash": "5dc89e6658a5497e",
+        "configuration_hash": "609a1175ed73ebce",
         "status": "COMPLETED",
         "start_time": "2026-01-01T00:00:00",
-        "end_time": "2026-01-01T07:30:00"
+        "end_time": "2026-01-01T07:35:00"
       }
     ],
     "status": "PASS",
@@ -898,8 +1013,15 @@
     "label": "Q16 | Alarm rule/category distribution | expect=nonempty",
     "expectation": "nonempty",
     "sql": "-- Q16 | Alarm rule/category distribution | expect=nonempty\nSELECT\n    rule_id,\n    alarm_category,\n    COUNT(*) AS episodes,\n    SUM(occurrence_count) AS active_readings,\n    ROUND(AVG(occurrence_count), 1) AS mean_duration_samples\nFROM alarms\nGROUP BY rule_id, alarm_category\nORDER BY episodes DESC, rule_id",
-    "row_count": 5,
+    "row_count": 6,
     "rows": [
+      {
+        "rule_id": "RULE-009",
+        "alarm_category": "SENSOR_FAULT",
+        "episodes": 100,
+        "active_readings": 100,
+        "mean_duration_samples": 1.0
+      },
       {
         "rule_id": "RULE-005",
         "alarm_category": "PROCESS_FAULT",
@@ -918,8 +1040,8 @@
         "rule_id": "RULE-002",
         "alarm_category": "PROCESS_FAULT",
         "episodes": 1,
-        "active_readings": 85,
-        "mean_duration_samples": 85.0
+        "active_readings": 84,
+        "mean_duration_samples": 84.0
       },
       {
         "rule_id": "RULE-006",
@@ -953,48 +1075,48 @@
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:24:00",
-        "balance_residual_m3_h": 6.292
+        "timestamp": "2026-01-01T01:50:00",
+        "balance_residual_m3_h": 6.353
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:25:00",
-        "balance_residual_m3_h": 6.292
+        "timestamp": "2026-01-01T01:39:00",
+        "balance_residual_m3_h": 6.352
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:27:00",
-        "balance_residual_m3_h": 6.292
+        "timestamp": "2026-01-01T02:56:00",
+        "balance_residual_m3_h": 6.288
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:28:00",
-        "balance_residual_m3_h": 6.292
+        "timestamp": "2026-01-01T02:58:00",
+        "balance_residual_m3_h": 6.288
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:29:00",
-        "balance_residual_m3_h": 6.292
+        "timestamp": "2026-01-01T02:52:00",
+        "balance_residual_m3_h": 6.287
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:16:00",
-        "balance_residual_m3_h": 6.291
+        "timestamp": "2026-01-01T02:53:00",
+        "balance_residual_m3_h": 6.287
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:17:00",
-        "balance_residual_m3_h": 6.291
+        "timestamp": "2026-01-01T02:54:00",
+        "balance_residual_m3_h": 6.287
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:19:00",
-        "balance_residual_m3_h": 6.291
+        "timestamp": "2026-01-01T02:55:00",
+        "balance_residual_m3_h": 6.287
       },
       {
         "equipment_id": "TANK-001",
-        "timestamp": "2026-01-01T03:20:00",
-        "balance_residual_m3_h": 6.291
+        "timestamp": "2026-01-01T02:57:00",
+        "balance_residual_m3_h": 6.287
       }
     ],
     "status": "PASS",

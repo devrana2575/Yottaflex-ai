@@ -206,10 +206,10 @@ Evaluation set details:
 - The 10 point false positives are 1-5 sample episode tails after events end. They are retained.
 - The 2 unknown predictions at SNS-003 11:00-11:01 are excluded and reported, not counted as FP.
 - Sensor-fault latency is longer (60-3,180 s) than process latency (240-360 s), by design.
-- All 87 executable validation rows, 20 SQL assertions and 68 tests pass. Four review-level WARNs
-  (light leak, reconstructed prompt records, un-repeated cross-version rerun, and publication pending
-  explicit authorization) are tracked separately in the validation report; they are not rows in the
-  87-row validation CSV.
+- All 87 executable validation rows, 20 SQL assertions and 68 tests pass. Review-level caveats
+  (light leak, reconstructed prompt records, un-repeated cross-version rerun, and ignored generated
+  outputs) are tracked separately in the validation report; they are not rows in the 87-row validation
+  CSV. Publication was explicitly authorized on 2026-10-28.
 
 ## 9. Verification and Evidence
 
@@ -229,7 +229,8 @@ Evidence:
   full/default hash comparison.
 - [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json) — exact
   100k two-run comparison and portable-export checks.
-- [`reports/final/baseline_100k/`](../reports/final/baseline_100k/) — compact exact-100k evidence.
+- [`reports/final/yf2-100k/`](../reports/final/yf2-100k/) - compact exact-100k evidence.
+- [`reports/final/yf2-compact-99k/`](../reports/final/yf2-compact-99k/) - historical compact 99k evidence.
 - [`reports/final/yf2-evaluation/`](../reports/final/yf2-evaluation/) — compact evaluation evidence.
 
 Two fresh exact-100k runs in the main environment produced 20/23 byte-identical files; the other

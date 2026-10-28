@@ -1,0 +1,4 @@
+facility_id,facility_name,location_code,lifecycle_state,created_at
+FAC-001,North Refinery Complex,NR-01,ACTIVE,2026-01-01T00:00:00
+FAC-002,South Processing Plant,SP-02,ACTIVE,2026-01-01T00:00:00
+FAC-003,East Distribution Hub,ED-03,ACTIVE,2026-01-01T00:00:00

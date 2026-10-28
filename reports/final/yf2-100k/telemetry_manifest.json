@@ -1,0 +1,17 @@
+{
+  "source_run": "<external-temp>/repro-100k-a",
+  "source_file": "telemetry.csv (outside repository; not committed)",
+  "telemetry_rows": 100000,
+  "telemetry_bytes": 9262846,
+  "sha256": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
+  "sensor_count": 220,
+  "unique_telemetry_ids": true,
+  "duplicate_sensor_timestamp_rows": 0,
+  "sensor_sample_distribution": {
+    "455": 120,
+    "454": 100
+  },
+  "first_telemetry_id": "TEL-000000000001",
+  "last_telemetry_id": "TEL-000000100000",
+  "note": "Row count and distribution were computed directly from the generated telemetry.csv; the file itself is intentionally not committed."
+}

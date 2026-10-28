@@ -1,0 +1,5 @@
+operating_mode_id,mode_name,description,permitted_configuration,effective_from,effective_to,lifecycle_state
+OPM-001,NORMAL,Normal steady-state operation,ALL_EQUIPMENT_ACTIVE,2026-01-01T00:00:00,,ACTIVE
+OPM-002,STARTUP,System startup sequence,SEQUENTIAL_START,2026-01-01T00:00:00,,ACTIVE
+OPM-003,SHUTDOWN,System shutdown sequence,SEQUENTIAL_STOP,2026-01-01T00:00:00,,ACTIVE
+OPM-004,MAINTENANCE,Maintenance mode with reduced capacity,LIMITED_OPERATION,2026-01-01T00:00:00,,ACTIVE

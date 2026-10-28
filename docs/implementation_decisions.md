@@ -279,5 +279,6 @@ documented instead.
 - No dashboard or real-time streaming was added.
 - The 2.0 implementation is commit `6103e1a` on `origin/main` after explicit authorization. The
   2026-10-27 audit corrections were committed and pushed after separate explicit authorization.
-  The 2026-10-28 remediation is committed locally after review; publication is pending explicit
-  confirmation and is not claimed as pushed. No force-push or history rewrite was performed.
+  The 2026-10-28 remediation was committed locally and pushed to `origin/main` after the user
+  explicitly authorized publication with the prompt `push`. No force-push or history rewrite was
+  performed.

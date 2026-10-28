@@ -1,0 +1,10 @@
+gt_id,simulation_run_id,scenario_id,issue_type,severity,affected_equipment_id,affected_sensor_id,expected_sensor_ids,start_time,end_time,expected_detection,expected_alarm_category,injection_parameters
+GT-000001,SIM-2026-000001,SCN-000001,LEAK,medium,TANK-001,,"[""SNS-015""]",2026-01-01T01:30:00,2026-01-01T03:00:00,YES,PROCESS_FAULT,"{""leak_fraction_capacity_per_hour"": 0.05, ""severity"": ""medium""}"
+GT-000002,SIM-2026-000001,SCN-000002,BLOCKAGE,light,PUMP-002,,"[""SNS-003""]",2026-01-01T03:30:00,2026-01-01T04:30:00,YES,PROCESS_FAULT,"{""flow_factor"": 0.85, ""pressure_factor"": 1.15, ""severity"": ""light""}"
+GT-000003,SIM-2026-000001,SCN-000003,PUMP_DEGRADATION,medium,PUMP-003,,"[""SNS-005""]",2026-01-01T05:00:00,2026-01-01T06:12:00,YES,PROCESS_FAULT,"{""flow_factor"": 0.8, ""head_factor"": 0.72, ""severity"": ""medium""}"
+GT-000004,SIM-2026-000001,SCN-000004,SENSOR_FAULT,medium,TANK-003,SNS-023,"[""SNS-023""]",2026-01-01T06:30:00,2026-01-01T07:12:00,YES,SENSOR_FAULT,"{""bias_pct"": 6.0, ""severity"": ""medium""}"
+GT-000005,SIM-2026-000001,SCN-000005,NORMAL,normal,,,[],2026-01-01T00:00:00,2026-01-01T01:30:00,NO,NORMAL,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}"
+GT-000006,SIM-2026-000001,SCN-000006,NORMAL,normal,,,[],2026-01-01T03:00:00,2026-01-01T03:30:00,NO,NORMAL,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}"
+GT-000007,SIM-2026-000001,SCN-000007,NORMAL,normal,,,[],2026-01-01T04:30:00,2026-01-01T05:00:00,NO,NORMAL,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}"
+GT-000008,SIM-2026-000001,SCN-000008,NORMAL,normal,,,[],2026-01-01T06:12:00,2026-01-01T06:30:00,NO,NORMAL,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}"
+GT-000009,SIM-2026-000001,SCN-000009,NORMAL,normal,,,[],2026-01-01T07:12:00,2026-01-01T07:35:00,NO,NORMAL,"{""label"": ""normal_baseline"", ""coverage"": ""complement""}"

@@ -18,7 +18,7 @@
 
 **Commands and observed results:**
 
-- `python -m pytest -q` → **68 passed in 44.25 s** in the main environment. The prior 62-test suite
+- `python -m pytest -q` → **68 passed** in the main environment. The prior 62-test suite
   passed in the 2026-10-27 main and fresh environments; the new suite was not re-run in the fresh
   pandas 3.1.0 / NumPy 2.5.4 environment.
 - Exact-100k baseline (`--scenario-set baseline --target-telemetry-rows 100000`): **100,000** rows;
@@ -38,7 +38,7 @@
   fields. All **19 SQLite tables** were logically equal, **18 populated**, `integrity_check=ok`,
   **zero foreign-key violations**.
 - Portable exports: JSON 18 tables / 101,275 rows; SQL seed 101,275 rows / 29,733,009 bytes
-  (`sha256=38021605bb6891bc119423ec250193c13eabf63cc8900a0d67efbe41979ce2ce`); executed into a new
+  (`sha256=86372f77388c7e6769744010f7706652fb2e35972aead77b5bf94cf0f7ea9f04`); executed into a new
   SQLite database with `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341
   state events; CSV/JSON/SQLite/SQL telemetry IDs matched. The JSON manifest stores a relative
   `source_root` (`..`) rather than an absolute path, so the export directory remains portable.
@@ -46,12 +46,13 @@
   allowed transitions and references validated; no placeholder rows; not detector input.
 - Security/PII/large-file scan: 0 secret/PII hits; no tracked file over 1 MB; `git diff --check`
   clean. Ignored `data/processed/` outputs remain untracked and were not treated as evidence.
-- Git: changes prepared for a local commit after diff review. No push was executed; publication is
-  pending explicit authorization.
+- Git: final audit and local commit followed by an explicit `push` authorization from the user;
+  pushed to `origin/main` without force-push or history rewrite.
 
 **Remaining caveats:** light-leak sensitivity (WARN); reconstructed prompt records because the
-original 1.x and full 2026-10-28 prompt text were not retained verbatim (WARN); cross-version clean
-environment not repeated for the new code (NOT VERIFIED); publication pending (WARN).
+original 1.x and prior 2026-10-28 prompt text were not retained verbatim (WARN; the latest `push`
+prompt is verbatim); cross-version clean environment not repeated for the new code (NOT VERIFIED);
+ignored local generated outputs remain untracked (WARN).
 
 ## 2026-10-27 2.0 Submission-Readiness Audit (Historical)
 

@@ -21,7 +21,7 @@ industrial control system and not a validated digital twin.
 | Equipment state history | 341 populated rows for the 100k baseline (333 initialization + 8 scenario transitions) |
 | Primary independent evaluation | 11 events: TP=10, FN=1, FP=0; event precision=1.0, recall=0.9091, F1=0.9524 |
 | Point evaluation (evaluation set) | TP=844, FP=10, TN=112,190, FN=206; precision=0.9883, recall=0.8038 |
-| Validation | 87 executable PASS / 0 FAIL / 0 CSV WARN / 0 NOT_IMPLEMENTED; 4 review WARNs (tracked separately) |
+| Validation | 87 executable PASS / 0 FAIL / 0 CSV WARN / 0 NOT_IMPLEMENTED; review-level caveats tracked separately |
 | SQL analytics | 20 statements, 20 PASS |
 | Tests | 68 passed |
 | Reproducibility (exact 100k) | 20/23 files byte-identical across two fresh runs; the other 3 differ only in wall-clock `evaluated_at`/`validated_at` fields and are logically identical |
@@ -29,9 +29,10 @@ industrial control system and not a validated digital twin.
 
 The full evidence, including per-event results, false-alarm analysis and the requirement matrix, is
 in [`docs/validation_report.md`](docs/validation_report.md). The `87` count is the executable
-validation CSV only. Four review WARNs (light-leak coverage, reconstructed prompt history, the
-un-repeated cross-version clean environment, and publication pending authorization) are tracked
-there separately and are not added to that denominator.
+validation CSV only. Review-level caveats (light-leak coverage, reconstructed prompt history, the
+un-repeated cross-version clean environment, and ignored local generated outputs) are tracked there
+separately and are not added to that denominator. Publication was explicitly authorized on
+2026-10-28.
 
 ## What Changed in 2.0
 
@@ -92,7 +93,7 @@ yottaflex/
 ## Setup
 
 Requirements: Python 3.11 or newer, Windows/Linux/macOS. A fresh virtual environment is
-recommended:
+recommended. From the repository root:
 
 ```bash
 python -m venv .venv
@@ -102,9 +103,16 @@ python -m venv .venv
 source .venv/bin/activate
 
 python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
 python -m pip install -e .
+python -m pip install pytest
 ```
+
+`pip install -e .` installs the core runtime declared in `setup.py`. `requirements.txt` is the
+complete development/optional-tooling list (including pytest, the dashboard, SQLAlchemy, and
+documentation/QA tools); use `python -m pip install -r requirements.txt` instead of the
+`pytest` line when those optional tools are needed. If the package is not installed, the checked-in
+`pytest.ini` still adds `src/` to the test import path, so `python -m pytest -q` can run from a
+checkout; installing the package is still required for the `yottaflex` console command.
 
 Verify the installation and CLI:
 
@@ -117,8 +125,9 @@ A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4) was insta
 during the 2026-10-27 submission-readiness audit; the full pipeline, 87 validation checks, 20 SQL
 assertions and 62 tests passed at that time. The 2026-10-28 remediation was re-run in the main
 environment, including the exact 100k pipeline, exports and the full test suite; the pandas 3.1
-clean environment was not recreated for this remediation. The package has no `pyproject.toml`;
-`setup.py` is the packaging metadata, and editable installation works with current pip/setuptools.
+clean environment was not recreated for this remediation. The current tree contains six additional
+submission tests and collects **68 tests**. The package has no `pyproject.toml`; `setup.py` is the
+packaging metadata, and editable installation works with current pip/setuptools.
 
 ## Quick Start
 
@@ -199,9 +208,11 @@ outside version control.
 python -m pytest -q
 ```
 
-The suite includes unit, data-integrity, scenario, detection, evaluation, validation, integration,
+Run this from the repository root. No `PYTHONPATH` variable is needed: `pytest.ini` sets
+`pythonpath = src`, and an editable install (`python -m pip install -e .`) provides the CLI. The
+suite includes unit, data-integrity, scenario, detection, evaluation, validation, integration,
 submission-artifact and reproducibility tests. The historical 11 tests are retained and extended;
-the final remediation run reports 68 passed.
+the current suite collects 68 tests and the final remediation run reports 68 passed.
 
 ## Data Model
 
@@ -381,10 +392,10 @@ Detailed per-event tables and false-alarm analysis are in
   physics, alarm lifecycle, evaluation formulas, ground-truth isolation, negative cases and SQLite
   integrity. Final result: **87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED** in
   `validation_results.csv`.
-- **Four review-level WARNs are tracked separately** and are not rows in that CSV: light-leak
+- **Review-level caveats are tracked separately** and are not rows in that CSV: light-leak
   detection coverage, the reconstructed prompt records, the un-repeated cross-version clean
-  environment, and publication pending explicit authorization. They are explained in
-  [`docs/validation_report.md`](docs/validation_report.md) ?10.
+  environment, and ignored local generated outputs. They are explained in
+  [`docs/validation_report.md`](docs/validation_report.md) section 10.
 - **20 SQL statements** in `sql/analysis_queries.sql` each declare `expect=nonempty` or
   `expect=zero_rows`. The runner executes them and fails on an unmet expectation. Final result:
   **20 PASS**.
@@ -475,6 +486,6 @@ This is a synthetic project for evaluation purposes. AI prompt history, tool usa
 implementation decisions are recorded in [`ai_usage/`](ai_usage/). The 2.0 implementation was
 committed as `6103e1a` and published to `origin/main` only after explicit authorization. The
 2026-10-27 audit corrections were committed and pushed to `origin/main` after separate explicit
-authorization. The 2026-10-28 remediation is committed locally after review; publication is pending
-explicit confirmation in the current prompt and is not claimed as pushed. No force-push or
-shared-history rewrite occurred.
+authorization. The 2026-10-28 remediation was committed locally and, after the user explicitly
+authorized publication with the prompt `push`, pushed to `origin/main` after the final audit. No
+force-push or shared-history rewrite occurred.

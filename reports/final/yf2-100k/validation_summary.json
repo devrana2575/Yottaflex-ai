@@ -16,7 +16,7 @@
       "entity_id": null,
       "description": "facility_id values are unique and present",
       "details": "rows=3",
-      "validated_at": "2026-10-28T13:39:10.786283+00:00"
+      "validated_at": "2026-10-28T14:18:40.208012+00:00"
     },
     {
       "validation_id": "VAL-000002",
@@ -27,7 +27,7 @@
       "entity_id": null,
       "description": "pump_id values are unique and present",
       "details": "rows=20",
-      "validated_at": "2026-10-28T13:39:10.787540+00:00"
+      "validated_at": "2026-10-28T14:18:40.208392+00:00"
     },
     {
       "validation_id": "VAL-000003",
@@ -38,7 +38,7 @@
       "entity_id": null,
       "description": "tank_id values are unique and present",
       "details": "rows=30",
-      "validated_at": "2026-10-28T13:39:10.788677+00:00"
+      "validated_at": "2026-10-28T14:18:40.208731+00:00"
     },
     {
       "validation_id": "VAL-000004",
@@ -49,7 +49,7 @@
       "entity_id": null,
       "description": "valve_id values are unique and present",
       "details": "rows=60",
-      "validated_at": "2026-10-28T13:39:10.789579+00:00"
+      "validated_at": "2026-10-28T14:18:40.209047+00:00"
     },
     {
       "validation_id": "VAL-000005",
@@ -60,7 +60,7 @@
       "entity_id": null,
       "description": "pipe_id values are unique and present",
       "details": "rows=135",
-      "validated_at": "2026-10-28T13:39:10.790552+00:00"
+      "validated_at": "2026-10-28T14:18:40.209370+00:00"
     },
     {
       "validation_id": "VAL-000006",
@@ -71,7 +71,7 @@
       "entity_id": null,
       "description": "sensor_id values are unique and present",
       "details": "rows=220",
-      "validated_at": "2026-10-28T13:39:10.791440+00:00"
+      "validated_at": "2026-10-28T14:18:40.209683+00:00"
     },
     {
       "validation_id": "VAL-000007",
@@ -82,7 +82,7 @@
       "entity_id": null,
       "description": "operating_mode_id values are unique and present",
       "details": "rows=4",
-      "validated_at": "2026-10-28T13:39:10.792271+00:00"
+      "validated_at": "2026-10-28T14:18:40.209993+00:00"
     },
     {
       "validation_id": "VAL-000008",
@@ -93,7 +93,7 @@
       "entity_id": null,
       "description": "Facility references are valid",
       "details": null,
-      "validated_at": "2026-10-28T13:39:10.801491+00:00"
+      "validated_at": "2026-10-28T14:18:40.211617+00:00"
     },
     {
       "validation_id": "VAL-000009",
@@ -104,7 +104,7 @@
       "entity_id": null,
       "description": "Sensor equipment and pipe node references match equipment facilities",
       "details": null,
-      "validated_at": "2026-10-28T13:39:10.846794+00:00"
+      "validated_at": "2026-10-28T14:18:40.230352+00:00"
     },
     {
       "validation_id": "VAL-000010",
@@ -115,7 +115,7 @@
       "entity_id": null,
       "description": "All pipe endpoints reference equipment nodes",
       "details": null,
-      "validated_at": "2026-10-28T13:39:10.857506+00:00"
+      "validated_at": "2026-10-28T14:18:40.235384+00:00"
     },
     {
       "validation_id": "VAL-000011",
@@ -126,7 +126,7 @@
       "entity_id": null,
       "description": "Tank capacity, height and initial level are within physical bounds",
       "details": null,
-      "validated_at": "2026-10-28T13:39:10.858793+00:00"
+      "validated_at": "2026-10-28T14:18:40.235923+00:00"
     },
     {
       "validation_id": "VAL-000012",
@@ -137,7 +137,7 @@
       "entity_id": null,
       "description": "Each facility equipment graph is connected",
       "details": null,
-      "validated_at": "2026-10-28T13:39:10.900428+00:00"
+      "validated_at": "2026-10-28T14:18:40.256682+00:00"
     },
     {
       "validation_id": "VAL-000013",
@@ -148,7 +148,7 @@
       "entity_id": null,
       "description": "Every pump/tank/valve has the documented sensor roles",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.357465+00:00"
+      "validated_at": "2026-10-28T14:18:40.463611+00:00"
     },
     {
       "validation_id": "VAL-000014",
@@ -159,7 +159,7 @@
       "entity_id": null,
       "description": "Sensor types use their declared measurement units",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.362805+00:00"
+      "validated_at": "2026-10-28T14:18:40.465901+00:00"
     },
     {
       "validation_id": "VAL-000015",
@@ -170,7 +170,7 @@
       "entity_id": null,
       "description": "Master-data counts match the configured scale",
       "details": "actual={'facilities': 3, 'pumps': 20, 'tanks': 30, 'valves': 60}, expected={'facilities': 3, 'pumps': 20, 'tanks': 30, 'valves': 60}",
-      "validated_at": "2026-10-28T13:39:11.362905+00:00"
+      "validated_at": "2026-10-28T14:18:40.465955+00:00"
     },
     {
       "validation_id": "VAL-000016",
@@ -181,7 +181,7 @@
       "entity_id": null,
       "description": "Sensor count matches 2 pump + 4 tank + 1 valve sensors per equipment",
       "details": "actual=220, expected=220",
-      "validated_at": "2026-10-28T13:39:11.362918+00:00"
+      "validated_at": "2026-10-28T14:18:40.465961+00:00"
     },
     {
       "validation_id": "VAL-000017",
@@ -192,7 +192,7 @@
       "entity_id": null,
       "description": "A completed simulation run record exists",
       "details": "rows=1",
-      "validated_at": "2026-10-28T13:39:11.362938+00:00"
+      "validated_at": "2026-10-28T14:18:40.465972+00:00"
     },
     {
       "validation_id": "VAL-000018",
@@ -203,7 +203,7 @@
       "entity_id": null,
       "description": "Simulation run is marked COMPLETED",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.363397+00:00"
+      "validated_at": "2026-10-28T14:18:40.466208+00:00"
     },
     {
       "validation_id": "VAL-000019",
@@ -214,7 +214,7 @@
       "entity_id": null,
       "description": "Schema and generator versions match the package configuration",
       "details": "run_schema=2.0.0, package=2.0.0",
-      "validated_at": "2026-10-28T13:39:11.363428+00:00"
+      "validated_at": "2026-10-28T14:18:40.466222+00:00"
     },
     {
       "validation_id": "VAL-000020",
@@ -225,7 +225,7 @@
       "entity_id": null,
       "description": "Scenario set in the run record matches the configuration",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.363441+00:00"
+      "validated_at": "2026-10-28T14:18:40.466229+00:00"
     },
     {
       "validation_id": "VAL-000021",
@@ -236,7 +236,7 @@
       "entity_id": null,
       "description": "Run start/end match the configured simulation window",
       "details": "2026-01-01T00:00:00 .. 2026-01-01T07:35:00",
-      "validated_at": "2026-10-28T13:39:11.363546+00:00"
+      "validated_at": "2026-10-28T14:18:40.466282+00:00"
     },
     {
       "validation_id": "VAL-000022",
@@ -247,7 +247,7 @@
       "entity_id": null,
       "description": "Run configuration hash equals the saved configuration hash",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.363804+00:00"
+      "validated_at": "2026-10-28T14:18:40.466423+00:00"
     },
     {
       "validation_id": "VAL-000023",
@@ -258,7 +258,7 @@
       "entity_id": null,
       "description": "Input manifest hashes match the generated master-data files",
       "details": "7 files",
-      "validated_at": "2026-10-28T13:39:11.366088+00:00"
+      "validated_at": "2026-10-28T14:18:40.467546+00:00"
     },
     {
       "validation_id": "VAL-000024",
@@ -269,7 +269,7 @@
       "entity_id": null,
       "description": "Outcome summary telemetry row count matches telemetry.csv and any configured exact target",
       "details": "summary=100000, actual=100000, target=100000",
-      "validated_at": "2026-10-28T13:39:11.366193+00:00"
+      "validated_at": "2026-10-28T14:18:40.467583+00:00"
     },
     {
       "validation_id": "VAL-000025",
@@ -280,7 +280,7 @@
       "entity_id": null,
       "description": "Telemetry data exists",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.366222+00:00"
+      "validated_at": "2026-10-28T14:18:40.467597+00:00"
     },
     {
       "validation_id": "VAL-000026",
@@ -291,7 +291,7 @@
       "entity_id": null,
       "description": "Telemetry contains the required observed-data columns",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.366307+00:00"
+      "validated_at": "2026-10-28T14:18:40.467629+00:00"
     },
     {
       "validation_id": "VAL-000027",
@@ -302,7 +302,7 @@
       "entity_id": null,
       "description": "Telemetry contains no scenario or ground-truth label columns",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.366346+00:00"
+      "validated_at": "2026-10-28T14:18:40.467649+00:00"
     },
     {
       "validation_id": "VAL-000028",
@@ -313,7 +313,7 @@
       "entity_id": null,
       "description": "telemetry_id is unique",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.384261+00:00"
+      "validated_at": "2026-10-28T14:18:40.479673+00:00"
     },
     {
       "validation_id": "VAL-000029",
@@ -324,7 +324,7 @@
       "entity_id": null,
       "description": "Each (sensor, timestamp) sample is unique",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.398912+00:00"
+      "validated_at": "2026-10-28T14:18:40.485883+00:00"
     },
     {
       "validation_id": "VAL-000030",
@@ -335,7 +335,7 @@
       "entity_id": null,
       "description": "All telemetry timestamps parse",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.430325+00:00"
+      "validated_at": "2026-10-28T14:18:40.501853+00:00"
     },
     {
       "validation_id": "VAL-000031",
@@ -346,7 +346,7 @@
       "entity_id": null,
       "description": "All samples lie on the configured cadence and cover the run window",
       "details": "min=2026-01-01 00:00:00, max=2026-01-01 07:34:00, expected_last=2026-01-01 07:34:00",
-      "validated_at": "2026-10-28T13:39:11.438583+00:00"
+      "validated_at": "2026-10-28T14:18:40.505146+00:00"
     },
     {
       "validation_id": "VAL-000032",
@@ -357,7 +357,7 @@
       "entity_id": null,
       "description": "Measured values are finite numbers",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.439203+00:00"
+      "validated_at": "2026-10-28T14:18:40.505489+00:00"
     },
     {
       "validation_id": "VAL-000033",
@@ -368,7 +368,7 @@
       "entity_id": null,
       "description": "Quality statuses use the documented vocabulary",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.444103+00:00"
+      "validated_at": "2026-10-28T14:18:40.507520+00:00"
     },
     {
       "validation_id": "VAL-000034",
@@ -379,7 +379,7 @@
       "entity_id": null,
       "description": "Telemetry units match sensor metadata",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.470516+00:00"
+      "validated_at": "2026-10-28T14:18:40.521035+00:00"
     },
     {
       "validation_id": "VAL-000035",
@@ -390,7 +390,7 @@
       "entity_id": null,
       "description": "Every telemetry row references a known sensor",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.478823+00:00"
+      "validated_at": "2026-10-28T14:18:40.525119+00:00"
     },
     {
       "validation_id": "VAL-000036",
@@ -401,7 +401,7 @@
       "entity_id": null,
       "description": "Every telemetry row references the simulation run",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.484273+00:00"
+      "validated_at": "2026-10-28T14:18:40.527511+00:00"
     },
     {
       "validation_id": "VAL-000037",
@@ -412,7 +412,7 @@
       "entity_id": null,
       "description": "Every operating mode reference is known",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.489084+00:00"
+      "validated_at": "2026-10-28T14:18:40.530334+00:00"
     },
     {
       "validation_id": "VAL-000038",
@@ -423,7 +423,7 @@
       "entity_id": null,
       "description": "Missing samples are confined to labelled sensor-fault windows",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.502756+00:00"
+      "validated_at": "2026-10-28T14:18:40.536615+00:00"
     },
     {
       "validation_id": "VAL-000039",
@@ -434,7 +434,7 @@
       "entity_id": null,
       "description": "Scenario and ground-truth rows exist",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.503323+00:00"
+      "validated_at": "2026-10-28T14:18:40.536841+00:00"
     },
     {
       "validation_id": "VAL-000040",
@@ -445,7 +445,7 @@
       "entity_id": null,
       "description": "Scenario and ground-truth identifiers are unique",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.504275+00:00"
+      "validated_at": "2026-10-28T14:18:40.537310+00:00"
     },
     {
       "validation_id": "VAL-000041",
@@ -456,7 +456,7 @@
       "entity_id": null,
       "description": "Every scenario definition has exactly one ground-truth row",
       "details": "scenarios=9, truth=9",
-      "validated_at": "2026-10-28T13:39:11.504481+00:00"
+      "validated_at": "2026-10-28T14:18:40.537460+00:00"
     },
     {
       "validation_id": "VAL-000042",
@@ -467,7 +467,7 @@
       "entity_id": null,
       "description": "Scenario windows are valid, ordered and inside the run",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.509093+00:00"
+      "validated_at": "2026-10-28T14:18:40.540600+00:00"
     },
     {
       "validation_id": "VAL-000043",
@@ -478,7 +478,7 @@
       "entity_id": null,
       "description": "Explicit NORMAL ground-truth windows exist",
       "details": "windows=5",
-      "validated_at": "2026-10-28T13:39:11.512750+00:00"
+      "validated_at": "2026-10-28T14:18:40.542535+00:00"
     },
     {
       "validation_id": "VAL-000044",
@@ -489,7 +489,7 @@
       "entity_id": null,
       "description": "Positive and NORMAL windows do not overlap",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.517723+00:00"
+      "validated_at": "2026-10-28T14:18:40.544140+00:00"
     },
     {
       "validation_id": "VAL-000045",
@@ -500,7 +500,7 @@
       "entity_id": null,
       "description": "NORMAL windows plus anomaly windows cover the run without unlabelled gaps",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.518040+00:00"
+      "validated_at": "2026-10-28T14:18:40.544267+00:00"
     },
     {
       "validation_id": "VAL-000046",
@@ -511,7 +511,7 @@
       "entity_id": null,
       "description": "Scenario severities use the documented vocabulary",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.518766+00:00"
+      "validated_at": "2026-10-28T14:18:40.544560+00:00"
     },
     {
       "validation_id": "VAL-000047",
@@ -522,7 +522,7 @@
       "entity_id": null,
       "description": "Expected sensors and affected equipment exist in master data",
       "details": null,
-      "validated_at": "2026-10-28T13:39:11.522811+00:00"
+      "validated_at": "2026-10-28T14:18:40.545798+00:00"
     },
     {
       "validation_id": "VAL-000048",
@@ -533,7 +533,7 @@
       "entity_id": null,
       "description": "Tank pressure equals hydrostatic head within configured tolerance",
       "details": "worst_tolerance_ratio=0.040",
-      "validated_at": "2026-10-28T13:39:12.343754+00:00"
+      "validated_at": "2026-10-28T14:18:40.882014+00:00"
     },
     {
       "validation_id": "VAL-000049",
@@ -544,7 +544,7 @@
       "entity_id": null,
       "description": "Normal-window pump head-flow points follow the nominal curve",
       "details": "worst_p99.9_residual_pct=0.014",
-      "validated_at": "2026-10-28T13:39:12.757194+00:00"
+      "validated_at": "2026-10-28T14:18:41.074304+00:00"
     },
     {
       "validation_id": "VAL-000050",
@@ -555,7 +555,7 @@
       "entity_id": null,
       "description": "Normal-window tank flows balance the measured level change",
       "details": "worst_tolerance_ratio=0.109",
-      "validated_at": "2026-10-28T13:39:14.108071+00:00"
+      "validated_at": "2026-10-28T14:18:41.657233+00:00"
     },
     {
       "validation_id": "VAL-000051",
@@ -566,7 +566,7 @@
       "entity_id": null,
       "description": "Every leak injection produces a positive flow-balance residual",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.151362+00:00"
+      "validated_at": "2026-10-28T14:18:41.676264+00:00"
     },
     {
       "validation_id": "VAL-000052",
@@ -577,7 +577,7 @@
       "entity_id": null,
       "description": "Blockage/degradation injections move the pump operating point off the nominal curve",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.199092+00:00"
+      "validated_at": "2026-10-28T14:18:41.698463+00:00"
     },
     {
       "validation_id": "VAL-000053",
@@ -588,7 +588,7 @@
       "entity_id": null,
       "description": "Bias/drift/stuck sensor injections create redundancy or temporal evidence",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.229115+00:00"
+      "validated_at": "2026-10-28T14:18:41.711939+00:00"
     },
     {
       "validation_id": "VAL-000054",
@@ -599,7 +599,7 @@
       "entity_id": null,
       "description": "Alarm episodes exist",
       "details": "rows=107",
-      "validated_at": "2026-10-28T13:39:14.230084+00:00"
+      "validated_at": "2026-10-28T14:18:41.712386+00:00"
     },
     {
       "validation_id": "VAL-000055",
@@ -610,7 +610,7 @@
       "entity_id": null,
       "description": "alarm_id is unique",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.230786+00:00"
+      "validated_at": "2026-10-28T14:18:41.712702+00:00"
     },
     {
       "validation_id": "VAL-000056",
@@ -621,7 +621,7 @@
       "entity_id": null,
       "description": "Alarm output carries no scenario identifier",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.230848+00:00"
+      "validated_at": "2026-10-28T14:18:41.712715+00:00"
     },
     {
       "validation_id": "VAL-000057",
@@ -632,7 +632,7 @@
       "entity_id": null,
       "description": "Alarm categories use PROCESS_FAULT, SENSOR_FAULT or UNCERTAIN",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.231149+00:00"
+      "validated_at": "2026-10-28T14:18:41.712856+00:00"
     },
     {
       "validation_id": "VAL-000058",
@@ -643,7 +643,7 @@
       "entity_id": null,
       "description": "Alarm severities use the documented vocabulary",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.231559+00:00"
+      "validated_at": "2026-10-28T14:18:41.712988+00:00"
     },
     {
       "validation_id": "VAL-000059",
@@ -654,7 +654,7 @@
       "entity_id": null,
       "description": "occurrence_count is at least one for every episode",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.232029+00:00"
+      "validated_at": "2026-10-28T14:18:41.713136+00:00"
     },
     {
       "validation_id": "VAL-000060",
@@ -665,7 +665,7 @@
       "entity_id": null,
       "description": "Alarm episodes are ordered and inside the run",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.236432+00:00"
+      "validated_at": "2026-10-28T14:18:41.715038+00:00"
     },
     {
       "validation_id": "VAL-000061",
@@ -676,7 +676,7 @@
       "entity_id": null,
       "description": "Alarm equipment attribution matches the sensor equipment",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.244599+00:00"
+      "validated_at": "2026-10-28T14:18:41.718845+00:00"
     },
     {
       "validation_id": "VAL-000062",
@@ -687,7 +687,7 @@
       "entity_id": null,
       "description": "Alarm event history identifiers are unique",
       "details": "rows=114",
-      "validated_at": "2026-10-28T13:39:14.245235+00:00"
+      "validated_at": "2026-10-28T14:18:41.719166+00:00"
     },
     {
       "validation_id": "VAL-000063",
@@ -698,7 +698,7 @@
       "entity_id": null,
       "description": "Every alarm has CREATED and every resolved alarm has RESOLVED history",
       "details": "missing_created=[], missing_resolved=[]",
-      "validated_at": "2026-10-28T13:39:14.252958+00:00"
+      "validated_at": "2026-10-28T14:18:41.721886+00:00"
     },
     {
       "validation_id": "VAL-000064",
@@ -709,7 +709,7 @@
       "entity_id": null,
       "description": "Alarm history timestamps are valid and within the run",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.254731+00:00"
+      "validated_at": "2026-10-28T14:18:41.722718+00:00"
     },
     {
       "validation_id": "VAL-000065",
@@ -720,7 +720,7 @@
       "entity_id": null,
       "description": "Rule IDs map to the documented alarm categories",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.259664+00:00"
+      "validated_at": "2026-10-28T14:18:41.725223+00:00"
     },
     {
       "validation_id": "VAL-000066",
@@ -731,7 +731,7 @@
       "entity_id": null,
       "description": "evaluation_metrics.json exists",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.277312+00:00"
+      "validated_at": "2026-10-28T14:18:41.734234+00:00"
     },
     {
       "validation_id": "VAL-000067",
@@ -742,7 +742,7 @@
       "entity_id": null,
       "description": "Point-level and event-level evaluations are separate and documented",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.277343+00:00"
+      "validated_at": "2026-10-28T14:18:41.734251+00:00"
     },
     {
       "validation_id": "VAL-000068",
@@ -753,7 +753,7 @@
       "entity_id": null,
       "description": "Event-level metrics have all required fields",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.277363+00:00"
+      "validated_at": "2026-10-28T14:18:41.734263+00:00"
     },
     {
       "validation_id": "VAL-000069",
@@ -764,7 +764,7 @@
       "entity_id": null,
       "description": "Event TPs and FNs partition the positive ground-truth events",
       "details": "tp=4, fn=0, positives=4",
-      "validated_at": "2026-10-28T13:39:14.277377+00:00"
+      "validated_at": "2026-10-28T14:18:41.734270+00:00"
     },
     {
       "validation_id": "VAL-000070",
@@ -775,7 +775,7 @@
       "entity_id": null,
       "description": "Event precision and recall are computed from their stated denominators",
       "details": "precision=1.0, recall=1.0",
-      "validated_at": "2026-10-28T13:39:14.277402+00:00"
+      "validated_at": "2026-10-28T14:18:41.734284+00:00"
     },
     {
       "validation_id": "VAL-000071",
@@ -786,7 +786,7 @@
       "entity_id": null,
       "description": "Event false positives are unmatched incidents, not raw alarm rows",
       "details": "fp=0, incidents=0",
-      "validated_at": "2026-10-28T13:39:14.277414+00:00"
+      "validated_at": "2026-10-28T14:18:41.734290+00:00"
     },
     {
       "validation_id": "VAL-000072",
@@ -797,7 +797,7 @@
       "entity_id": null,
       "description": "Alarm rows and incidents are accounted for without mixing units",
       "details": "alarm_rows=107, incidents=62",
-      "validated_at": "2026-10-28T13:39:14.277437+00:00"
+      "validated_at": "2026-10-28T14:18:41.734303+00:00"
     },
     {
       "validation_id": "VAL-000073",
@@ -808,7 +808,7 @@
       "entity_id": null,
       "description": "Each incident matches at most one ground-truth event and vice versa",
       "details": "matched=4",
-      "validated_at": "2026-10-28T13:39:14.286576+00:00"
+      "validated_at": "2026-10-28T14:18:41.738249+00:00"
     },
     {
       "validation_id": "VAL-000074",
@@ -819,7 +819,7 @@
       "entity_id": null,
       "description": "Incident classifications agree with event-level counts",
       "details": "FA=0, unknown=58",
-      "validated_at": "2026-10-28T13:39:14.286600+00:00"
+      "validated_at": "2026-10-28T14:18:41.738265+00:00"
     },
     {
       "validation_id": "VAL-000075",
@@ -830,7 +830,7 @@
       "entity_id": null,
       "description": "Sensor-fault ground-truth events are never matched by a process-only incident",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.289685+00:00"
+      "validated_at": "2026-10-28T14:18:41.739371+00:00"
     },
     {
       "validation_id": "VAL-000076",
@@ -841,7 +841,7 @@
       "entity_id": null,
       "description": "Point confusion matrix contains only explicit labelled samples",
       "details": "labelled=42184, matrix=42184",
-      "validated_at": "2026-10-28T13:39:14.289730+00:00"
+      "validated_at": "2026-10-28T14:18:41.739386+00:00"
     },
     {
       "validation_id": "VAL-000077",
@@ -852,7 +852,7 @@
       "entity_id": null,
       "description": "Point precision and recall are computed from explicit labelled samples",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.289753+00:00"
+      "validated_at": "2026-10-28T14:18:41.739393+00:00"
     },
     {
       "validation_id": "VAL-000078",
@@ -863,7 +863,7 @@
       "entity_id": null,
       "description": "Every telemetry row is labelled, unobserved or explicitly unknown",
       "details": "unknown=57816, labelled=42184, telemetry=100000",
-      "validated_at": "2026-10-28T13:39:14.645083+00:00"
+      "validated_at": "2026-10-28T14:18:41.912706+00:00"
     },
     {
       "validation_id": "VAL-000079",
@@ -874,7 +874,7 @@
       "entity_id": null,
       "description": "Per-event evaluation rows match ground truth and event TP count",
       "details": "rows=9, matched=4",
-      "validated_at": "2026-10-28T13:39:14.650598+00:00"
+      "validated_at": "2026-10-28T14:18:41.915602+00:00"
     },
     {
       "validation_id": "VAL-000080",
@@ -885,7 +885,7 @@
       "entity_id": null,
       "description": "Machine-readable flattened evaluation metrics exist",
       "details": null,
-      "validated_at": "2026-10-28T13:39:14.653493+00:00"
+      "validated_at": "2026-10-28T14:18:41.917164+00:00"
     },
     {
       "validation_id": "VAL-000081",
@@ -896,7 +896,7 @@
       "entity_id": null,
       "description": "Zero denominators return null metrics instead of favourable zeros",
       "details": "precision=None, recall=None",
-      "validated_at": "2026-10-28T13:39:14.660409+00:00"
+      "validated_at": "2026-10-28T14:18:41.920240+00:00"
     },
     {
       "validation_id": "VAL-000082",
@@ -907,7 +907,7 @@
       "entity_id": null,
       "description": "Detector output is unchanged when scenario/ground-truth/physical columns are poisoned",
       "details": "clean_alarms=2, poisoned_alarms=2",
-      "validated_at": "2026-10-28T13:39:35.274607+00:00"
+      "validated_at": "2026-10-28T14:18:51.067018+00:00"
     },
     {
       "validation_id": "VAL-000083",
@@ -918,7 +918,7 @@
       "entity_id": null,
       "description": "Two overlapping alarm rows for one event count as one TP, not two",
       "details": "tp=1, incidents=1",
-      "validated_at": "2026-10-28T13:39:35.320844+00:00"
+      "validated_at": "2026-10-28T14:18:51.097437+00:00"
     },
     {
       "validation_id": "VAL-000084",
@@ -929,7 +929,7 @@
       "entity_id": null,
       "description": "An implausible flow reading raises a sensor fault, not a process fault",
       "details": null,
-      "validated_at": "2026-10-28T13:39:35.377871+00:00"
+      "validated_at": "2026-10-28T14:18:51.124936+00:00"
     },
     {
       "validation_id": "VAL-000085",
@@ -940,7 +940,7 @@
       "entity_id": null,
       "description": "SQLite integrity and foreign-key checks pass",
       "details": "integrity=ok, fk_violations=0",
-      "validated_at": "2026-10-28T13:39:36.032416+00:00"
+      "validated_at": "2026-10-28T14:18:51.436975+00:00"
     },
     {
       "validation_id": "VAL-000086",
@@ -951,7 +951,7 @@
       "entity_id": null,
       "description": "SQLite row counts match the exported CSV files",
       "details": null,
-      "validated_at": "2026-10-28T13:39:36.420905+00:00"
+      "validated_at": "2026-10-28T14:18:51.706255+00:00"
     },
     {
       "validation_id": "VAL-000087",
@@ -962,8 +962,8 @@
       "entity_id": null,
       "description": "SQLite evaluation metrics agree with evaluation_metrics.json",
       "details": "db_tp=4.0, json_tp=4",
-      "validated_at": "2026-10-28T13:39:36.421974+00:00"
+      "validated_at": "2026-10-28T14:18:51.707401+00:00"
     }
   ],
-  "generated_at": "2026-10-28T13:39:36.424434+00:00"
+  "generated_at": "2026-10-28T14:18:51.710896+00:00"
 }
