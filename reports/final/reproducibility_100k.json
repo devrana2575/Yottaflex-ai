@@ -1,11 +1,11 @@
 {
-  "generated": "2026-10-28",
+  "generated": "2026-10-29",
   "target_rows": 100000,
   "scenario_set": "baseline",
   "seed": 20261022,
   "source_runs": [
-    "<external-temp>/final-acceptance-20261028/exact-a",
-    "<external-temp>/final-acceptance-20261028/exact-b"
+    "<external-temp>/yottaflex-final-audit-20261028/exact-a",
+    "<external-temp>/yottaflex-final-audit-20261028/exact-b"
   ],
   "compared_files": 23,
   "byte_identical_count": 20,
@@ -49,8 +49,8 @@
     {
       "artifact": "evaluation_metrics.csv",
       "bytes": 7264,
-      "sha256_a": "013fae53a3dec35b370742fa20cb2eb08373af78790aae62f0a58bca6585af9f",
-      "sha256_b": "0edd625ae8495263c954fc7759903399779fb9ad0e9d5179e9c8a5fbe69ab291",
+      "sha256_a": "6500b764d12903f0327d319b94908a8062b3a2d293dd3bf9b47365f5cf8a0cfd",
+      "sha256_b": "6d86d0c768b3fc9c8f637ff4fdcd90a2db8386fefffb0f0a6abb8cba30086aca",
       "byte_identical": false,
       "timestamp_only_difference": true,
       "logical_equal_without_timestamp": true
@@ -156,8 +156,8 @@
     {
       "artifact": "validation_results.csv",
       "bytes": 12906,
-      "sha256_a": "dfb0de10f8bb209a729c0942fcb3b4adfdd9274bed95443cf42837df34896074",
-      "sha256_b": "23f2c23bd2f9c69b60c98540cb0d57a678ec5e99c180c1ef5e4c3c74bbb9c018",
+      "sha256_a": "00bd9fe26ca9d1051ee68f5350b8525c17327406a7f925660eb382e0fd8a4e96",
+      "sha256_b": "eb3d7704d6d2a54c9b81579247b259a055d34b2b4edb73926a54bf4af1fc9c70",
       "byte_identical": false,
       "timestamp_only_difference": true,
       "logical_equal_without_timestamp": true
@@ -165,8 +165,8 @@
     {
       "artifact": "validation_summary.json",
       "bytes": 33842,
-      "sha256_a": "bffc109b4b411a46b09136735a1dd6e60b014ac011119a65c88730e8703c4c5c",
-      "sha256_b": "aa8969e6646ebdcd0e78edbffc2573a490c1182cb05c0d2957e59db085861817",
+      "sha256_a": "650b652ac22aaedeb2eb44a2aa7a0e70faaa43bdb97617a08d45f44489cfdbdd",
+      "sha256_b": "f38b359e1f6b5d85e442b7b52c733398a69fb458fcffd0dd88940be4ac04f4e1",
       "byte_identical": false,
       "timestamp_only_difference": true,
       "logical_equal_without_timestamp": true
@@ -307,23 +307,26 @@
       }
     ],
     "all_logical_equal": true,
-    "foreign_key_violations": 0
+    "foreign_key_violations": 0,
+    "raw_exactly_equal_tables": 17,
+    "timestamp_removed_exactly_equal_tables": 19,
+    "logically_equal_tables": 19
   },
   "portable_exports": {
     "exported_tables": 18,
     "json_tables": 18,
     "json_total_rows": 101275,
-    "json_manifest_sha256": "dbf830fb5e88181db50f3ccfa95d8e5c2361f96d6b05609a51adb9c4ee294de0",
+    "json_manifest_sha256": "d3109b267dc738bb9ef9985676ce39260118561daec316266c4ae12663c58f30",
     "sql_bytes": 29733009,
     "sql_rows": 101275,
-    "sql_sha256": "15214c418346f10fb75b95d4713d9ac112b55d468fcc0da62cf99d0817177d17",
+    "sql_sha256": "6db3a5d47ea836b79184ef98555133f3ad6bd3a067da29ce2d69c4d408182f0d",
     "sql_seed_db_integrity": "ok",
     "sql_seed_fk_violations": 0,
     "sql_seed_telemetry_rows": 100000,
     "sql_seed_state_event_rows": 341,
     "csv_json_sqlite_sql_telemetry_ids_match": true
   },
-  "portable_exports_source": "Fresh final-acceptance exact-a run; CSV, JSON, SQLite and SQL telemetry IDs were compared directly; the SQL seed was executed into a new SQLite database.",
+  "portable_exports_source": "Fresh 2026-10-29 final-audit exact-a run; CSV, JSON, SQLite and SQL telemetry IDs were compared directly; the SQL seed was executed into a new SQLite database.",
   "validation_summary_logical_equal_after_timestamp_removal": true,
   "excluded_from_byte_comparison": [
     "config.json",
@@ -333,14 +336,20 @@
     "Main environment: twenty of 23 compared files are byte-identical. The three differing files contain documented wall-clock evaluated_at/validated_at fields only and are logically equal after those fields are removed; validation_summary.json was compared recursively with clock fields removed.",
     "config.json differences are limited to output/database path fields; run_manifest.json is excluded because it hashes the path-bearing config and timestamped evaluation CSV.",
     "JSON and SQL exports are generated on demand and are not committed because of their size. The JSON manifest has a relative source_root; the SQL seed was executed into a fresh SQLite database.",
-    "All 19 SQLite tables matched logically across the two main-environment runs; 18 were populated and detection_results was empty. integrity_check=ok in both runs; zero foreign-key violations.",
+    "All 19 SQLite tables matched logically across the two main-environment runs; 18 were populated and detection_results was empty. Main-environment raw SQLite tables: 17/19 exact and 19/19 after timestamp columns are removed; no last-bit float differences remain in the main comparison. integrity_check=ok in both runs; zero foreign-key violations.",
     "The final exact-100k run had 100,000 telemetry rows, 220 sensors, distribution {455:120,454:100}, 341 state events, 87 validation PASS and 20/20 SQL PASS.",
     "The SQL seed includes evaluated_at/validated_at values and therefore has a different file hash from older reports; its 101,275 rows, 100,000 telemetry IDs and 341 state events were verified after execution.",
     "A clean pandas 3.1.0 / NumPy 2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and metrics; its last-bit float differences are recorded under clean_environment."
   ],
   "commands": [
+    "python -m pytest -q",
+    "python -m pytest -q tests/test_negative_scenarios.py tests/test_submission_artifacts.py",
     "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-a",
     "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-b",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set default --output-dir <fresh-output-dir>/full-default",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation-run",
+    "<clean-venv>/Scripts/python -m pip install -e .",
+    "<clean-venv>/Scripts/python -m pip install pytest",
     "<clean-venv>/Scripts/python -m pytest -q",
     "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
   ],
@@ -349,7 +358,9 @@
     "pandas": "3.0.3",
     "numpy": "2.4.6",
     "pytest": "9.1.1",
-    "platform": "Windows"
+    "platform": "Windows",
+    "tests": "68 passed in 104.89 s",
+    "targeted_tests": "6 passed in 78.01 s"
   },
   "clean_environment": {
     "python": "3.14.4",
@@ -368,7 +379,8 @@
     "tests": {
       "passed": 68,
       "failed": 0,
-      "skipped": 0
+      "skipped": 0,
+      "seconds": 85.25
     },
     "exact_100k": {
       "telemetry_rows": 100000,
@@ -398,7 +410,9 @@
       "float_only_difference": [
         "sql_query_report.json"
       ],
-      "sqlite_tables_exactly_equal": 17,
+      "sqlite_tables_exactly_equal_raw": 16,
+      "sqlite_tables_exactly_equal_after_timestamp_removal": 17,
+      "sqlite_tables_logically_equal": 19,
       "sqlite_tables_float_only_differences": [
         "telemetry",
         "evaluation_metrics"
@@ -408,6 +422,6 @@
   },
   "difference_analysis": {
     "main_environment": "The three non-identical files differ only in wall-clock evaluated_at/validated_at columns and are logically equal after those fields are removed.",
-    "clean_environment": "The clean environment produced 19/23 byte-identical files. Three differences are timestamp-only; sql_query_report.json differs only in last-bit floating-point values. SQLite has 17/19 exactly equal tables; telemetry and evaluation_metrics differ only at approximately 1e-15. No counts or metrics differ."
+    "clean_environment": "The clean environment produced 19/23 byte-identical files. Three differences are timestamp-only; sql_query_report.json differs only in two last-bit floating-point values (about 1e-16). Raw SQLite tables were 16/19 exactly equal; after timestamp removal 17/19, with telemetry and evaluation_metrics differing only at approximately 7e-15 and 1e-16. No counts, classifications or metrics differ."
   }
 }

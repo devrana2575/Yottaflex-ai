@@ -19,6 +19,11 @@
     workflows, independently recomputed event/point metrics, executed the five negative controls,
     tested a fresh clean virtual environment, executed JSON/SQLite/SQL-seed exports, and reconciled
     the evidence and prompt records.
+  - 2026-10-29 final audit: DeepSeek V4.1 Flash Free. Re-ran main and targeted tests, created a new
+    clean venv and passed all 68 tests, generated fresh exact-100k/full/evaluation runs, verified
+    actual files and SQLite IDs/topology, recomputed metrics, checked the five negative controls,
+    executed JSON/SQL-seed exports, audited the requirement matrix/prompt history/security, and
+    updated only documentation/report/prompt evidence. No source logic was changed.
 - **Copilot SDK in VS Code** — historical independent verification of the 1.x implementation. Its
   findings are recorded in `ai_usage/verification_notes.md`; the 1.x metric it reproduced is the
   defective baseline documented in `docs/baseline_findings.md`, not a current result.
@@ -38,7 +43,8 @@
   pushed to `origin/main` only after explicit user authorization. The 2026-10-27 audit corrections
   were committed and pushed after separate explicit user authorization. The 2026-10-28 remediation
   was committed after review and pushed to `origin/main` after the user explicitly authorized
-  publication with the prompt `push`. No force-push or shared-history rewrite was performed.
+  publication with the prompt `push`. The 2026-10-29 final audit committed and pushed reviewed
+  documentation/report/prompt changes only, without force-push or shared-history rewrite.
 
 ## Libraries
 

@@ -32,7 +32,7 @@ in [`docs/validation_report.md`](docs/validation_report.md). The `87` count is t
 validation CSV only. Review-level caveats (light-leak coverage, reconstructed prompt history, the
 un-repeated cross-version clean environment, and ignored local generated outputs) are tracked there
 separately and are not added to that denominator. Publication was explicitly authorized on
-2026-10-28.
+2026-10-28 and reaffirmed by the 2026-10-29 final-audit instruction.
 
 ## What Changed in 2.0
 
@@ -127,8 +127,10 @@ assertions and 62 tests passed at that time. The 2026-10-28 remediation was re-r
 environment, including the exact 100k pipeline, exports and the full test suite. For final
 acceptance, a new clean environment was created with the README core install on 2026-10-28; it
 passed all 68 tests and regenerated the exact-100k baseline with matching counts and metrics. The
-full/default and evaluation pipelines were not repeated in that clean environment. The current tree
-contains six additional submission tests and collects **68 tests**. The package has no
+2026-10-29 final audit repeated the clean installation and exact-100k run, plus fresh full/default
+and evaluation runs in the main environment; the full/default and evaluation pipelines were still
+not repeated in the clean environment. The current tree contains six additional submission tests
+and collects **68 tests**. The package has no
 `pyproject.toml`; `setup.py` is the packaging metadata, and editable installation works with current
 pip/setuptools.
 
@@ -444,8 +446,9 @@ and identical rows after excluding the wall-clock columns. The comparison is rec
 
 The prior full/default and evaluation reproducibility evidence remains in
 [`reports/final/reproducibility.json`](reports/final/reproducibility.json); those results predate
-the state-history/export additions. The 2026-10-28 exact-100k baseline was also generated in a fresh
-Python 3.14.4 / pandas 3.1.0 / NumPy 2.5.4 virtual environment. It matched the main environment's
+the state-history/export additions. The exact-100k baseline was also generated in a fresh Python
+3.14.4 / pandas 3.1.0 / NumPy 2.5.4 virtual environment on 2026-10-28 and repeated on 2026-10-29.
+It matched the main environment's
 counts and metrics; 19/23 files were byte-identical, three differed only in wall-clock fields and
 `sql_query_report.json` differed only in last-bit float serialization. The cross-version
 full/default and evaluation pipelines were not repeated; the 17/19 prior full/default comparison
@@ -492,5 +495,6 @@ implementation decisions are recorded in [`ai_usage/`](ai_usage/). The 2.0 imple
 committed as `6103e1a` and published to `origin/main` only after explicit authorization. The
 2026-10-27 audit corrections were committed and pushed to `origin/main` after separate explicit
 authorization. The 2026-10-28 remediation was committed locally and, after the user explicitly
-authorized publication with the prompt `push`, pushed to `origin/main` after the final audit. No
-force-push or shared-history rewrite occurred.
+authorized publication with the prompt `push`, pushed to `origin/main` after the final audit. The
+2026-10-29 final audit re-ran the evidence, changed documentation/report and prompt records only,
+and published those reviewed changes normally. No force-push or shared-history rewrite occurred.

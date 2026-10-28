@@ -321,6 +321,45 @@ force-push or history rewrite was used.
 - [`reports/final/summary.json`](../reports/final/summary.json)
 - [`ai_usage/verification_notes.md`](verification_notes.md)
 
+## 2026-10-29 Final Audit
+
+- **Timestamp:** 2026-10-29 (recorded from the live conversation; exact wall-clock time not supplied)
+- **Tool:** OpenCode
+- **Model:** DeepSeek V4.1 Flash Free
+- **Task:** Final evidence-based audit, defect/documentation review, and submission-readiness
+  verification of the existing YottaFlex repository.
+- **Record status:** **VERBATIM** — the complete prompt text is stored in
+  [`prompts/2026-10-29-final-audit.md`](prompts/2026-10-29-final-audit.md). System/developer harness
+  instructions are not included.
+
+### Work performed
+
+- Confirmed the clean starting tree at `main` commit `5969314`; no source-code defect was found and
+  no detector, threshold, scenario, label or matching logic was changed.
+- Re-ran the main test suite (**68 passed**, 104.89 s), targeted negative/state suite (**6 passed**,
+  78.01 s), and a fresh clean venv (**68 passed**, 85.25 s; CLI 2.0.0).
+- Generated fresh exact-100k (`exact-a`, `exact-b`), full/default and evaluation runs. Verified
+  actual CSV/SQLite rows, 3/20/30/60 master counts, 135 pipes, 220 sensors, 341 state events,
+  unique IDs, 60 s cadence, foreign keys, topology, run lineage and 87/20 validation/SQL checks.
+- Independently recomputed evaluation metrics from raw ground truth, alarms, incidents and
+  telemetry: event `10/1/0`, point `844/10/112190/206`, latency `60/300/702/3180 s`; checked
+  duplicate, unknown-label and sensor-fault handling, and retained the `GT-000001` light-leak miss.
+- Executed the five negative controls, JSON export and portable SQL seed; verified 18 tables /
+  101,275 rows, executed the seed into a fresh SQLite DB, and matched CSV/JSON/SQLite/SQL IDs.
+- Repeated exact-100k reproducibility: main **20/23** byte-identical with three timestamp-only
+  differences; all 19 SQLite tables logically equal (raw 17/19). Clean environment **19/23**
+  byte-identical plus one last-bit SQL-report float difference; no metric/count changes.
+- Audited the requirement matrix, data dictionary, validation/reproducibility summaries, AI-use
+  records and repository hygiene; updated only documentation/report/prompt evidence.
+
+### Evidence
+
+- [`docs/validation_report.md`](../docs/validation_report.md)
+- [`docs/requirement_matrix.md`](../docs/requirement_matrix.md)
+- [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json)
+- [`reports/final/summary.json`](../reports/final/summary.json)
+- [`ai_usage/verification_notes.md`](verification_notes.md)
+
 ## Notes
 - This is the initial implementation session
 - All code has been written by the AI agent following the specifications
@@ -331,5 +370,6 @@ force-push or history rewrite was used.
 - The 2026-10-28 remediation prompt is reconstructed from the retained requirement summary; the
   original verbatim text was not available. The 2.0 implementation prompt remains explicitly marked
   as reconstructed. The later 2026-10-28 `push` authorization and the final verification prompt are
-  recorded verbatim in their respective prompt files. Prompt completeness for the earlier records
-  remains a documented WARN, not a claim of completeness.
+  recorded verbatim in their respective prompt files. The 2026-10-29 final-audit prompt is recorded
+  verbatim in [`prompts/2026-10-29-final-audit.md`](prompts/2026-10-29-final-audit.md). Prompt
+  completeness for the earlier records remains a documented WARN, not a claim of completeness.

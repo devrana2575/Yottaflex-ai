@@ -8,7 +8,46 @@
 > 20 SQL assertions, 68 tests, and separate event/point metrics. The Git publication note in the 1.x
 > section is historical; the current 2.0/audit/remediation status is recorded below.
 
-## 2026-10-28 Exact-100k/State-History/Export Remediation (Current)
+## 2026-10-29 Final Audit (Current)
+
+- **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
+- **Scope:** Re-audit the existing repository and actual generated outputs, correct only inaccurate
+  documentation/evidence, and preserve the detector, thresholds, labels, scenarios and matching
+  behavior. Starting state: `main` at `5969314` with a clean tree and remote
+  `https://github.com/devrana2575/Yottaflex-ai.git`.
+- **Tests:** `python -m pytest -q` → **68 passed in 104.89 s**; targeted negative/state suite
+  `python -m pytest -q tests/test_negative_scenarios.py tests/test_submission_artifacts.py` →
+  **6 passed in 78.01 s**. Fresh clean venv: **68 passed in 85.25 s**, `yottaflex --version` 2.0.0.
+- **Exact-100k:** fresh `exact-a` and `exact-b`; both **100,000** rows (`120 x 455 + 100 x 454`),
+  3 facilities / 20 pumps / 30 tanks / 60 valves, 135 pipes, 220 sensors, 341 state events,
+  87/87 validation PASS, 20/20 SQL PASS and 18 populated SQLite tables. All telemetry IDs and
+  sensor/timestamp pairs are unique; references, 60 s cadence, ordering and topology checks pass.
+- **Full/default:** 316,800 rows, 341 state events, 87/20 validation/SQL, event `4/0/0`, point
+  `882/8/145192/18`.
+- **Evaluation:** 316,740 rows, 355 state events, 15 alarms → 10 incidents; independent recompute
+  from raw ground truth/alarms/incidents: event `10/1/0`, P/R/F1 `1.0000/0.9091/0.9524`; point
+  `844/10/112190/206`, P/R/F1 `0.9883/0.8038/0.8866`, FPR `0.0000891`; latency `60/300/702/3180 s`;
+  5 corroborating alarm episodes did not inflate TP; 203,490 unknown samples excluded and 2
+  unknown-window predictions reported without FP credit; 4/4 sensor-fault events matched
+  `SENSOR_FAULT` incidents.
+- **Light leak:** 90 samples, residual median `8.322721 m3/h`, mean `7.968123`, 82/90 above
+  `5 m3/h`; decline median `-0.1315 pp`; no overlapping alarms; `GT-000001` remains MISSED.
+- **Exports:** JSON 18 tables / 101,275 rows; SQL seed 29,733,009 bytes / 101,275 rows (SHA-256
+  `6db3a5d47ea836b79184ef98555133f3ad6bd3a067da29ce2d69c4d408182f0d`); fresh SQLite execution
+  `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341 state events;
+  CSV/JSON/SQLite/SQL telemetry IDs match.
+- **Reproducibility:** main exact-a/b **20/23** byte-identical, remaining three timestamp-only and
+  logically equal; all 19 SQLite tables logically equal (raw 17/19; 19/19 after timestamp removal).
+  Clean exact-clean comparison **19/23** byte-identical, three timestamp-only differences plus one
+  last-bit `sql_query_report.json` float difference; raw SQLite 16/19, 17/19 after timestamps, and
+  `telemetry`/`evaluation_metrics` differ only at about `7e-15`/`1e-16`; metrics unchanged.
+- **Negative/state:** `NEG-001`–`NEG-005` all PASS with unchanged baseline shapes; 341 state events
+  = 333 initialization + 8 scenario transitions, allowed/append-only and referenced.
+- **Audit hygiene:** no source changes; documentation/report/prompt records updated. Secret/PII/
+  large-file scan found no hits; no tracked file over 1 MB; `git diff --check` clean. Reviewed
+  changes committed and pushed normally to `origin/main`; no force-push.
+
+## 2026-10-28 Exact-100k/State-History/Export Remediation (Historical)
 
 - **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
 - **Scope:** Add an exact 100,000-row configuration without disturbing the 316,800-row path, populate
@@ -55,7 +94,7 @@ original 1.x and prior 2026-10-28 prompt text were not retained verbatim (WARN; 
 prompt is verbatim); ignored local generated outputs remain untracked (WARN). The final acceptance
 pass below re-ran the clean environment and supersedes the earlier "not repeated" note.
 
-## 2026-10-28 Final Acceptance Verification (Current)
+## 2026-10-28 Final Acceptance Verification (Historical)
 
 - **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free.
 - **Exact-100k commands:** `yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline

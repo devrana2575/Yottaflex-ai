@@ -1,9 +1,9 @@
 # Final Evidence Bundle
 
-This directory contains compact evidence copied from clean runs executed on 2026-10-27 and
-2026-10-28 with seed `20261022` and a 60-second sampling interval. It intentionally excludes the
-large telemetry, JSON and SQL-seed files; the full run directories are outside the repository and
-are identified in `docs/validation_report.md`.
+This directory contains compact evidence copied from clean runs executed on 2026-10-27,
+2026-10-28 and 2026-10-29 with seed `20261022` and a 60-second sampling interval. It intentionally
+excludes the large telemetry, JSON and SQL-seed files; the full run directories are outside the
+repository and are identified in `docs/validation_report.md`.
 
 **2026-10-28 remediation:** Added an exact 100,000-row `baseline` configuration, populated
 append-only equipment state history, and CSV/JSON/SQLite/portable-SQL exports. The baseline has
@@ -14,6 +14,14 @@ runs produced 20/23 byte-identical files; the other three differed only in wall-
 2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and metrics, with 19/23
 artifacts byte-identical and only timestamp/last-bit float differences. See `yf2-100k/`,
 `yf2-compact-99k/` (historical 99k) and `reproducibility_100k.json`.
+
+**2026-10-29 final audit:** Re-ran the main, targeted and fresh-clean test suites; fresh exact-100k,
+full/default and evaluation pipelines; JSON/SQL-seed exports; independent metrics; five negative
+controls; and repository hygiene checks. The exact-100k results were 100,000 rows, 341 state events,
+87/87 validation PASS, 20/20 SQL PASS and 18 populated SQLite tables. Main exact-a/b remained 20/23
+byte-identical with three timestamp-only differences; the clean comparison was 19/23 with three
+timestamp-only and one last-bit float-only difference. No source logic, thresholds, labels,
+scenarios or matching rules were changed.
 
 **Prior audit re-verification:** The 2026-10-27 submission-readiness audit re-ran the
 full/evaluation pipeline, validation, SQL and tests in the main and fresh environments, and re-ran
@@ -54,8 +62,9 @@ Top-level files:
 - `reproducibility.json` — prior byte-level comparison of two fresh full/default audit runs across
   19 deterministic artifacts, including SHA-256 hashes, configuration hashes and SQLite logical
   comparison. Neutral run labels replace absolute local paths.
-- `reproducibility_100k.json` — 2026-10-28 exact-100k two-run comparison (20/23 byte-identical,
-  3 timestamp-only), SQLite logical equality, and portable CSV/JSON/SQLite/SQL export checks.
+- `reproducibility_100k.json` — 2026-10-29 exact-100k two-run comparison (20/23 byte-identical,
+  3 timestamp-only), clean-environment comparison, SQLite logical equality, and portable
+  CSV/JSON/SQLite/SQL export checks.
 - `yf2-100k/` ? compact exact-100k evidence: redacted config, simulation metadata, direct
   telemetry count/hash manifest, master CSVs, alarms, evaluation events, 87 validation rows, SQL
   report, 341 state events and a hash/count summary.
