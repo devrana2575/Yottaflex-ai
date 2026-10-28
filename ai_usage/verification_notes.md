@@ -19,8 +19,8 @@
 **Commands and observed results:**
 
 - `python -m pytest -q` → **68 passed** in the main environment. The prior 62-test suite
-  passed in the 2026-10-27 main and fresh environments; the new suite was not re-run in the fresh
-  pandas 3.1.0 / NumPy 2.5.4 environment.
+  passed in the 2026-10-27 main and fresh environments. The final acceptance pass below re-ran the
+  68-test suite in the fresh pandas 3.1.0 / NumPy 2.5.4 environment; both runs passed.
 - Exact-100k baseline (`--scenario-set baseline --target-telemetry-rows 100000`): **100,000** rows;
   **120 sensors x 455 + 100 sensors x 454**; duration **7.583333 h**; 341 state events; 87
   validation PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED; 20/20 SQL PASS; 18 populated SQLite tables.
@@ -38,8 +38,9 @@
   fields. All **19 SQLite tables** were logically equal, **18 populated**, `integrity_check=ok`,
   **zero foreign-key violations**.
 - Portable exports: JSON 18 tables / 101,275 rows; SQL seed 101,275 rows / 29,733,009 bytes
-  (`sha256=86372f77388c7e6769744010f7706652fb2e35972aead77b5bf94cf0f7ea9f04`); executed into a new
-  SQLite database with `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341
+  (remediation-era `sha256=86372f77388c7e6769744010f7706652fb2e35972aead77b5bf94cf0f7ea9f04`; the
+  final-acceptance seed hash differs because it includes current audit timestamps); executed into a
+  new SQLite database with `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341
   state events; CSV/JSON/SQLite/SQL telemetry IDs matched. The JSON manifest stores a relative
   `source_root` (`..`) rather than an absolute path, so the export directory remains portable.
 - State history: 341 rows = 333 initialization + 8 scenario transitions; unique `ESE-######` IDs;
@@ -51,8 +52,47 @@
 
 **Remaining caveats:** light-leak sensitivity (WARN); reconstructed prompt records because the
 original 1.x and prior 2026-10-28 prompt text were not retained verbatim (WARN; the latest `push`
-prompt is verbatim); cross-version clean environment not repeated for the new code (NOT VERIFIED);
-ignored local generated outputs remain untracked (WARN).
+prompt is verbatim); ignored local generated outputs remain untracked (WARN). The final acceptance
+pass below re-ran the clean environment and supersedes the earlier "not repeated" note.
+
+## 2026-10-28 Final Acceptance Verification (Current)
+
+- **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free.
+- **Exact-100k commands:** `yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline
+  --target-telemetry-rows 100000 --output-dir <temp>/exact-a` and the same command into `exact-b`.
+  Both produced **100,000** rows, **120 x 455 + 100 x 454**, 3/20/30/60 master counts, 135 pipes,
+  220 sensors, 341 state events, 87 validation PASS, 20/20 SQL PASS and 18 populated SQLite tables.
+  All telemetry IDs and `(sensor_id, timestamp)` pairs are unique; references, 60 s cadence,
+  timestamp ordering and topology checks pass; no label columns are present in telemetry.
+- **Independent metrics:** recomputed directly from the fresh evaluation run's ground truth,
+  alarms, incidents and telemetry: event TP/FN/FP **10/1/0**, P/R/F1
+  **1.0000/0.9091/0.9524**, 15 alarm episodes merged into 10 incidents, 5 corroborating episodes;
+  point TP/FP/TN/FN **844/10/112190/206**, P/R/F1 **0.9883/0.8038/0.8866**, FPR **0.0000891**;
+  latency min/median/max **60/300/3180 s**. The only miss is `GT-000001` (light leak); 203,490
+  unknown samples were excluded and 2 unknown predictions were reported outside the denominator.
+- **Light-leak diagnostic:** reproduced the detector's 10-minute regression-window calculation on
+  `SNS-019`/`SNS-021`/`SNS-022`: 90 samples, residual median **8.322721 m3/h** (mean 7.968123),
+  **82/90** above the absolute `5 m3/h` floor; 5-minute decline median **-0.1315 pp**. The event
+  remains missed because decline corroboration and 480 s persistence do not both hold.
+- **Full/default and evaluation:** fresh runs produced **316,800** rows (event 4/0/0; point
+  `882/8/145192/18`) and **316,740** rows (event 10/1/0; point `844/10/112190/206`) respectively.
+- **Clean installation:** fresh Python 3.14.4 venv (pandas 3.1.0, NumPy 2.5.4, pytest 9.2.0)
+  created with `python -m venv`, `python -m pip install -e .`, `python -m pip install pytest`;
+  `yottaflex --version` returned 2.0.0 and `python -m pytest -q` returned **68 passed**. The clean
+  environment also regenerated the exact-100k baseline with identical counts and metrics.
+- **Exports:** JSON 18 tables / **101,275** rows; SQL seed **29,733,009** bytes / **101,275** rows
+  (current SHA-256 `15214c418346...`); executed into a new SQLite database with `integrity_check=ok`,
+  zero FK violations, 100,000 telemetry IDs and 341 state events; CSV/JSON/SQLite/SQL IDs match.
+- **Negative/state/model:** five negative controls PASS, state-history transition/reference tests
+  PASS, `docs/data_dictionary.md` covers all ten core entities and lifecycle/effective-window rules.
+- **Reproducibility:** main environment exact-a/b **20/23** byte-identical; the other three differ
+  only in wall-clock `evaluated_at`/`validated_at` fields and are logically equal; all 19 SQLite
+  tables logically equal after audit-timestamp removal. Clean environment: **19/23** byte-identical,
+  with three timestamp-only differences and one last-bit float difference in `sql_query_report.json`;
+  17/19 SQLite tables exactly equal, with telemetry/evaluation_metrics differing only at ~1e-15.
+- **Remaining caveats:** light-leak sensitivity (WARN); reconstructed earlier prompt records (WARN);
+  cross-version full/default and evaluation pipelines not repeated (WARN); ignored local generated
+  outputs (WARN). No unverified secret/PII result is claimed.
 
 ## 2026-10-27 2.0 Submission-Readiness Audit (Historical)
 

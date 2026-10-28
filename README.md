@@ -124,10 +124,13 @@ yottaflex --help
 A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4) was installed and tested
 during the 2026-10-27 submission-readiness audit; the full pipeline, 87 validation checks, 20 SQL
 assertions and 62 tests passed at that time. The 2026-10-28 remediation was re-run in the main
-environment, including the exact 100k pipeline, exports and the full test suite; the pandas 3.1
-clean environment was not recreated for this remediation. The current tree contains six additional
-submission tests and collects **68 tests**. The package has no `pyproject.toml`; `setup.py` is the
-packaging metadata, and editable installation works with current pip/setuptools.
+environment, including the exact 100k pipeline, exports and the full test suite. For final
+acceptance, a new clean environment was created with the README core install on 2026-10-28; it
+passed all 68 tests and regenerated the exact-100k baseline with matching counts and metrics. The
+full/default and evaluation pipelines were not repeated in that clean environment. The current tree
+contains six additional submission tests and collects **68 tests**. The package has no
+`pyproject.toml`; `setup.py` is the packaging metadata, and editable installation works with current
+pip/setuptools.
 
 ## Quick Start
 
@@ -402,8 +405,8 @@ Detailed per-event tables and false-alarm analysis are in
 - **68 pytest tests** cover IDs, generation, physics, detection lifecycle/grouping/mode suppression/
   isolation, evaluation units and zero denominators, data integrity, scenarios, validation, SQL,
   exact-target allocation, state-history transitions, CSV/JSON/SQLite/SQL consistency and
-  reproducibility. Final result: **68 passed** in the main environment. The prior 62-test suite
-  also passed in a fresh virtual environment; the new remediation suite was not re-created there.
+  reproducibility. Final result: **68 passed** in the main environment and **68 passed** in a fresh
+  Python 3.14.4 virtual environment (pandas 3.1.0 / NumPy 2.5.4) created with the README commands.
   The audit also fixed a pandas 3.1 fill-value deprecation warning and a point-coverage counter
   that counted unobserved positive rows as observed; regression assertions were added.
 - **State history** is generated and exported rather than left as an empty placeholder. The 100k
@@ -440,11 +443,13 @@ and identical rows after excluding the wall-clock columns. The comparison is rec
 [`reports/final/reproducibility_100k.json`](reports/final/reproducibility_100k.json).
 
 The prior full/default and evaluation reproducibility evidence remains in
-[`reports/final/reproducibility.json`](reports/final/reproducibility.json); those results were
-obtained before the state-history/export additions. A fresh pandas 3.1.0 / NumPy 2.5.4 environment
-reproduced every prior metric and 17/19 prior artifacts, with two files differing only in
-`peak_value` floats at about `1e-13`; the clean-environment rerun was not repeated for the
-2026-10-28 remediation.
+[`reports/final/reproducibility.json`](reports/final/reproducibility.json); those results predate
+the state-history/export additions. The 2026-10-28 exact-100k baseline was also generated in a fresh
+Python 3.14.4 / pandas 3.1.0 / NumPy 2.5.4 virtual environment. It matched the main environment's
+counts and metrics; 19/23 files were byte-identical, three differed only in wall-clock fields and
+`sql_query_report.json` differed only in last-bit float serialization. The cross-version
+full/default and evaluation pipelines were not repeated; the 17/19 prior full/default comparison
+and its `peak_value` caveat remain historical.
 
 ## Limitations
 

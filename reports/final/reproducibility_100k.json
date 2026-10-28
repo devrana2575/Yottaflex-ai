@@ -4,104 +4,13 @@
   "scenario_set": "baseline",
   "seed": 20261022,
   "source_runs": [
-    "<external-temp>/repro-100k-a",
-    "<external-temp>/repro-100k-b"
+    "<external-temp>/final-acceptance-20261028/exact-a",
+    "<external-temp>/final-acceptance-20261028/exact-b"
   ],
   "compared_files": 23,
   "byte_identical_count": 20,
   "timestamp_only_difference_count": 3,
   "files": [
-    {
-      "artifact": "facilities.csv",
-      "bytes": 262,
-      "sha256_a": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
-      "sha256_b": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
-      "byte_identical": true
-    },
-    {
-      "artifact": "pumps.csv",
-      "bytes": 1213,
-      "sha256_a": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
-      "sha256_b": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
-      "byte_identical": true
-    },
-    {
-      "artifact": "tanks.csv",
-      "bytes": 1590,
-      "sha256_a": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
-      "sha256_b": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
-      "byte_identical": true
-    },
-    {
-      "artifact": "valves.csv",
-      "bytes": 3123,
-      "sha256_a": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
-      "sha256_b": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
-      "byte_identical": true
-    },
-    {
-      "artifact": "pipes.csv",
-      "bytes": 10153,
-      "sha256_a": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
-      "sha256_b": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
-      "byte_identical": true
-    },
-    {
-      "artifact": "sensors.csv",
-      "bytes": 14595,
-      "sha256_a": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
-      "sha256_b": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
-      "byte_identical": true
-    },
-    {
-      "artifact": "operating_modes.csv",
-      "bytes": 483,
-      "sha256_a": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
-      "sha256_b": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
-      "byte_identical": true
-    },
-    {
-      "artifact": "simulation_runs.csv",
-      "bytes": 1385,
-      "sha256_a": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
-      "sha256_b": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
-      "byte_identical": true
-    },
-    {
-      "artifact": "equipment_state_events.csv",
-      "bytes": 75401,
-      "sha256_a": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
-      "sha256_b": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
-      "byte_identical": true
-    },
-    {
-      "artifact": "scenario_definitions.csv",
-      "bytes": 2172,
-      "sha256_a": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
-      "sha256_b": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
-      "byte_identical": true
-    },
-    {
-      "artifact": "ground_truth.csv",
-      "bytes": 1899,
-      "sha256_a": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
-      "sha256_b": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
-      "byte_identical": true
-    },
-    {
-      "artifact": "telemetry.csv",
-      "bytes": 9262846,
-      "sha256_a": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
-      "sha256_b": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
-      "byte_identical": true
-    },
-    {
-      "artifact": "alarms.csv",
-      "bytes": 35091,
-      "sha256_a": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
-      "sha256_b": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
-      "byte_identical": true
-    },
     {
       "artifact": "alarm_events.csv",
       "bytes": 14946,
@@ -117,11 +26,34 @@
       "byte_identical": true
     },
     {
+      "artifact": "alarms.csv",
+      "bytes": 35091,
+      "sha256_a": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
+      "sha256_b": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
+      "byte_identical": true
+    },
+    {
+      "artifact": "equipment_state_events.csv",
+      "bytes": 75401,
+      "sha256_a": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
+      "sha256_b": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
+      "byte_identical": true
+    },
+    {
       "artifact": "evaluation_events.csv",
       "bytes": 1663,
       "sha256_a": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
       "sha256_b": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
       "byte_identical": true
+    },
+    {
+      "artifact": "evaluation_metrics.csv",
+      "bytes": 7264,
+      "sha256_a": "013fae53a3dec35b370742fa20cb2eb08373af78790aae62f0a58bca6585af9f",
+      "sha256_b": "0edd625ae8495263c954fc7759903399779fb9ad0e9d5179e9c8a5fbe69ab291",
+      "byte_identical": false,
+      "timestamp_only_difference": true,
+      "logical_equal_without_timestamp": true
     },
     {
       "artifact": "evaluation_metrics.json",
@@ -131,19 +63,59 @@
       "byte_identical": true
     },
     {
-      "artifact": "evaluation_metrics.csv",
-      "bytes": 7264,
-      "sha256_a": "ceffa74ad162cacf6c2c50df4718dd4d7f37a0bf15e9545281799f8e0ac0a8ec",
-      "sha256_b": "e1c71d49d29ebe68e2401bcb86d01c3730d6311ed3a050c11c021d338b851191",
-      "byte_identical": false,
-      "timestamp_only_difference": true,
-      "logical_equal_without_timestamp": true
-    },
-    {
       "artifact": "evaluation_summary.md",
       "bytes": 1139,
       "sha256_a": "a7556f7a6dfa768a52ee37d072b6a499ef8b6a56dedc98c5cb6bedf95ac49c14",
       "sha256_b": "a7556f7a6dfa768a52ee37d072b6a499ef8b6a56dedc98c5cb6bedf95ac49c14",
+      "byte_identical": true
+    },
+    {
+      "artifact": "facilities.csv",
+      "bytes": 262,
+      "sha256_a": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
+      "sha256_b": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
+      "byte_identical": true
+    },
+    {
+      "artifact": "ground_truth.csv",
+      "bytes": 1899,
+      "sha256_a": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
+      "sha256_b": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
+      "byte_identical": true
+    },
+    {
+      "artifact": "operating_modes.csv",
+      "bytes": 483,
+      "sha256_a": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+      "sha256_b": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
+      "byte_identical": true
+    },
+    {
+      "artifact": "pipes.csv",
+      "bytes": 10153,
+      "sha256_a": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
+      "sha256_b": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
+      "byte_identical": true
+    },
+    {
+      "artifact": "pumps.csv",
+      "bytes": 1213,
+      "sha256_a": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
+      "sha256_b": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
+      "byte_identical": true
+    },
+    {
+      "artifact": "scenario_definitions.csv",
+      "bytes": 2172,
+      "sha256_a": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
+      "sha256_b": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
+      "byte_identical": true
+    },
+    {
+      "artifact": "sensors.csv",
+      "bytes": 14595,
+      "sha256_a": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
+      "sha256_b": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
       "byte_identical": true
     },
     {
@@ -154,10 +126,38 @@
       "byte_identical": true
     },
     {
+      "artifact": "simulation_runs.csv",
+      "bytes": 1385,
+      "sha256_a": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
+      "sha256_b": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
+      "byte_identical": true
+    },
+    {
+      "artifact": "sql_query_report.json",
+      "bytes": 38413,
+      "sha256_a": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
+      "sha256_b": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
+      "byte_identical": true
+    },
+    {
+      "artifact": "tanks.csv",
+      "bytes": 1590,
+      "sha256_a": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
+      "sha256_b": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
+      "byte_identical": true
+    },
+    {
+      "artifact": "telemetry.csv",
+      "bytes": 9262846,
+      "sha256_a": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
+      "sha256_b": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
+      "byte_identical": true
+    },
+    {
       "artifact": "validation_results.csv",
       "bytes": 12906,
-      "sha256_a": "3c627c0e6cd9a660e704441ace8f741c96c5d85d44b7d8a6fe573d35433052ed",
-      "sha256_b": "61f03eff7e431731a7b77882cc80b48ea70e87b2c13d6e4d45e72e1f0d94f1bf",
+      "sha256_a": "dfb0de10f8bb209a729c0942fcb3b4adfdd9274bed95443cf42837df34896074",
+      "sha256_b": "23f2c23bd2f9c69b60c98540cb0d57a678ec5e99c180c1ef5e4c3c74bbb9c018",
       "byte_identical": false,
       "timestamp_only_difference": true,
       "logical_equal_without_timestamp": true
@@ -165,17 +165,17 @@
     {
       "artifact": "validation_summary.json",
       "bytes": 33842,
-      "sha256_a": "a5d5dd028e875f602b8215dbadb6cbcb7f882708b1391bb3df4b902838f7ed79",
-      "sha256_b": "0bbad1968e8a9ad5386335a2defacd9c0af6581b965910f8ab98094bed8a4d2f",
+      "sha256_a": "bffc109b4b411a46b09136735a1dd6e60b014ac011119a65c88730e8703c4c5c",
+      "sha256_b": "aa8969e6646ebdcd0e78edbffc2573a490c1182cb05c0d2957e59db085861817",
       "byte_identical": false,
       "timestamp_only_difference": true,
       "logical_equal_without_timestamp": true
     },
     {
-      "artifact": "sql_query_report.json",
-      "bytes": 38413,
-      "sha256_a": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
-      "sha256_b": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
+      "artifact": "valves.csv",
+      "bytes": 3123,
+      "sha256_a": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
+      "sha256_b": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
       "byte_identical": true
     }
   ],
@@ -188,97 +188,122 @@
       {
         "table": "alarm_events",
         "rows": 114,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "alarm_incidents",
         "rows": 62,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "alarms",
         "rows": 107,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "detection_results",
         "rows": 0,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": [
+          "evaluated_at"
+        ]
       },
       {
         "table": "equipment_state_events",
         "rows": 341,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "evaluation_events",
         "rows": 9,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "evaluation_metrics",
         "rows": 64,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": [
+          "evaluated_at"
+        ]
       },
       {
         "table": "facilities",
         "rows": 3,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "ground_truth",
         "rows": 9,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "operating_modes",
         "rows": 4,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "pipes",
         "rows": 135,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "pumps",
         "rows": 20,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "scenario_definitions",
         "rows": 9,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "sensors",
         "rows": 220,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "simulation_runs",
         "rows": 1,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "tanks",
         "rows": 30,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "telemetry",
         "rows": 100000,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       },
       {
         "table": "validation_results",
         "rows": 87,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": [
+          "validated_at"
+        ]
       },
       {
         "table": "valves",
         "rows": 60,
-        "logical_equal": true
+        "logical_equal": true,
+        "dropped_columns": []
       }
     ],
     "all_logical_equal": true,
@@ -288,27 +313,101 @@
     "exported_tables": 18,
     "json_tables": 18,
     "json_total_rows": 101275,
-    "json_manifest_sha256": "b8d7f7234ceaac24cf87ff8beeb8b3a73fcbcc72209e18a226c53e41f9003a09",
+    "json_manifest_sha256": "dbf830fb5e88181db50f3ccfa95d8e5c2361f96d6b05609a51adb9c4ee294de0",
     "sql_bytes": 29733009,
     "sql_rows": 101275,
-    "sql_sha256": "86372f77388c7e6769744010f7706652fb2e35972aead77b5bf94cf0f7ea9f04",
+    "sql_sha256": "15214c418346f10fb75b95d4713d9ac112b55d468fcc0da62cf99d0817177d17",
     "sql_seed_db_integrity": "ok",
     "sql_seed_fk_violations": 0,
     "sql_seed_telemetry_rows": 100000,
     "sql_seed_state_event_rows": 341,
     "csv_json_sqlite_sql_telemetry_ids_match": true
   },
-  "portable_exports_source": "Fresh exact-100k run <external-temp>/repro-100k-a; CSV, JSON, SQLite and SQL telemetry IDs compared directly.",
+  "portable_exports_source": "Fresh final-acceptance exact-a run; CSV, JSON, SQLite and SQL telemetry IDs were compared directly; the SQL seed was executed into a new SQLite database.",
   "validation_summary_logical_equal_after_timestamp_removal": true,
   "excluded_from_byte_comparison": [
     "config.json",
     "run_manifest.json"
   ],
   "notes": [
-    "Twenty files are byte-identical. The three differing files contain documented wall-clock evaluated_at/validated_at fields only and are logically equal after those fields are removed; validation_summary.json was compared recursively with clock fields removed.",
-    "config.json differences are limited to the four output/database path fields; run_manifest.json is excluded because it hashes the path-bearing config and timestamped evaluation CSV.",
+    "Main environment: twenty of 23 compared files are byte-identical. The three differing files contain documented wall-clock evaluated_at/validated_at fields only and are logically equal after those fields are removed; validation_summary.json was compared recursively with clock fields removed.",
+    "config.json differences are limited to output/database path fields; run_manifest.json is excluded because it hashes the path-bearing config and timestamped evaluation CSV.",
     "JSON and SQL exports are generated on demand and are not committed because of their size. The JSON manifest has a relative source_root; the SQL seed was executed into a fresh SQLite database.",
-    "All 19 SQLite tables matched logically; 18 were populated and detection_results was empty. integrity_check=ok in both runs; zero foreign-key violations.",
-    "The fresh exact-100k run had 100,000 telemetry rows, 220 sensors, distribution {455:120,454:100}, 341 state events, 87 validation PASS and 20/20 SQL PASS."
-  ]
+    "All 19 SQLite tables matched logically across the two main-environment runs; 18 were populated and detection_results was empty. integrity_check=ok in both runs; zero foreign-key violations.",
+    "The final exact-100k run had 100,000 telemetry rows, 220 sensors, distribution {455:120,454:100}, 341 state events, 87 validation PASS and 20/20 SQL PASS.",
+    "The SQL seed includes evaluated_at/validated_at values and therefore has a different file hash from older reports; its 101,275 rows, 100,000 telemetry IDs and 341 state events were verified after execution.",
+    "A clean pandas 3.1.0 / NumPy 2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and metrics; its last-bit float differences are recorded under clean_environment."
+  ],
+  "commands": [
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-a",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-b",
+    "<clean-venv>/Scripts/python -m pytest -q",
+    "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
+  ],
+  "main_environment": {
+    "python": "3.14.4",
+    "pandas": "3.0.3",
+    "numpy": "2.4.6",
+    "pytest": "9.1.1",
+    "platform": "Windows"
+  },
+  "clean_environment": {
+    "python": "3.14.4",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
+    "pytest": "9.2.0",
+    "commands": [
+      "python -m venv <clean-venv>",
+      "<clean-venv>/Scripts/python -m pip install --upgrade pip",
+      "<clean-venv>/Scripts/python -m pip install -e .",
+      "<clean-venv>/Scripts/python -m pip install pytest",
+      "<clean-venv>/Scripts/yottaflex --version",
+      "<clean-venv>/Scripts/python -m pytest -q",
+      "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
+    ],
+    "tests": {
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exact_100k": {
+      "telemetry_rows": 100000,
+      "state_event_rows": 341,
+      "validation": "87 PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED",
+      "sql": "20 PASS / 0 FAIL",
+      "event_level": {
+        "true_positives": 4,
+        "false_negatives": 0,
+        "false_positives": 0
+      },
+      "point_level": {
+        "true_positives": 245,
+        "false_positives": 5,
+        "true_negatives": 41915,
+        "false_negatives": 19
+      }
+    },
+    "comparison_to_main": {
+      "files_compared": 23,
+      "byte_identical_count": 19,
+      "timestamp_only_differences": [
+        "evaluation_metrics.csv",
+        "validation_results.csv",
+        "validation_summary.json"
+      ],
+      "float_only_difference": [
+        "sql_query_report.json"
+      ],
+      "sqlite_tables_exactly_equal": 17,
+      "sqlite_tables_float_only_differences": [
+        "telemetry",
+        "evaluation_metrics"
+      ],
+      "metrics_match": true
+    }
+  },
+  "difference_analysis": {
+    "main_environment": "The three non-identical files differ only in wall-clock evaluated_at/validated_at columns and are logically equal after those fields are removed.",
+    "clean_environment": "The clean environment produced 19/23 byte-identical files. Three differences are timestamp-only; sql_query_report.json differs only in last-bit floating-point values. SQLite has 17/19 exactly equal tables; telemetry and evaluation_metrics differ only at approximately 1e-15. No counts or metrics differ."
+  }
 }

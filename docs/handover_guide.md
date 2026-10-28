@@ -18,9 +18,10 @@ yottaflex --version
 ```
 
 Expected version: `2.0.0`. Python 3.11+ is required; all reported runs used Python 3.14.4. A fresh
-virtual environment (pandas 3.1.0 / NumPy 2.5.4) was verified during the 2026-10-27 audit; the
-2026-10-28 remediation was re-run in the main environment, and the cross-version rerun was not
-repeated.
+virtual environment (pandas 3.1.0 / NumPy 2.5.4) was recreated for final acceptance on 2026-10-28
+using the README core install (`pip install -e .` plus `pip install pytest`); all 68 tests passed,
+and the exact-100k pipeline reproduced the counts and metrics. The full/default and evaluation
+pipelines were not repeated in the clean environment.
 
 ## 2. Recommended Runs
 
@@ -206,10 +207,11 @@ Evaluation set details:
 - The 10 point false positives are 1-5 sample episode tails after events end. They are retained.
 - The 2 unknown predictions at SNS-003 11:00-11:01 are excluded and reported, not counted as FP.
 - Sensor-fault latency is longer (60-3,180 s) than process latency (240-360 s), by design.
-- All 87 executable validation rows, 20 SQL assertions and 68 tests pass. Review-level caveats
-  (light leak, reconstructed prompt records, un-repeated cross-version rerun, and ignored generated
-  outputs) are tracked separately in the validation report; they are not rows in the 87-row validation
-  CSV. Publication was explicitly authorized on 2026-10-28.
+- All 87 executable validation rows, 20 SQL assertions and 68 tests pass in both the main and fresh
+  clean environments. Review-level caveats (light leak, reconstructed earlier prompt records,
+  cross-version full/default and evaluation pipelines not repeated, and ignored generated outputs)
+  are tracked separately in the validation report; they are not rows in the 87-row validation CSV.
+  Publication was explicitly authorized on 2026-10-28.
 
 ## 9. Verification and Evidence
 
@@ -238,9 +240,11 @@ three differed only in wall-clock `evaluated_at` / `validated_at` fields and wer
 All 19 SQLite tables matched logically, with 18 populated tables and zero FK violations. The prior
 full/default comparison remains 19/19 within the main environment with the same path-independent
 configuration hash (`d422f3bbee3dcadc`); at that time 17 tables were populated. A fresh pandas
-3.1.0 / NumPy 2.5.4 environment reproduced all prior metrics and 17/19 artifacts; two files differed
-only in `peak_value` floats at about `1e-13`. The cross-version rerun was not repeated for the
-2026-10-28 remediation.
+3.1.0 / NumPy 2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and
+metrics; 19/23 artifacts were byte-identical, with three timestamp-only differences and one
+last-bit float report difference. The prior full/default clean-environment comparison remains
+17/19 artifacts with two files differing only in `peak_value` floats at about `1e-13`. The
+full/default and evaluation pipelines were not repeated in the 2026-10-28 clean environment.
 
 ## 10. The Five Original Negative Tests and the Two Executable Guards
 

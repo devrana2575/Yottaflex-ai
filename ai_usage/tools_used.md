@@ -15,6 +15,10 @@
     append-only equipment state history, JSON/SQL exports, targeted tests and evidence; re-ran
     validation, SQL, evaluation/full pipelines and reproducibility; completed the final audit and
     published after the user explicitly authorized `push`.
+  - 2026-10-28 final acceptance: DeepSeek V4.1 Flash Free. Re-ran exact-100k/full/evaluation
+    workflows, independently recomputed event/point metrics, executed the five negative controls,
+    tested a fresh clean virtual environment, executed JSON/SQLite/SQL-seed exports, and reconciled
+    the evidence and prompt records.
 - **Copilot SDK in VS Code** — historical independent verification of the 1.x implementation. Its
   findings are recorded in `ai_usage/verification_notes.md`; the 1.x metric it reproduced is the
   defective baseline documented in `docs/baseline_findings.md`, not a current result.
@@ -22,11 +26,12 @@
 ## Development Tools
 
 - **Python 3.14.4** — runtime used for the final runs. Main environment: pandas 3.0.3 / NumPy 2.4.6;
-  prior fresh audit virtual environment: pandas 3.1.0 / NumPy 2.5.4. The cross-version environment
-  was not recreated for the 2026-10-28 remediation.
-- **pip** — dependency and editable-package installation, including the prior fresh virtual
-  environment.
-- **pytest 9.1.1** — final 68-test suite.
+  fresh 2026-10-28 acceptance environment: pandas 3.1.0 / NumPy 2.5.4. The clean environment passed
+  all 68 tests and regenerated the exact-100k baseline; its last-bit float differences are
+  documented.
+- **pip** — dependency and editable-package installation, including the fresh acceptance
+  environment created with the README commands.
+- **pytest 9.1.1 (main) / 9.2.0 (clean environment)** — final 68-test suite.
 - **SQLite / Python sqlite3** — schema, foreign-key, integrity, JSON/SQL seed and analytics checks.
 - **PowerShell / CLI** — clean-run execution, hashing, artifact comparison and repository audits.
 - **Git** — repository and diff inspection. The 2.0 implementation was committed as `6103e1a` and

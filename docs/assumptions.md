@@ -100,7 +100,11 @@
   differing only in `peak_value` floats at about `1e-13`. The 2026-10-28 remediation re-verified
   exact 100k reproducibility in the main environment (20/23 files byte-identical; the other three
   differ only in wall-clock `evaluated_at`/`validated_at` fields and are logically equal after
-  removing those documented fields). The cross-version rerun was not repeated for this remediation.
+  removing those documented fields). A fresh clean environment was recreated for final acceptance:
+  it passed all 68 tests and reproduced the exact-100k counts and metrics; 19/23 artifacts were
+  byte-identical, with three timestamp-only differences and one last-bit float report difference,
+  and 17/19 SQLite tables exactly equal. The full/default and evaluation pipelines were not repeated
+  in the clean environment.
 - **SQLite.** Suitable for local analytics, not high-concurrency or very large-scale deployment.
 - **No real-time or dashboard.** Batch CLI only; the optional dashboard remains unimplemented.
 - **State-event semantics.** Scenario injection does not mutate the master `lifecycle_state`

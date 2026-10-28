@@ -257,7 +257,8 @@ Current evidence: [`docs/validation_report.md`](../docs/validation_report.md),
   preserved.
 - Re-ran validation (87 PASS), SQL (20/20 PASS), SQLite integrity (`ok`) and foreign-key checks.
 - Ran secret/PII/large-file/untracked-file audits; no secret/PII hits, no tracked file over 1 MB.
-- Prepared the remediation for a local commit. Publication remains pending explicit authorization.
+- Prepared the remediation for a local commit; publication was subsequently authorized (see the
+  Publication Authorization section below).
 
 ### Evidence
 
@@ -281,6 +282,45 @@ This authorization supersedes the earlier "publication remains pending" status f
 The push destination was confirmed as `https://github.com/devrana2575/Yottaflex-ai.git`; no
 force-push or history rewrite was used.
 
+## 2026-10-28 Final Verification and Submission
+
+- **Timestamp:** 2026-10-28 (recorded from the live conversation; exact wall-clock time not supplied)
+- **Tool:** OpenCode
+- **Model:** DeepSeek V4.1 Flash Free
+- **Task:** Final verification, defect correction, evidence reconciliation, and authorized
+  publication of the existing YottaFlex project.
+- **Record status:** **VERBATIM** — the full prompt text is stored in
+  [`prompts/2026-10-28-final-verification.md`](prompts/2026-10-28-final-verification.md).
+
+### Work performed
+
+- Verified the exact 100,000-row `baseline` run twice in the main environment and once in a fresh
+  clean environment: 100,000 rows (`120 x 455 + 100 x 454`), 3 facilities, 20 pumps, 30 tanks,
+  60 valves, 135 pipes, 220 sensors, 341 state events, 87 validation PASS and 20/20 SQL PASS.
+- Independently recomputed event/point evaluation from raw ground truth, alarms, incidents and
+  telemetry; confirmed event `10/1/0`, point `844/10/112190/206`, latency `60/300/3180 s`, duplicate
+  incident handling, unknown-label exclusion and sensor-fault categories.
+- Retained the `GT-000001` light-leak miss and verified it remains a documented limitation.
+- Re-ran full/default (316,800 rows; event `4/0/0`, point `882/8/145192/18`) and evaluation
+  (316,740 rows) pipelines, validation and SQL checks.
+- Recreated a clean Python 3.14.4 virtual environment (pandas 3.1.0 / NumPy 2.5.4); the documented
+  editable install plus pytest yielded **68 passed**, and the clean environment regenerated the
+  exact-100k baseline with matching counts and metrics.
+- Verified JSON export (18 tables / 101,275 rows), portable SQL seed (101,275 rows) and a fresh
+  SQLite database from that seed; CSV/JSON/SQLite/SQL identifiers and events match.
+- Re-ran the five negative controls, state-history tests and complete test suite; audited the data
+  dictionary and remaining stale report claims.
+- Ran repository hygiene checks and reconciled current documentation; no source logic, thresholds,
+  labels, scenario matching or detector behavior was changed.
+
+### Evidence
+
+- [`docs/validation_report.md`](../docs/validation_report.md)
+- [`docs/requirement_matrix.md`](../docs/requirement_matrix.md)
+- [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json)
+- [`reports/final/summary.json`](../reports/final/summary.json)
+- [`ai_usage/verification_notes.md`](verification_notes.md)
+
 ## Notes
 - This is the initial implementation session
 - All code has been written by the AI agent following the specifications
@@ -290,5 +330,6 @@ force-push or history rewrite was used.
 - The 2026-10-27 submission-readiness prompt above is recorded verbatim.
 - The 2026-10-28 remediation prompt is reconstructed from the retained requirement summary; the
   original verbatim text was not available. The 2.0 implementation prompt remains explicitly marked
-  as reconstructed. The later 2026-10-28 `push` authorization is recorded verbatim. Prompt
-  completeness for the earlier records remains a documented WARN, not a claim of completeness.
+  as reconstructed. The later 2026-10-28 `push` authorization and the final verification prompt are
+  recorded verbatim in their respective prompt files. Prompt completeness for the earlier records
+  remains a documented WARN, not a claim of completeness.

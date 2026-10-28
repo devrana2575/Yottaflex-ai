@@ -9,9 +9,10 @@ are identified in `docs/validation_report.md`.
 append-only equipment state history, and CSV/JSON/SQLite/portable-SQL exports. The baseline has
 100,000 real rows (120 sensors x 455 + 100 sensors x 454), 341 state events, 87 validation PASS per
 run (all seven final CSVs: 609/609 PASS), 20/20 SQL PASS and 18 populated SQLite tables. Two fresh
-runs produced 20/23 byte-identical files;
-the other three differed only in wall-clock `evaluated_at` / `validated_at` fields and were
-logically identical. The test suite reports **68 passed**. See `yf2-100k/`,
+runs produced 20/23 byte-identical files; the other three differed only in wall-clock
+`evaluated_at` / `validated_at` fields and were logically identical. A fresh pandas 3.1.0 / NumPy
+2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and metrics, with 19/23
+artifacts byte-identical and only timestamp/last-bit float differences. See `yf2-100k/`,
 `yf2-compact-99k/` (historical 99k) and `reproducibility_100k.json`.
 
 **Prior audit re-verification:** The 2026-10-27 submission-readiness audit re-ran the
@@ -67,8 +68,9 @@ Top-level files:
   demonstration/regression configuration, not a replacement evaluation set.
 - `validation_results.csv` is the complete 87-row executable PASS/FAIL/WARN/NOT_IMPLEMENTED record:
   87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED. Review-level caveats (light-leak coverage,
-  reconstructed prompt records, un-repeated cross-version rerun, and ignored generated outputs) are
-  documented in `docs/validation_report.md` and are not CSV rows.
+  reconstructed earlier prompt records, cross-version full/default and evaluation pipelines not
+  repeated, and ignored generated outputs) are documented in `docs/validation_report.md` and are
+  not CSV rows.
 - `sql_query_report.json` contains each SQL statement, expectation, result rows and status.
 - `evaluation_metrics.json` is the full nested result; `evaluation_summary.md` is the readable
   version.

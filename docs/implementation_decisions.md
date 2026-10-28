@@ -247,9 +247,9 @@ documented instead.
   mapping now casts to object before filling the `NORMAL` fallback (removing the pandas 3.1
   deprecation warning), and point coverage now counts only observed positive rows. Regression
   assertions cover both; neither change alters the final evaluation metrics.
-- Final remediation test suite: **68 passed** in the main environment. The prior 62-test suite
-  passed in both the main and fresh virtual environments; the 2026-10-28 suite was not re-run in
-  the fresh environment.
+- Final remediation test suite: **68 passed** in both the main environment and the 2026-10-28
+  fresh virtual environment. The clean environment also reproduced the exact-100k counts and
+  metrics; its last-bit float serialization differences are documented in the validation report.
 
 ## 7. Alternatives considered and rejected
 
