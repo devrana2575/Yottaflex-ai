@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 DEFAULT_SEED = 20261022
-SCENARIO_SETS = ("default", "calibration", "evaluation", "compact")
+SCENARIO_SETS = ("default", "calibration", "evaluation", "compact", "baseline")
 DEFAULT_SCENARIO_SET = "default"
 
 
@@ -28,6 +28,11 @@ class SimulationConfig:
     sampling_interval_seconds: int = 60
     time_step_seconds: int = 60
     random_seed: int = DEFAULT_SEED
+    # Optional exact telemetry budget.  When set, the generator allocates the
+    # budget deterministically across sensors and rejects a duration that does
+    # not provide enough sampling instants.  ``None`` preserves the historical
+    # full cross-product behaviour.
+    telemetry_target_rows: int | None = None
 
     # Physical model parameters (SI unless a column says otherwise).
     gravity_m_s2: float = 9.81
@@ -98,6 +103,9 @@ class ScenarioConfig:
     """
 
     scenario_set: str = DEFAULT_SCENARIO_SET
+    # ``baseline`` contains process/sensor anomalies but deliberately excludes
+    # the row-removing missing-sensor fault so an exact telemetry budget remains
+    # exact after scenario injection.
     enable_leaks: bool = True
     enable_blockages: bool = True
     enable_pump_degradation: bool = True

@@ -178,10 +178,15 @@ CREATE TABLE IF NOT EXISTS alarm_events (
 CREATE TABLE IF NOT EXISTS equipment_state_events (
     event_id TEXT PRIMARY KEY,
     equipment_id TEXT NOT NULL,
-    equipment_type TEXT NOT NULL,
+    equipment_type TEXT NOT NULL CHECK(equipment_type IN ('FACILITY','PUMP','TANK','VALVE','SENSOR')),
     simulation_run_id TEXT NOT NULL,
+    previous_state TEXT NOT NULL,
+    new_state TEXT NOT NULL,
     state_value TEXT NOT NULL,
     event_timestamp TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    source TEXT NOT NULL CHECK(source IN ('SIMULATION','SCENARIO','OPERATOR','SYSTEM')),
+    source_reference TEXT,
     event_data TEXT,
     FOREIGN KEY (simulation_run_id) REFERENCES simulation_runs(simulation_run_id)
 );
@@ -298,4 +303,6 @@ CREATE INDEX IF NOT EXISTS idx_sensors_equipment ON sensors(equipment_id);
 CREATE INDEX IF NOT EXISTS idx_scenario_sim_run ON scenario_definitions(simulation_run_id);
 CREATE INDEX IF NOT EXISTS idx_ground_truth_sim_run ON ground_truth(simulation_run_id);
 CREATE INDEX IF NOT EXISTS idx_incidents_sim_run ON alarm_incidents(simulation_run_id);
+CREATE INDEX IF NOT EXISTS idx_state_events_equipment ON equipment_state_events(equipment_id, event_timestamp);
+CREATE INDEX IF NOT EXISTS idx_state_events_sim_run ON equipment_state_events(simulation_run_id);
 """

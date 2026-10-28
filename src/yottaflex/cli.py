@@ -18,37 +18,16 @@ from . import __generator_version__, __schema_version__, __version__
 from .config import Config, DataScaleConfig, load_config_for_dir
 from .detection import DetectionEngine
 from .evaluation import Evaluator
+from .exports import EXPORT_TABLES, MASTER_TABLES, export_json_tables, export_sql_seed
 from .generator import DataGenerator
 from .id_generator import IDGenerator
 from .persistence import Database
 from .scenarios import ScenarioInjector
-from .simulation import ProcessSimulator
+from .simulation import ProcessSimulator, required_steps_for_target
+from .state_history import generate_equipment_state_events
 from .validation import Validator
 
 console = Console()
-
-MASTER_TABLES = (
-    "facilities",
-    "pumps",
-    "tanks",
-    "valves",
-    "pipes",
-    "sensors",
-    "operating_modes",
-)
-EXPORT_TABLES = MASTER_TABLES + (
-    "simulation_runs",
-    "scenario_definitions",
-    "telemetry",
-    "ground_truth",
-    "alarms",
-    "alarm_events",
-    "alarm_incidents",
-    "evaluation_metrics",
-    "evaluation_events",
-    "validation_results",
-)
-
 
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
@@ -58,6 +37,16 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _sensor_count_for_scale(scale: DataScaleConfig) -> int:
+    """Sensor composition is 2/pump + 4/tank + 1/valve."""
+    return scale.pumps * 2 + scale.tanks * 4 + scale.valves
+
+
+def _target_duration_hours(target_rows: int, sensor_count: int, interval: int) -> float:
+    steps = required_steps_for_target(target_rows, sensor_count)
+    return steps * int(interval) / 3600.0
+
+
 def _config_for_new_run(
     mode: str,
     seed: int,
@@ -65,15 +54,25 @@ def _config_for_new_run(
     duration: float,
     sampling_interval: int,
     output_dir: str,
+    target_rows: int | None = None,
 ) -> Config:
     config = Config()
     config.scale = DataScaleConfig.starter() if mode == "starter" else DataScaleConfig.full()
     config.simulation.random_seed = seed
-    config.simulation.duration_hours = float(duration)
     config.simulation.sampling_interval_seconds = int(sampling_interval)
     # The simulation integrator and the telemetry cadence are kept identical
     # unless a caller explicitly builds a different config.
     config.simulation.time_step_seconds = int(sampling_interval)
+    if target_rows is not None:
+        if int(target_rows) <= 0:
+            raise click.ClickException("--target-telemetry-rows must be positive")
+        sensor_count = _sensor_count_for_scale(config.scale)
+        config.simulation.telemetry_target_rows = int(target_rows)
+        config.simulation.duration_hours = _target_duration_hours(
+            int(target_rows), sensor_count, int(sampling_interval)
+        )
+    else:
+        config.simulation.duration_hours = float(duration)
     config.scenarios.scenario_set = scenario_set
     config.output_dir = output_dir
     config.raw_dir = str(Path(output_dir) / "raw")
@@ -129,12 +128,27 @@ def _generate_run(
     mode: str,
     seed: int,
     scenario_set: str,
-    duration: float,
+    duration: float | None,
     sampling_interval: int,
     output_dir: str,
+    target_rows: int | None = None,
 ) -> Config:
+    if target_rows is not None:
+        sensor_count = _sensor_count_for_scale(
+            DataScaleConfig.starter() if mode == "starter" else DataScaleConfig.full()
+        )
+        derived = _target_duration_hours(
+            int(target_rows), sensor_count, int(sampling_interval)
+        )
+        if duration is not None and abs(float(duration) - derived) > 1e-9:
+            raise click.ClickException(
+                "--duration cannot override a target-row configuration; "
+                f"the derived duration is {derived:.6f} h"
+            )
+    elif duration is None:
+        duration = 24.0
     config = _config_for_new_run(
-        mode, seed, scenario_set, duration, sampling_interval, output_dir
+        mode, seed, scenario_set, duration, sampling_interval, output_dir, target_rows
     )
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     id_gen = IDGenerator(seed=seed)
@@ -163,7 +177,20 @@ def _simulate_run(
     config = _load_config(output_dir)
     if seed is not None:
         config.simulation.random_seed = int(seed)
-    if duration is not None:
+    if config.simulation.telemetry_target_rows is not None:
+        sensor_count = len(_load_master(output_dir)["sensors"])
+        target_duration = _target_duration_hours(
+            int(config.simulation.telemetry_target_rows),
+            sensor_count,
+            int(config.simulation.sampling_interval_seconds),
+        )
+        if duration is not None and abs(float(duration) - target_duration) > 1e-9:
+            raise click.ClickException(
+                "--duration cannot override a target-row configuration; "
+                f"the required duration is {target_duration:.6f} h"
+            )
+        config.simulation.duration_hours = target_duration
+    elif duration is not None:
         config.simulation.duration_hours = float(duration)
     if scenario_set is not None:
         config.scenarios.scenario_set = scenario_set
@@ -191,11 +218,23 @@ def _simulate_run(
     )
     if telemetry_df.empty:
         raise click.ClickException("Simulation produced no telemetry")
+    expected_target = config.simulation.telemetry_target_rows
+    if expected_target is not None and len(telemetry_df) != int(expected_target):
+        raise click.ClickException(
+            "The selected scenario set removed telemetry rows and no longer "
+            f"matches --target-telemetry-rows={expected_target} "
+            f"(actual={len(telemetry_df)}). Use the `baseline` scenario set for "
+            "an exact-budget run."
+        )
 
     telemetry_df = telemetry_df.sort_values(["timestamp", "sensor_id"]).reset_index(drop=True)
     telemetry_df.to_csv(Path(output_dir) / "telemetry.csv", index=False)
     scenarios_df.to_csv(Path(output_dir) / "scenario_definitions.csv", index=False)
     ground_truth_df.to_csv(Path(output_dir) / "ground_truth.csv", index=False)
+    state_events_df = generate_equipment_state_events(
+        config, master_data, scenarios_df, simulation_run_id
+    )
+    state_events_df.to_csv(Path(output_dir) / "equipment_state_events.csv", index=False)
 
     start = datetime.fromisoformat(config.simulation.start_time)
     end = start + timedelta(hours=config.simulation.duration_hours)
@@ -237,6 +276,12 @@ def _simulate_run(
                 "scenario_counts": scenario_counts,
                 "sensor_count": int(sim_meta["sensor_count"]),
                 "steps": int(sim_meta["steps"]),
+                "state_event_rows": int(len(state_events_df)),
+                "telemetry_target_rows": (
+                    int(config.simulation.telemetry_target_rows)
+                    if config.simulation.telemetry_target_rows is not None
+                    else None
+                ),
             },
             sort_keys=True,
         ),
@@ -247,11 +292,20 @@ def _simulate_run(
     (Path(output_dir) / "simulation_metadata.json").write_text(
         json.dumps(sim_meta, indent=2), encoding="utf-8"
     )
-    console.print(
-        f"Telemetry: {len(telemetry_df):,} rows ({sim_meta['sensor_count']} sensors x "
-        f"{sim_meta['steps']} samples); scenarios: {len(scenarios_df)} windows "
-        f"({scenario_counts})"
-    )
+    if config.simulation.telemetry_target_rows is not None:
+        allocation = sim_meta.get("sample_count_distribution", {})
+        console.print(
+            f"Telemetry: {len(telemetry_df):,} rows ({sim_meta['sensor_count']} sensors, "
+            f"exact target {config.simulation.telemetry_target_rows:,}; sample "
+            f"distribution={allocation}); scenarios: {len(scenarios_df)} windows "
+            f"({scenario_counts}); state events: {len(state_events_df)}"
+        )
+    else:
+        console.print(
+            f"Telemetry: {len(telemetry_df):,} rows ({sim_meta['sensor_count']} sensors x "
+            f"{sim_meta['steps']} samples); scenarios: {len(scenarios_df)} windows "
+            f"({scenario_counts}); state events: {len(state_events_df)}"
+        )
     return config
 
 
@@ -555,22 +609,42 @@ def cli():
 @click.option("--seed", type=int, default=20261022)
 @click.option(
     "--scenario-set",
-    type=click.Choice(["default", "calibration", "evaluation", "compact"]),
+    type=click.Choice(["default", "calibration", "evaluation", "compact", "baseline"]),
     default="default",
 )
-@click.option("--duration", type=float, default=24.0, help="Simulation duration in hours")
+@click.option(
+    "--duration",
+    type=float,
+    default=None,
+    help="Simulation duration in hours; defaults to 24 when no target is set",
+)
 @click.option("--sampling-interval", type=int, default=60, help="Telemetry cadence in seconds")
+@click.option(
+    "--target-telemetry-rows",
+    type=int,
+    default=None,
+    help="Exact telemetry budget; duration is derived from the allocation",
+)
 @click.option("--output-dir", default="data/processed")
 def generate(
     mode: str,
     seed: int,
     scenario_set: str,
-    duration: float,
+    duration: float | None,
     sampling_interval: int,
+    target_telemetry_rows: int | None,
     output_dir: str,
 ):
     """Generate master data and run configuration."""
-    _generate_run(mode, seed, scenario_set, duration, sampling_interval, output_dir)
+    _generate_run(
+        mode,
+        seed,
+        scenario_set,
+        duration,
+        sampling_interval,
+        output_dir,
+        target_telemetry_rows,
+    )
     console.print(f"Configuration saved to {Path(output_dir) / 'config.json'}")
 
 
@@ -580,7 +654,7 @@ def generate(
 @click.option("--seed", type=int, default=None, help="Override simulation seed")
 @click.option(
     "--scenario-set",
-    type=click.Choice(["default", "calibration", "evaluation", "compact"]),
+    type=click.Choice(["default", "calibration", "evaluation", "compact", "baseline"]),
     default=None,
 )
 def simulate(output_dir: str, duration: float | None, seed: int | None, scenario_set: str | None):
@@ -623,30 +697,76 @@ def export_sql(output_dir: str, recreate: bool):
     console.print("SQLite export complete")
 
 
+@cli.command("export-json")
+@click.option("--output-dir", default="data/processed")
+@click.option("--output", default=None, help="JSON directory (default: <output-dir>/json_exports)")
+def export_json(output_dir: str, output: str | None):
+    """Export all CSV tables to deterministic JSON arrays."""
+    destination = Path(output) if output else Path(output_dir) / "json_exports"
+    manifest = export_json_tables(output_dir, destination)
+    console.print(
+        f"JSON export: {destination} ({len(manifest['tables'])} tables, "
+        f"{sum(item['rows'] for item in manifest['tables'].values()):,} rows)"
+    )
+
+
+@cli.command("export-sql-script")
+@click.option("--output-dir", default="data/processed")
+@click.option(
+    "--output",
+    default=None,
+    help="SQL file (default: <output-dir>/yottaflex_seed.sql)",
+)
+def export_sql_script(output_dir: str, output: str | None):
+    """Write a portable SQL schema + seed-data script."""
+    destination = Path(output) if output else Path(output_dir) / "yottaflex_seed.sql"
+    manifest = export_sql_seed(output_dir, destination)
+    console.print(
+        f"SQL seed script: {destination} ({manifest['total_rows']:,} rows, "
+        f"sha256={manifest['sha256'][:12]}...)"
+    )
+
+
 @cli.command()
 @click.option("--output-dir", default="data/processed")
 @click.option("--mode", type=click.Choice(["starter", "full"]), default="full")
 @click.option("--seed", type=int, default=20261022)
 @click.option(
     "--scenario-set",
-    type=click.Choice(["default", "calibration", "evaluation", "compact"]),
+    type=click.Choice(["default", "calibration", "evaluation", "compact", "baseline"]),
     default="default",
 )
-@click.option("--duration", type=float, default=24.0)
+@click.option("--duration", type=float, default=None,
+              help="Simulation duration in hours; defaults to 24 when no target is set")
 @click.option("--sampling-interval", type=int, default=60)
+@click.option(
+    "--target-telemetry-rows",
+    type=int,
+    default=None,
+    help="Exact telemetry budget; duration is derived from the allocation",
+)
 @click.option("--skip-sql", is_flag=True, default=False)
 def pipeline(
     output_dir: str,
     mode: str,
     seed: int,
     scenario_set: str,
-    duration: float,
+    duration: float | None,
     sampling_interval: int,
+    target_telemetry_rows: int | None,
     skip_sql: bool,
 ):
     """Run generate, simulate, detect, evaluate, validate, export and SQL checks."""
     console.print(f"[bold cyan]YottaFlex pipeline: {mode} / {scenario_set}[/bold cyan]")
-    _generate_run(mode, seed, scenario_set, duration, sampling_interval, output_dir)
+    _generate_run(
+        mode,
+        seed,
+        scenario_set,
+        duration,
+        sampling_interval,
+        output_dir,
+        target_telemetry_rows,
+    )
     _simulate_run(output_dir)
     _detect_run(output_dir)
     result = _evaluate_run(output_dir)

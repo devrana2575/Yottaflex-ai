@@ -3,14 +3,20 @@
 ## System overview
 
 YottaFlex is a modular Python batch application that generates industrial master data, simulates
-mass-consistent telemetry, injects deterministic anomalies, detects observed anomalies, evaluates
-event- and point-level performance against isolated ground truth, exports to SQLite, and executes
-executable validation and SQL checks.
+mass-consistent telemetry, injects deterministic anomalies, detects observed anomalies, records
+append-only equipment state transitions, evaluates event- and point-level performance against
+isolated ground truth, exports CSV/SQLite/JSON/portable SQL, and executes validation and SQL checks.
 
 ```
 Config -> IDGenerator -> DataGenerator -> ProcessSimulator -> ScenarioInjector
-       -> DetectionEngine -> Evaluator -> Validator -> Database/CLI reports
+       -> state_history -> DetectionEngine -> Evaluator -> Validator
+       -> CSV/SQLite/JSON/SQL exports -> CLI reports
 ```
+
+The exact telemetry-budget path is a deliberate branch in `ProcessSimulator`: the historical
+`telemetry_target_rows=None` path emits the rectangular `sensors x steps` table, while an explicit
+target uses a deterministic quotient/remainder allocation across real sensors and cadence
+timestamps. The target does not pad, duplicate or silently drop rows.
 
 ## Design principles
 
@@ -35,10 +41,12 @@ Config -> IDGenerator -> DataGenerator -> ProcessSimulator -> ScenarioInjector
 | `scenarios.py` | Scenario sets, anomaly injection, explicit NORMAL complements, ground truth |
 | `detection.py` | Rule engine, episode tracker, persistence/hysteresis, modes, uncertainty/attribution |
 | `evaluation.py` | Incidents, one-to-one matching, event/point metrics, labels and policies |
+| `state_history.py` | Append-only equipment initialization/scenario state transitions and validators |
 | `validation.py` | 87 executable checks: keys, FKs, topology, physics, isolation, alarms, evaluation, DB |
 | `persistence.py` | SQLite create/insert/query/integrity helpers |
-| `schema.py` | 2.0.0 DDL, constraints, indexes |
-| `cli.py` | `generate`, `simulate`, `detect`, `evaluate`, `validate`, `export-sql`, `run-sql`, `pipeline` |
+| `exports.py` | Deterministic per-table JSON and portable SQL schema/seed exports |
+| `schema.py` | 2.0.0 DDL, constraints, indexes, populated state history |
+| `cli.py` | `generate`, `simulate`, `detect`, `evaluate`, `validate`, `export-sql`, `export-json`, `export-sql-script`, `run-sql`, `pipeline` |
 
 ## Data model
 
@@ -48,8 +56,11 @@ valve has 1 through-flow sensor. Full scale is 3 facilities, 20 pumps, 30 tanks,
 220 sensors; starter scale is 1/3/5/10 and 36 sensors.
 
 Observed telemetry is separate from scenario definitions, ground truth, alarms, alarm history,
-incidents, evaluation and validation. `physical_state_value` is persisted for physics validation
-but is not a detector input. Alarm rows carry no `scenario_id`.
+equipment state history, incidents, evaluation and validation. `physical_state_value` is persisted
+for physics validation but is not a detector input. Alarm rows carry no `scenario_id`.
+`equipment_state_events` is append-only: 333 initialization events (3 facilities + 20 pumps + 30
+tanks + 60 valves + 220 sensors) plus two transitions per injected scenario. In the exact 100k
+baseline, 4 scenarios add 8 events, giving 341 rows. No placeholder rows are inserted.
 
 ## Physical model
 
@@ -96,7 +107,12 @@ Scenario sets:
 | default | 24 h | Demonstration |
 | calibration | 24 h | Exercise mechanisms/severities, including all sensor faults |
 | evaluation | 24 h | Independent report set, light/medium/severe |
-| compact | 7.5 h | 220 x 450 = 99,000 rows |
+| baseline | 7.583 h | Exact 100,000 rows; 120 x 455 + 100 x 454; omits row-removing missing fault |
+| compact | 7.5 h | Historical demonstration: 220 x 450 = 99,000 rows |
+
+For target runs the CLI derives the duration from `ceil(target/220)` cadence steps; `--duration`
+cannot override the target. For the historical full run no target is set, so the duration remains
+24 h and the row count remains 316,800.
 
 ## Detection architecture
 
@@ -116,13 +132,22 @@ exclude unknown and unobserved samples, and score predictions from the actual ep
 
 ## Persistence and reporting
 
-SQLite export recreates the 19-table schema and writes 17 populated tables by default: 7 master
-tables, simulation runs, scenarios, telemetry, ground truth, alarms, alarm events, incidents,
-evaluation metrics/events and validation results. The legacy `detection_results` and
-`equipment_state_events` tables remain empty. `export-sql --append` is available but not used by the
-pipeline. `run_manifest.json` records SHA-256 hashes and row counts; `validation_results.csv` and
-`evaluation_metrics.csv` contain wall-clock timestamps and are excluded from byte-for-byte
-reproducibility comparisons.
+SQLite export recreates the 19-table schema and writes 18 populated tables: 7 master tables,
+simulation runs, equipment state events, scenarios, telemetry, ground truth, alarms, alarm events,
+incidents, evaluation metrics/events and validation results. The legacy `detection_results` table is
+the only empty table. `export-sql --append` is available but not used by the pipeline.
+
+`export-json` reads the CSV artifacts and writes one deterministic JSON array per table plus a
+manifest with row counts and SHA-256 hashes. The manifest stores a relative `source_root`, never an
+absolute local path. `export-sql-script` writes a portable DDL + INSERT script; executing it in a
+new SQLite database reproduces the CSV identifiers and values. The 100k artifacts are large (about
+32 MB JSON and 30 MB SQL), so they are generated on demand outside Git.
+
+`run_manifest.json` records SHA-256 hashes and row counts; `validation_results.csv`,
+`validation_summary.json`, `evaluation_metrics.csv` and the SQL report may contain wall-clock
+timestamps and are excluded from byte-for-byte reproducibility comparisons. In the 100k
+reproducibility check, 20/23 compared files were byte-identical and the remaining three were
+logically identical after removing `evaluated_at` / `validated_at` fields.
 
 ## Verification layers
 

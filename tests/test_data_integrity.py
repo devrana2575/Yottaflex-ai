@@ -228,8 +228,10 @@ def test_config_roundtrip_path_independent_hash_and_scale(tmp_path):
     assert config.scale.valves == 60
     expected_sensors = 20 * 2 + 30 * 4 + 60
     assert expected_sensors == 220
-    # 7.5 hours at 60 s is the documented ~100k-row configuration.
-    assert expected_sensors * 450 == 99_000
+    # 100,000 = 120 sensors x 455 samples + 100 sensors x 454 samples.
+    assert 120 * 455 + 100 * 454 == 100_000
+    loaded.simulation.telemetry_target_rows = 100_000
+    assert loaded.get_config_hash() != original
 
 
 def test_version_consistency(pipeline_dir):
@@ -273,6 +275,7 @@ def test_sqlite_export_integrity_and_row_counts(pipeline_dir):
             "sensors",
             "operating_modes",
             "simulation_runs",
+            "equipment_state_events",
             "scenario_definitions",
             "telemetry",
             "ground_truth",

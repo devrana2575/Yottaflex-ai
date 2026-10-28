@@ -290,17 +290,24 @@ def test_scenario_injection_is_deterministic(monkeypatch):
     pd.testing.assert_frame_equal(first[2], second[2])
 
 
-def test_compact_full_scale_run_is_99k_and_detected(compact_full_dir):
-    telemetry = pd.read_csv(compact_full_dir / "telemetry.csv", usecols=["sensor_id", "timestamp"])
-    sensors = pd.read_csv(compact_full_dir / "sensors.csv")
-    metrics = json.loads((compact_full_dir / "evaluation_metrics.json").read_text())
-    assert len(telemetry) == 99_000
+def test_baseline_is_exactly_100k_and_detected(baseline_100k_dir):
+    telemetry = pd.read_csv(
+        baseline_100k_dir / "telemetry.csv", usecols=["sensor_id", "timestamp"]
+    )
+    sensors = pd.read_csv(baseline_100k_dir / "sensors.csv")
+    metrics = json.loads((baseline_100k_dir / "evaluation_metrics.json").read_text())
+    config = json.loads((baseline_100k_dir / "config.json").read_text())
+    assert len(telemetry) == 100_000
     assert telemetry["sensor_id"].nunique() == 220
     assert len(sensors) == 220
-    assert pd.read_csv(compact_full_dir / "facilities.csv").shape[0] == 3
-    assert pd.read_csv(compact_full_dir / "pumps.csv").shape[0] == 20
-    assert pd.read_csv(compact_full_dir / "tanks.csv").shape[0] == 30
-    assert pd.read_csv(compact_full_dir / "valves.csv").shape[0] == 60
+    assert config["simulation"]["telemetry_target_rows"] == 100_000
+    counts = telemetry.groupby("sensor_id").size()
+    assert counts.value_counts().to_dict() == {455: 120, 454: 100}
+    assert counts.sum() == 100_000
+    assert pd.read_csv(baseline_100k_dir / "facilities.csv").shape[0] == 3
+    assert pd.read_csv(baseline_100k_dir / "pumps.csv").shape[0] == 20
+    assert pd.read_csv(baseline_100k_dir / "tanks.csv").shape[0] == 30
+    assert pd.read_csv(baseline_100k_dir / "valves.csv").shape[0] == 60
     event = metrics["event_level"]
     assert event["positive_event_count"] == 4
     assert event["true_positives"] == 4

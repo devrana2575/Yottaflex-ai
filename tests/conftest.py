@@ -62,9 +62,9 @@ def pipeline_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
 
 
 @pytest.fixture(scope="session")
-def compact_full_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """Run the documented ~100,000-row configuration once."""
-    root = tmp_path_factory.mktemp("yottaflex-compact-100k")
+def baseline_100k_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Run the documented exact 100,000-row baseline once."""
+    root = tmp_path_factory.mktemp("yottaflex-baseline-100k")
     output = root / "run"
     runner = CliRunner()
     result = runner.invoke(
@@ -76,19 +76,18 @@ def compact_full_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
             "--seed",
             "20261022",
             "--scenario-set",
-            "compact",
-            "--duration",
-            "7.5",
+            "baseline",
+            "--target-telemetry-rows",
+            "100000",
             "--sampling-interval",
             "60",
-            "--skip-sql",
             "--output-dir",
             str(output),
         ],
     )
     if result.exception:
         raise AssertionError(
-            f"Compact pipeline failed: {result.exception}\n{result.output}"
+            f"Baseline 100k pipeline failed: {result.exception}\n{result.output}"
         )
     assert result.exit_code == 0, result.output
     return output

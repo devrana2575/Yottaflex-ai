@@ -167,7 +167,34 @@ SCENARIO_MATRIX: Dict[str, List[ScenarioPlan]] = {
             expected_observable="Missing samples for one sensor",
         ),
     ],
-    # Deterministic 7.5-hour set used by the ~99,000-row scale configuration.
+    # Exact-budget baseline used by the 100,000-row configuration.  It keeps
+    # the four core anomaly mechanisms but intentionally omits the
+    # missing-sensor fault because that scenario removes telemetry rows and
+    # would make the post-injection row count smaller than the target.
+    "baseline": [
+        ScenarioPlan(
+            "B-LEAK-01", "LEAK", "TANK", 0, 1.5, 3.0, "medium", "PROCESS_FAULT",
+            parameters={"leak_fraction_capacity_per_hour": 0.05},
+            expected_observable="Sustained level/pressure decline and positive flow-balance residual",
+        ),
+        ScenarioPlan(
+            "B-BLOCK-01", "BLOCKAGE", "PUMP", 1, 3.5, 4.5, "light", "PROCESS_FAULT",
+            parameters={"flow_factor": 0.85, "pressure_factor": 1.15},
+            expected_observable="Flow reduction with above-curve discharge pressure",
+        ),
+        ScenarioPlan(
+            "B-DEGRADE-01", "PUMP_DEGRADATION", "PUMP", 2, 5.0, 6.2, "medium", "PROCESS_FAULT",
+            parameters={"flow_factor": 0.80, "head_factor": 0.72},
+            expected_observable="Operating point below the nominal pump curve",
+        ),
+        ScenarioPlan(
+            "B-SENSOR-BIAS-01", "SENSOR_FAULT", "TANK", 2, 6.5, 7.2, "medium", "SENSOR_FAULT",
+            sensor_role="level", sensor_fault_type="bias",
+            parameters={"bias_pct": 6.0},
+            expected_observable="Level/pressure redundancy disagreement",
+        ),
+    ],
+    # Deterministic 7.5-hour set used by the previous compact configuration.
     # All windows fit inside 7.5 hours, unlike the 24-hour default matrix.
     "compact": [
         ScenarioPlan(

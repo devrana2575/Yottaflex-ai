@@ -13,6 +13,7 @@ The simulator never writes scenario or ground-truth identifiers into telemetry.
 
 from __future__ import annotations
 
+import math
 from datetime import datetime, timedelta
 from typing import Any, Dict, Tuple
 
@@ -23,6 +24,50 @@ from .config import Config
 from .id_generator import IDGenerator
 
 WATER_HEAD_TO_BAR = 1000.0 * 9.81 / 1e5  # 1 m of water = 0.0981 bar
+
+
+def allocate_sample_counts(
+    sensor_ids: list[str] | tuple[str, ...],
+    target_rows: int,
+    steps: int,
+) -> Dict[str, int]:
+    """Allocate an exact telemetry budget across sensors deterministically.
+
+    The historical generator produces a rectangular ``sensors x steps`` table.
+    A target such as 100,000 is not divisible by the 220 full-scale sensors, so
+    the quotient/remainder allocation assigns one additional sample to the
+    lexicographically first ``remainder`` sensors.  Every row still references
+    a real sensor and a real cadence timestamp; no padding or duplicate sample
+    is introduced.
+    """
+    ordered = sorted(str(sensor_id) for sensor_id in sensor_ids)
+    sensor_count = len(ordered)
+    if sensor_count == 0:
+        raise ValueError("Cannot allocate telemetry without sensors")
+    if target_rows < sensor_count:
+        raise ValueError(
+            f"telemetry_target_rows={target_rows} is below the minimum of "
+            f"one sample per sensor ({sensor_count})"
+        )
+    if target_rows > sensor_count * int(steps):
+        raise ValueError(
+            f"telemetry_target_rows={target_rows} exceeds the maximum "
+            f"{sensor_count} sensors x {steps} steps = {sensor_count * steps}"
+        )
+    base, extra = divmod(int(target_rows), sensor_count)
+    return {
+        sensor_id: base + (index < extra)
+        for index, sensor_id in enumerate(ordered)
+    }
+
+
+def required_steps_for_target(target_rows: int, sensor_count: int) -> int:
+    """Return the minimum number of sampling instants for an exact budget."""
+    if sensor_count <= 0:
+        raise ValueError("sensor_count must be positive")
+    if target_rows < sensor_count:
+        raise ValueError("target_rows must provide at least one sample per sensor")
+    return math.ceil(int(target_rows) / int(sensor_count))
 
 
 class ProcessSimulator:
@@ -368,40 +413,80 @@ class ProcessSimulator:
         ]
         sensor_rows = list(self.sensors.values())
         sensor_count = len(sensor_rows)
+        target_rows = self.config.simulation.telemetry_target_rows
+        sample_counts: Dict[str, int] | None = None
 
-        physical_matrix = np.column_stack(
-            [self._sensor_physical[s["sensor_id"]] for s in sensor_rows]
-        )
-        measured_matrix = np.column_stack(
-            [self._sensor_measured[s["sensor_id"]] for s in sensor_rows]
-        )
-        sensor_ids = np.tile(
-            np.array([s["sensor_id"] for s in sensor_rows], dtype=object),
-            (steps, 1),
-        ).ravel()
-        units = np.tile(
-            np.array([s["measurement_unit"] for s in sensor_rows], dtype=object),
-            (steps, 1),
-        ).ravel()
-        timestamp_column = np.repeat(np.array(timestamps, dtype=object), sensor_count)
-        mode_column = np.repeat(self._mode_ids, sensor_count)
-        telemetry_ids = [
-            self.id_gen.telemetry_id() for _ in range(steps * sensor_count)
-        ]
+        if target_rows is not None:
+            target_rows = int(target_rows)
+            sample_counts = allocate_sample_counts(
+                [s["sensor_id"] for s in sensor_rows], target_rows, steps
+            )
+            if max(sample_counts.values()) != steps:
+                required_steps = required_steps_for_target(target_rows, sensor_count)
+                raise ValueError(
+                    "telemetry_target_rows requires a duration that supplies exactly "
+                    f"{required_steps} sampling instants; got {steps}. "
+                    "Use the configured target-row helper or matching duration."
+                )
 
-        telemetry_df = pd.DataFrame(
-            {
-                "telemetry_id": telemetry_ids,
-                "sensor_id": sensor_ids,
-                "simulation_run_id": simulation_run_id,
-                "timestamp": timestamp_column,
-                "measured_value": np.round(measured_matrix.ravel(), 3),
-                "measurement_unit": units,
-                "quality_status": "GOOD",
-                "operating_mode_id": mode_column,
-                "physical_state_value": np.round(physical_matrix.ravel(), 3),
-            }
-        )
+            records = []
+            for step in range(steps):
+                for sensor in sensor_rows:
+                    sensor_id = str(sensor["sensor_id"])
+                    if sample_counts[sensor_id] <= step:
+                        continue
+                    records.append(
+                        {
+                            "telemetry_id": self.id_gen.telemetry_id(),
+                            "sensor_id": sensor_id,
+                            "simulation_run_id": simulation_run_id,
+                            "timestamp": timestamps[step],
+                            "measured_value": round(
+                                float(self._sensor_measured[sensor_id][step]), 3
+                            ),
+                            "measurement_unit": sensor["measurement_unit"],
+                            "quality_status": "GOOD",
+                            "operating_mode_id": self._mode_ids[step],
+                            "physical_state_value": round(
+                                float(self._sensor_physical[sensor_id][step]), 3
+                            ),
+                        }
+                    )
+            telemetry_df = pd.DataFrame(records)
+        else:
+            physical_matrix = np.column_stack(
+                [self._sensor_physical[s["sensor_id"]] for s in sensor_rows]
+            )
+            measured_matrix = np.column_stack(
+                [self._sensor_measured[s["sensor_id"]] for s in sensor_rows]
+            )
+            sensor_ids = np.tile(
+                np.array([s["sensor_id"] for s in sensor_rows], dtype=object),
+                (steps, 1),
+            ).ravel()
+            units = np.tile(
+                np.array([s["measurement_unit"] for s in sensor_rows], dtype=object),
+                (steps, 1),
+            ).ravel()
+            timestamp_column = np.repeat(np.array(timestamps, dtype=object), sensor_count)
+            mode_column = np.repeat(self._mode_ids, sensor_count)
+            telemetry_ids = [
+                self.id_gen.telemetry_id() for _ in range(steps * sensor_count)
+            ]
+
+            telemetry_df = pd.DataFrame(
+                {
+                    "telemetry_id": telemetry_ids,
+                    "sensor_id": sensor_ids,
+                    "simulation_run_id": simulation_run_id,
+                    "timestamp": timestamp_column,
+                    "measured_value": np.round(measured_matrix.ravel(), 3),
+                    "measurement_unit": units,
+                    "quality_status": "GOOD",
+                    "operating_mode_id": mode_column,
+                    "physical_state_value": np.round(physical_matrix.ravel(), 3),
+                }
+            )
 
         metadata = {
             "simulation_run_id": simulation_run_id,
@@ -417,4 +502,20 @@ class ProcessSimulator:
             "physics_model": "mass-consistent simplified water model",
             "head_to_pressure_bar": WATER_HEAD_TO_BAR,
         }
+        if sample_counts is not None:
+            distribution: Dict[str, int] = {}
+            for count in sample_counts.values():
+                key = str(int(count))
+                distribution[key] = distribution.get(key, 0) + 1
+            metadata.update(
+                {
+                    "telemetry_target_rows": int(target_rows),
+                    "sensor_sample_counts": sample_counts,
+                    "sample_count_distribution": distribution,
+                    "record_count_derivation": (
+                        f"{sensor_count} sensors with uneven cadence allocation = "
+                        f"{len(telemetry_df)} records; distribution={distribution}"
+                    ),
+                }
+            )
         return telemetry_df, metadata

@@ -20,7 +20,7 @@ import pandas as pd
 
 from . import __schema_version__
 from .config import Config, load_config_for_dir
-from .simulation import WATER_HEAD_TO_BAR
+from .simulation import WATER_HEAD_TO_BAR, allocate_sample_counts
 
 
 def _read_csv(path: Path) -> pd.DataFrame:
@@ -524,12 +524,19 @@ class Validator:
         )
         if not telemetry.empty:
             outcome = _json_dict(run.get("outcome_summary"))
+            target_rows = config.simulation.telemetry_target_rows
+            # The outcome check covers both the historical rectangular run and
+            # the exact-budget configuration.  A target is never inferred from
+            # the row count; it must be explicitly present in the config.
+            target_ok = target_rows is None or len(telemetry) == int(target_rows)
             self._check(
                 "LINEAGE",
                 "SIMULATION-OUTCOME-COUNT",
-                int(outcome.get("telemetry_rows", -1)) == len(telemetry),
-                "Outcome summary telemetry row count matches telemetry.csv",
-                f"summary={outcome.get('telemetry_rows')}, actual={len(telemetry)}",
+                int(outcome.get("telemetry_rows", -1)) == len(telemetry) and target_ok,
+                "Outcome summary telemetry row count matches telemetry.csv "
+                "and any configured exact target",
+                f"summary={outcome.get('telemetry_rows')}, actual={len(telemetry)}, "
+                f"target={target_rows}",
             )
 
     def _validate_telemetry(
@@ -666,6 +673,15 @@ class Validator:
         # Per-sensor completeness: a sensor is either complete or its missing
         # samples are explained by sensor-fault ground-truth windows.
         counts = telemetry.groupby("sensor_id").size()
+        target_rows = config.simulation.telemetry_target_rows
+        if target_rows is not None:
+            expected_counts = allocate_sample_counts(
+                list(master["sensors"]["sensor_id"]), int(target_rows), steps
+            )
+        else:
+            expected_counts = {
+                str(sensor_id): steps for sensor_id in master["sensors"]["sensor_id"]
+            }
         unexplained = []
         gt = ground_truth
         sensor_windows: Dict[str, List[Tuple[pd.Timestamp, pd.Timestamp]]] = {}
@@ -680,19 +696,26 @@ class Validator:
                         )
                     )
         for sensor_id in master["sensors"]["sensor_id"]:
+            sensor_key = str(sensor_id)
             observed_count = int(counts.get(sensor_id, 0))
-            if observed_count == steps:
+            expected_count = int(expected_counts.get(sensor_key, steps))
+            if observed_count == expected_count:
                 continue
             observed_times = ts[telemetry["sensor_id"] == sensor_id]
-            expected_times = pd.date_range(start=start, periods=steps, freq=f"{interval}s")
+            expected_times = pd.date_range(
+                start=start, periods=expected_count, freq=f"{interval}s"
+            )
             missing = expected_times.difference(pd.DatetimeIndex(observed_times))
-            windows = sensor_windows.get(str(sensor_id), [])
+            windows = sensor_windows.get(sensor_key, [])
             explained = all(
                 any(item_start <= moment < item_end for item_start, item_end in windows)
                 for moment in missing
             )
             if not explained:
-                unexplained.append(f"{sensor_id}: {len(missing)} missing samples")
+                unexplained.append(
+                    f"{sensor_id}: {len(missing)} missing samples "
+                    f"(observed={observed_count}, expected={expected_count})"
+                )
         self._check(
             "TELEMETRY",
             "TELEMETRY-COMPLETENESS",
@@ -1649,6 +1672,7 @@ class Validator:
                 "tanks": _read_csv(root / "tanks.csv"),
                 "valves": _read_csv(root / "valves.csv"),
                 "sensors": _read_csv(root / "sensors.csv"),
+                "equipment_state_events": _read_csv(root / "equipment_state_events.csv"),
                 "telemetry": _read_csv(root / "telemetry.csv"),
                 "alarms": _read_csv(root / "alarms.csv"),
                 "ground_truth": _read_csv(root / "ground_truth.csv"),

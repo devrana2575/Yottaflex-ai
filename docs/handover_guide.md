@@ -18,7 +18,9 @@ yottaflex --version
 ```
 
 Expected version: `2.0.0`. Python 3.11+ is required; all reported runs used Python 3.14.4. A fresh
-virtual environment (pandas 3.1.0 / NumPy 2.5.4) was verified during the audit.
+virtual environment (pandas 3.1.0 / NumPy 2.5.4) was verified during the 2026-10-27 audit; the
+2026-10-28 remediation was re-run in the main environment, and the cross-version rerun was not
+repeated.
 
 ## 2. Recommended Runs
 
@@ -36,16 +38,26 @@ yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation \
 yottaflex pipeline --mode full --seed 20261022 --scenario-set calibration \
   --output-dir <fresh-output-dir>/calibration-run
 
-# ~100,000-row configuration: 99,000 rows
+# Exact 100,000-row baseline: 120 x 455 + 100 x 454, 7.583 h
+yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline \
+  --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k
+
+# Historical compact demonstration: 99,000 rows
 yottaflex pipeline --mode full --seed 20261022 --scenario-set compact --duration 7.5 \
   --output-dir <fresh-output-dir>/compact-run
 
 # Small end-to-end run: 51,840 rows
 yottaflex pipeline --mode starter --seed 20261022 --output-dir <fresh-output-dir>/starter-run
+
+# Portable exports
+yottaflex export-json --output-dir <fresh-output-dir>/baseline-100k
+yottaflex export-sql-script --output-dir <fresh-output-dir>/baseline-100k
 ```
 
 `pipeline` runs generate, simulate, detect, evaluate, validate, SQLite export and SQL checks. If a
-step fails, the CLI exits non-zero; do not treat a partial directory as evidence.
+step fails, the CLI exits non-zero; do not treat a partial directory as evidence. The exact target
+derives the duration; `--duration` cannot override it, and a scenario set that removes telemetry
+rows is rejected for exact-budget runs.
 
 Individual steps (same output directory):
 
@@ -76,9 +88,11 @@ python -m pytest -q
 | `scenarios.py` | Scenario matrix, injection, NORMAL complements, ground truth | `ScenarioInjector` |
 | `detection.py` | Rules, episode tracker, persistence/hysteresis, history | `DetectionEngine.detect()` |
 | `evaluation.py` | Incidents, one-to-one matching, event/point metrics | `Evaluator.evaluate()` |
+| `state_history.py` | Append-only equipment initialization/scenario transitions and validation | `generate_equipment_state_events()` |
 | `validation.py` | 87 executable checks and status report | `Validator.run_all()` |
 | `persistence.py` | SQLite export/query/integrity helpers | `Database` |
-| `schema.py` | 2.0.0 DDL, constraints, indexes | schema constants |
+| `exports.py` | Per-table JSON and portable SQL schema/seed exports | `export_json_tables()`, `export_sql_seed()` |
+| `schema.py` | 2.0.0 DDL, constraints, indexes, state history | schema constants |
 | `cli.py` | CLI commands | `yottaflex` console script |
 
 ## 4. What the Simulator Produces
@@ -95,11 +109,15 @@ Sensor composition is deliberate: tank flow balance needs inlet and outlet flow,
 redundancy needs level and pressure. The total remains 220 by using one flow sensor per valve.
 
 - Full default: 220 sensors x 1,440 samples = 316,800 telemetry rows.
-- Compact: 220 x 450 = 99,000 rows.
+- Exact 100k baseline: 120 sensors x 455 + 100 sensors x 454 = 100,000 rows.
+- Compact historical demonstration: 220 x 450 = 99,000 rows.
 - Starter: 36 x 1,440 = 51,840 rows.
 - Evaluation/calibration: 316,740 rows because the missing-sensor scenario removes 60 rows.
 
-Missing rows are intentional and confined to the labelled sensor-fault window.
+Missing rows in evaluation/calibration are intentional and confined to the labelled sensor-fault
+window. The exact 100k baseline omits the row-removing missing-sensor fault so the post-injection
+count stays exact. The 100k baseline also populates `equipment_state_events` with 341 real
+initialization/scenario transitions; the table is not detector input.
 
 ## 5. Core Equations
 
@@ -173,7 +191,8 @@ raw alarm-row FP; it was not an event or point metric.
 |---|---:|---|---|---|
 | starter/default | 51,840 | 4/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9921 / 0.9778 |
 | full/default | 316,800 | 4/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9910 / 0.9800 |
-| full/compact | 99,000 | 4/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9801 / 0.9318 |
+| full/exact 100k baseline | 100,000 | 4/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9800 / 0.9280 |
+| full/compact (historical) | 99,000 | 4/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9801 / 0.9318 |
 | full/calibration | 316,740 | 7/0/0 | 1.0000 / 1.0000 / 1.0000 | 0.9864 / 0.8467 |
 | full/evaluation | 316,740 | 10/1/0 | 1.0000 / 0.9091 / 0.9524 | 0.9883 / 0.8038 |
 
@@ -187,9 +206,10 @@ Evaluation set details:
 - The 10 point false positives are 1-5 sample episode tails after events end. They are retained.
 - The 2 unknown predictions at SNS-003 11:00-11:01 are excluded and reported, not counted as FP.
 - Sensor-fault latency is longer (60-3,180 s) than process latency (240-360 s), by design.
-- All 87 executable validation rows, 20 SQL assertions and 62 tests pass. The two review-level
-  WARNs (light leak and reconstructed 1.x prompt) are tracked separately in the validation report;
-  they are not rows in the 87-row validation CSV.
+- All 87 executable validation rows, 20 SQL assertions and 68 tests pass. Four review-level WARNs
+  (light leak, reconstructed prompt records, un-repeated cross-version rerun, and publication pending
+  explicit authorization) are tracked separately in the validation report; they are not rows in the
+  87-row validation CSV.
 
 ## 9. Verification and Evidence
 
@@ -205,16 +225,21 @@ Evidence:
 - [`validation_report.md`](validation_report.md) — results, per-event tables, requirement matrix.
 - [`baseline_findings.md`](baseline_findings.md) — reproduced 1.x baseline and 12 defects.
 - [`reports/final/summary.json`](../reports/final/summary.json) — machine-readable run summary.
-- [`reports/final/reproducibility.json`](../reports/final/reproducibility.json) — 19-file hash
-  comparison.
+- [`reports/final/reproducibility.json`](../reports/final/reproducibility.json) — prior 19-file
+  full/default hash comparison.
+- [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json) — exact
+  100k two-run comparison and portable-export checks.
+- [`reports/final/baseline_100k/`](../reports/final/baseline_100k/) — compact exact-100k evidence.
 - [`reports/final/yf2-evaluation/`](../reports/final/yf2-evaluation/) — compact evaluation evidence.
 
-Two fresh full/default audit runs after the fixes in the main environment produced 19 byte-identical
-deterministic artifacts and the same path-independent configuration hash (`d422f3bbee3dcadc`). The two SQLite databases also
-matched logically (19 schema tables, 17 populated; identical rows after excluding wall-clock
-`evaluated_at` / `validated_at`). `config.json` paths and wall-clock columns are expected to differ.
-A fresh pandas 3.1.0 / NumPy 2.5.4 environment reproduced all metrics and 17/19 artifacts; two files
-differed only in `peak_value` floats at about `1e-13` because dependencies are lower-bounded.
+Two fresh exact-100k runs in the main environment produced 20/23 byte-identical files; the other
+three differed only in wall-clock `evaluated_at` / `validated_at` fields and were logically equal.
+All 19 SQLite tables matched logically, with 18 populated tables and zero FK violations. The prior
+full/default comparison remains 19/19 within the main environment with the same path-independent
+configuration hash (`d422f3bbee3dcadc`); at that time 17 tables were populated. A fresh pandas
+3.1.0 / NumPy 2.5.4 environment reproduced all prior metrics and 17/19 artifacts; two files differed
+only in `peak_value` floats at about `1e-13`. The cross-version rerun was not repeated for the
+2026-10-28 remediation.
 
 ## 10. The Five Original Negative Tests and the Two Executable Guards
 

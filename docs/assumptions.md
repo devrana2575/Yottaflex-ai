@@ -25,17 +25,32 @@
 ## Scenario assumptions
 
 - Scenario times, equipment indices and severities are fixed in `scenario_matrix`.
-- Four sets exist:
+- Five sets exist:
   - `default` - demonstration set (4 events, 24 h).
   - `calibration` - 7 events including bias, drift, stuck and missing sensor faults.
   - `evaluation` - 11 events across light/medium/severe process faults and sensor faults.
-  - `compact` - 4 events in 7.5 h for the 99,000-row configuration.
+  - `baseline` - 4 process/sensor events in a derived 7.583 h window for the exact 100,000-row
+    configuration. It omits the row-removing missing-sensor fault so the target count remains exact
+    after injection.
+  - `compact` - historical 4-event, 7.5 h set used by the 99,000-row demonstration configuration.
+- **Exact telemetry budget.** The full-scale sensor count is 220. When
+  `telemetry_target_rows=100000`, the generator derives the minimum number of cadence steps
+  (`ceil(100000/220)=455`) and allocates 455 samples to the lexicographically first 120 sensor IDs
+  and 454 to the remaining 100. The result is `120*455 + 100*454 = 100,000`. This is an intentional
+  uneven cadence allocation, not padding, duplication or deletion of a rectangular 316,800-row run.
+  Every emitted row is a real `(sensor, timestamp)` sample. A target is rejected if it cannot fit
+  the number of sensors and steps.
+- `--duration` does not override a target-row configuration; the duration is derived from the
+  allocation so the final telemetry record is exactly the target. The historical full/default run
+  keeps `telemetry_target_rows=None` and remains 220 x 1,440 = 316,800 rows.
 - Calibration and evaluation use different windows, equipment and severities. Thresholds were not
   grid-searched on the evaluation set.
 - NORMAL windows are explicit complements of anomaly windows. They are split into chunks, not
   inferred from unlabelled time.
 - Missing telemetry is injected by removing rows, not by setting a quality flag.
 - Bias/drift/stuck sensor faults modify measured values only; the physical state stays normal.
+- Equipment state history records authoritative transitions (initialization and scenario
+  start/recovery) in an append-only table. It is not a placeholder table and is not detector input.
 
 ## Detection assumptions
 
@@ -77,16 +92,26 @@
   without a third reference.
 - **Latency asymmetry.** Sensor-fault allowance is one hour; process allowance is ten minutes.
 - **Runtime.** The full 316,800-row pipeline takes roughly 40-60 s on the audit machine; the
-  99,000-row compact run takes roughly 20 s.
+  exact 100,000-row baseline takes roughly 20-30 s. JSON export of the 100k run is about 32 MB and
+  the portable SQL seed is about 30 MB; both are generated on demand, not committed to Git.
 - **Cross-environment float serialization.** Dependencies are lower-bounded, not upper-pinned.
-  Same-environment reruns are byte-identical; a pandas 3.1.0 / NumPy 2.5.4 clean environment
-  reproduced all metrics and 17/19 artifacts, with two files differing only in `peak_value` floats
-  at about `1e-13`.
+  The 2026-10-27 audit observed same-environment byte-identical reruns and one pandas 3.1.0 /
+  NumPy 2.5.4 clean environment that matched all metrics and 17/19 artifacts, with two files
+  differing only in `peak_value` floats at about `1e-13`. The 2026-10-28 remediation re-verified
+  exact 100k reproducibility in the main environment (20/23 files byte-identical; the other three
+  differ only in wall-clock `evaluated_at`/`validated_at` fields and are logically equal after
+  removing those documented fields). The cross-version rerun was not repeated for this remediation.
 - **SQLite.** Suitable for local analytics, not high-concurrency or very large-scale deployment.
 - **No real-time or dashboard.** Batch CLI only; the optional dashboard remains unimplemented.
+- **State-event semantics.** Scenario injection does not mutate the master `lifecycle_state`
+  columns. The history table records `ACTIVE -> LEAKING/DEGRADED/FAULTY -> ACTIVE` transitions with
+  separate evidence. This is intentionally a history of process/scenario state, not a replacement
+  for the lifecycle master value.
 - **Publication status.** The 2.0 implementation was committed as `6103e1a` and published to
   `origin/main` only after explicit authorization. The 2026-10-27 audit corrections were committed
-  and pushed after separate explicit authorization; no force-push or history rewrite was performed.
+  and pushed after separate explicit authorization. The 2026-10-28 remediation is committed locally
+  after review; publication is pending explicit confirmation in the current prompt and has not been
+  claimed as pushed.
 
 ## Interpretation guidance
 

@@ -5,10 +5,55 @@
 > `precision=0.010638` are the defective metric reproduced and explained in
 > [`docs/baseline_findings.md`](../docs/baseline_findings.md). The 2.0 results are in
 > [`docs/validation_report.md`](../docs/validation_report.md): 87 executable validation rows,
-> 20 SQL assertions, 62 tests, and separate event/point metrics. The Git publication note in the 1.x
-> section is historical; the current 2.0/audit status is recorded below.
+> 20 SQL assertions, 68 tests, and separate event/point metrics. The Git publication note in the 1.x
+> section is historical; the current 2.0/audit/remediation status is recorded below.
 
-## 2026-10-27 2.0 Submission-Readiness Audit (Current)
+## 2026-10-28 Exact-100k/State-History/Export Remediation (Current)
+
+- **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
+- **Scope:** Add an exact 100,000-row configuration without disturbing the 316,800-row path, populate
+  real equipment state history, add CSV/JSON/SQLite/portable-SQL exports, document all core entities,
+  and re-verify the existing detector/evaluator without tuning. No thresholds, existing scenarios,
+  ground truth or matching rules were changed.
+
+**Commands and observed results:**
+
+- `python -m pytest -q` → **68 passed in 44.25 s** in the main environment. The prior 62-test suite
+  passed in the 2026-10-27 main and fresh environments; the new suite was not re-run in the fresh
+  pandas 3.1.0 / NumPy 2.5.4 environment.
+- Exact-100k baseline (`--scenario-set baseline --target-telemetry-rows 100000`): **100,000** rows;
+  **120 sensors x 455 + 100 sensors x 454**; duration **7.583333 h**; 341 state events; 87
+  validation PASS / 0 FAIL / 0 WARN / 0 NOT_IMPLEMENTED; 20/20 SQL PASS; 18 populated SQLite tables.
+- Full/default rerun: **316,800** rows, 341 state events, same 87/20 validation/SQL result; event
+  TP/FN/FP `4/0/0`; point TP/FP/TN/FN `882/8/145192/18`.
+- Evaluation rerun: **316,740** rows; event TP/FN/FP `10/1/0`, P/R/F1
+  `1.0000/0.9091/0.9524`; point TP/FP/TN/FN `844/10/112190/206`, P/R/F1
+  `0.9883/0.8038/0.8866`. The light-leak miss is preserved.
+- Light-leak diagnostic: 90 samples; residual median `8.3227 m3/h`; 82/90 above the absolute
+  `5 m3/h` floor; decline median `-0.1315 pp`; longest corroborated run `300 s`; longest
+  active-without-corroboration `420 s`. Neither RULE-006 nor RULE-006U fired.
+- Exact-100k two-run comparison (`yf-repro-100k/a,b`): **20/23 files byte-identical**; the other
+  three (`evaluation_metrics.csv`, `validation_results.csv`, `validation_summary.json`) differed only
+  in wall-clock `evaluated_at` / `validated_at` fields and were logically equal after removing those
+  fields. All **19 SQLite tables** were logically equal, **18 populated**, `integrity_check=ok`,
+  **zero foreign-key violations**.
+- Portable exports: JSON 18 tables / 101,275 rows; SQL seed 101,275 rows / 29,733,009 bytes
+  (`sha256=38021605bb6891bc119423ec250193c13eabf63cc8900a0d67efbe41979ce2ce`); executed into a new
+  SQLite database with `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341
+  state events; CSV/JSON/SQLite/SQL telemetry IDs matched. The JSON manifest stores a relative
+  `source_root` (`..`) rather than an absolute path, so the export directory remains portable.
+- State history: 341 rows = 333 initialization + 8 scenario transitions; unique `ESE-######` IDs;
+  allowed transitions and references validated; no placeholder rows; not detector input.
+- Security/PII/large-file scan: 0 secret/PII hits; no tracked file over 1 MB; `git diff --check`
+  clean. Ignored `data/processed/` outputs remain untracked and were not treated as evidence.
+- Git: changes prepared for a local commit after diff review. No push was executed; publication is
+  pending explicit authorization.
+
+**Remaining caveats:** light-leak sensitivity (WARN); reconstructed prompt records because the
+original 1.x and full 2026-10-28 prompt text were not retained verbatim (WARN); cross-version clean
+environment not repeated for the new code (NOT VERIFIED); publication pending (WARN).
+
+## 2026-10-27 2.0 Submission-Readiness Audit (Historical)
 
 - **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
 - **Scope:** Re-run the 2.0 workflows against generated artifacts, reconcile documentation, verify

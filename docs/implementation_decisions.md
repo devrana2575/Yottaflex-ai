@@ -27,8 +27,9 @@ Additional constraints retained from the task:
 - Keep ground truth isolated from detector inputs.
 - Do not classify sensor faults as physical process faults without evidence.
 - Keep existing tests passing and add targeted tests.
-- Preserve the full 316,800-row volume and provide a ~100,000-row configuration.
-- Do not publish or push to GitHub.
+- Preserve the full 316,800-row volume and provide an exact 100,000-row configuration, while
+  retaining the earlier 99,000-row compact demonstration.
+- Do not publish or push to GitHub without explicit authorization.
 
 ## 2. Evaluation decisions
 
@@ -119,9 +120,11 @@ and reorganizing tank sensors, so the required 316,800-row full volume is unchan
 
 ### 3.3 Scenario matrix and calibration/evaluation split
 
-**Decision:** Define four deterministic scenario sets: `default`, `calibration`, `evaluation`, and
-`compact`. Calibration and evaluation use different times, equipment and severities. The compact
-set fits in 7.5 hours for the ~100k-row configuration.
+**Decision:** Define five deterministic scenario sets: `default`, `calibration`, `evaluation`,
+`compact`, and `baseline`. Calibration and evaluation use different times, equipment and severities.
+The historical `compact` set fits in 7.5 hours for the 99,000-row demonstration; the additive
+`baseline` set fits in 7.583 hours and omits the row-removing missing-sensor fault so the exact
+100,000-row budget survives injection.
 
 **Why:** Tuning and reporting on the same events is overfitting. The evaluation set contains
 light, medium and severe leaks/blockages/degradations and all four sensor-fault mechanisms
@@ -202,10 +205,11 @@ documented instead.
   attribution fields, scenario/ground-truth `severity` and `expected_sensor_ids`, append-only
   `alarm_events`, `alarm_incidents`, `evaluation_metrics`, `evaluation_events`, and
   `validation_results`. It removes the alarm `scenario_id`, which was a ground-truth leak.
-- **SQLite export is recreate-by-default** and exports 17 populated tables into the 19-table schema,
-  including validation and evaluation. The legacy `detection_results` and `equipment_state_events`
-  tables remain empty. `export-sql --append` remains available but is not used by the default
-  pipeline.
+- **SQLite export is recreate-by-default** and exports 18 populated tables into the 19-table schema,
+  including validation, evaluation and append-only `equipment_state_events`. The legacy
+  `detection_results` table remains empty; `equipment_state_events` now contains real
+  initialization and scenario transitions. `export-sql --append` remains available but is not used
+  by the default pipeline.
 - **SQL analytics** contain 20 statements. Each declares `expect=nonempty` or `expect=zero_rows`,
   and the runner fails the pipeline if an expectation is not met. The queries are read-only.
 - **Manifest** records SHA-256 and row counts for output CSVs and `config.json`.
@@ -214,8 +218,19 @@ documented instead.
   manifest itself is not byte-identical between output directories; it is evidence, not the
   reproducibility checksum. The deterministic comparison is recorded separately in
   `reports/final/reproducibility.json`.
-- **100k configuration** is `--mode full --scenario-set compact --duration 7.5`: 220 sensors x 450
-  samples = 99,000 rows. The default full run remains 316,800 rows (220 x 1,440).
+- **Exact 100k configuration** is
+  `--mode full --scenario-set baseline --target-telemetry-rows 100000`. The minimum cadence is
+  `ceil(100000/220)=455` steps; 120 lexicographically first sensors receive 455 samples and the
+  remaining 100 receive 454. The duration is `455*60 s = 7.5833 h`. Every row is a real
+  `(sensor,timestamp)` sample; there is no padding, duplication or silent deletion. The baseline
+  set omits the row-removing missing-sensor fault so injection leaves the count exact. The
+  historical `compact` configuration remains 220 x 450 = 99,000 rows. The default full run remains
+  316,800 rows (220 x 1,440) when no target is configured.
+- **State history is append-only and real.** Master-data initialization creates 333 events (3
+  facilities + 20 pumps + 30 tanks + 60 valves + 220 sensors), and each injected scenario adds
+  start/recovery events. The 100k baseline has 341 rows. `ESE-######` IDs are separate from alarm
+  history IDs so existing deterministic alarm outputs are not shifted. State rows are not detector
+  input.
 
 ## 6. Verification and testing decisions
 
@@ -232,7 +247,9 @@ documented instead.
   mapping now casts to object before filling the `NORMAL` fallback (removing the pandas 3.1
   deprecation warning), and point coverage now counts only observed positive rows. Regression
   assertions cover both; neither change alters the final evaluation metrics.
-- Final test suite: **62 passed** in both the main environment and a fresh virtual environment.
+- Final remediation test suite: **68 passed** in the main environment. The prior 62-test suite
+  passed in both the main and fresh virtual environments; the 2026-10-28 suite was not re-run in
+  the fresh environment.
 
 ## 7. Alternatives considered and rejected
 
@@ -261,5 +278,6 @@ documented instead.
   `1e-13` without changing metrics (same-environment reruns are byte-identical).
 - No dashboard or real-time streaming was added.
 - The 2.0 implementation is commit `6103e1a` on `origin/main` after explicit authorization. The
-  2026-10-27 audit corrections were committed and pushed after separate explicit authorization; no
-  force-push or history rewrite was performed.
+  2026-10-27 audit corrections were committed and pushed after separate explicit authorization.
+  The 2026-10-28 remediation is committed locally after review; publication is pending explicit
+  confirmation and is not claimed as pushed. No force-push or history rewrite was performed.

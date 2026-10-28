@@ -24,6 +24,7 @@ DETERMINISTIC_CSV = [
     "sensors.csv",
     "operating_modes.csv",
     "simulation_runs.csv",
+    "equipment_state_events.csv",
     "scenario_definitions.csv",
     "ground_truth.csv",
     "telemetry.csv",

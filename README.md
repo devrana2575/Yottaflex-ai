@@ -17,18 +17,21 @@ industrial control system and not a validated digital twin.
 | Facilities / pumps / tanks / valves | 3 / 20 / 30 / 60 |
 | Sensors, full scale | 220 (20x2 pump + 30x4 tank + 60x1 valve) |
 | Full default telemetry | 316,800 rows (220 sensors x 1,440 samples) |
-| ~100k configuration | 99,000 rows (220 sensors x 450 samples, 7.5 h) |
+| Exact 100k baseline | 100,000 rows in 7.583 h: 120 sensors x 455 + 100 sensors x 454 |
+| Equipment state history | 341 populated rows for the 100k baseline (333 initialization + 8 scenario transitions) |
 | Primary independent evaluation | 11 events: TP=10, FN=1, FP=0; event precision=1.0, recall=0.9091, F1=0.9524 |
 | Point evaluation (evaluation set) | TP=844, FP=10, TN=112,190, FN=206; precision=0.9883, recall=0.8038 |
-| Validation | 87 executable PASS / 0 FAIL / 0 CSV WARN / 0 NOT_IMPLEMENTED; 2 review WARNs (tracked separately) |
+| Validation | 87 executable PASS / 0 FAIL / 0 CSV WARN / 0 NOT_IMPLEMENTED; 4 review WARNs (tracked separately) |
 | SQL analytics | 20 statements, 20 PASS |
-| Tests | 62 passed |
-| Reproducibility | 19/19 artifacts byte-identical across two fresh runs in the same environment; clean pandas 3.1 run matched all metrics and 17/19 (last-bit peak floats) |
+| Tests | 68 passed |
+| Reproducibility (exact 100k) | 20/23 files byte-identical across two fresh runs; the other 3 differ only in wall-clock `evaluated_at`/`validated_at` fields and are logically identical |
+| Portable exports | CSV, SQLite (18 populated tables), per-table JSON, SQL schema+seed; 100k export verified with `integrity_check=ok` and zero FK violations |
 
 The full evidence, including per-event results, false-alarm analysis and the requirement matrix, is
 in [`docs/validation_report.md`](docs/validation_report.md). The `87` count is the executable
-validation CSV only. The two review WARNs (light-leak coverage and reconstructed 1.x prompt history)
-are tracked there separately and are not added to that denominator.
+validation CSV only. Four review WARNs (light-leak coverage, reconstructed prompt history, the
+un-repeated cross-version clean environment, and publication pending authorization) are tracked
+there separately and are not added to that denominator.
 
 ## What Changed in 2.0
 
@@ -47,32 +50,43 @@ are:
   pump flow and pressure follow the pump curve. Leaks create a physical balance residual.
 - **No ground-truth leak through sensor quality.** Bias, drift, stuck and missing faults are
   observed, not flagged by the injector.
-- **Four scenario sets.** `default`, `calibration`, `evaluation` and `compact`; calibration and
-  evaluation use different windows, equipment and severities.
-- **Executable claims.** 87 validation checks, 20 SQL assertions and a 62-test suite run against
+- **Five scenario sets.** `default`, `calibration`, `evaluation`, `baseline` and `compact`;
+  calibration and evaluation use different windows, equipment and severities. `baseline` is the
+  exact 100k set and omits the row-removing missing-sensor fault.
+- **Exact telemetry target.** `--target-telemetry-rows 100000` derives the duration and allocates
+  455 samples to 120 sensors and 454 to 100, giving exactly 100,000 real samples without padding,
+  duplication or silent removal. The historical 316,800-row path is unchanged when no target is set.
+- **Populated state history.** `equipment_state_events` records initialization and scenario
+  transitions with an explicit allowed-transition state machine; it is append-only and not detector
+  input.
+- **Portable exports.** In addition to CSV and SQLite, `export-json` writes deterministic per-table
+  JSON and `export-sql-script` writes a portable SQL schema + seed script.
+- **Executable claims.** 87 validation checks, 20 SQL assertions and a 68-test suite run against
   generated artifacts.
 
 ## Architecture
 
 ```
 yottaflex/
-├── src/yottaflex/
-│   ├── config.py          # Configuration, scenario sets, thresholds, path-independent hash
-│   ├── id_generator.py    # Deterministic IDs
-│   ├── generator.py       # Facilities, equipment, pipes, sensors, modes, topology
-│   ├── simulation.py      # Pump curves, mass-consistent tanks, modes, sensor noise
-│   ├── scenarios.py       # Scenario matrix, injection, NORMAL complements, ground truth
-│   ├── detection.py       # Rules, episode tracker, persistence/hysteresis, history
-│   ├── evaluation.py      # Incidents, one-to-one matching, event and point metrics
-│   ├── validation.py      # 87 executable checks and status report
-│   ├── persistence.py     # SQLite export/query/integrity helpers
-│   ├── schema.py          # 2.0.0 DDL, constraints, indexes
-│   └── cli.py             # generate, simulate, detect, evaluate, validate, export-sql, run-sql, pipeline
-├── tests/                 # 62 tests
-├── sql/                   # 20 analytical statements with declared expectations
-├── docs/                  # Methodology, decisions, baseline and validation evidence
-├── reports/final/         # Compact final-run evidence from clean runs
-└── ai_usage/              # AI prompt history, decisions and verification notes
+â”œâ”€â”€ src/yottaflex/
+â”‚   â”œâ”€â”€ config.py          # Configuration, scenario sets, thresholds, path-independent hash
+â”‚   â”œâ”€â”€ id_generator.py    # Deterministic IDs
+â”‚   â”œâ”€â”€ generator.py       # Facilities, equipment, pipes, sensors, modes, topology
+â”‚   â”œâ”€â”€ simulation.py      # Pump curves, tanks, modes, noise, exact-budget allocation
+â”‚   â”œâ”€â”€ scenarios.py       # Scenario matrix, injection, NORMAL complements, ground truth
+â”‚   â”œâ”€â”€ state_history.py   # Append-only equipment state transitions and validators
+â”‚   â”œâ”€â”€ detection.py       # Rules, episode tracker, persistence/hysteresis, history
+â”‚   â”œâ”€â”€ evaluation.py      # Incidents, one-to-one matching, event and point metrics
+â”‚   â”œâ”€â”€ validation.py      # 87 executable checks and status report
+â”‚   â”œâ”€â”€ persistence.py     # SQLite export/query/integrity helpers
+â”‚   â”œâ”€â”€ exports.py         # JSON table export and portable SQL seed generation
+â”‚   â”œâ”€â”€ schema.py          # 2.0.0 DDL, constraints, indexes
+â”‚   â””â”€â”€ cli.py             # generate, simulate, detect, evaluate, validate, export-*, run-sql, pipeline
+â”œâ”€â”€ tests/                 # 68 tests
+â”œâ”€â”€ sql/                   # 20 analytical statements with declared expectations
+â”œâ”€â”€ docs/                  # Methodology, decisions, data dictionary, requirement matrix and evidence
+â”œâ”€â”€ reports/final/         # Compact final-run evidence from clean runs
+â””â”€â”€ ai_usage/              # AI prompt history, decisions and verification notes
 ```
 
 ## Setup
@@ -101,8 +115,10 @@ yottaflex --help
 
 A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4) was installed and tested
 during the 2026-10-27 submission-readiness audit; the full pipeline, 87 validation checks, 20 SQL
-assertions and 62 tests passed. The package has no `pyproject.toml`; `setup.py` is the packaging
-metadata, and editable installation works with current pip/setuptools.
+assertions and 62 tests passed at that time. The 2026-10-28 remediation was re-run in the main
+environment, including the exact 100k pipeline, exports and the full test suite; the pandas 3.1
+clean environment was not recreated for this remediation. The package has no `pyproject.toml`;
+`setup.py` is the packaging metadata, and editable installation works with current pip/setuptools.
 
 ## Quick Start
 
@@ -125,15 +141,25 @@ yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation \
 The evaluation run has 316,740 telemetry rows because the labelled missing-sensor scenario removes
 60 rows. The missing rows are intentional and are not a data-quality defect.
 
-### ~100,000-row configuration
+### Exact 100,000-row baseline
+
+```bash
+yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline \
+  --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k
+```
+
+The target derives a duration of `455 * 60 s = 7.5833 h` and allocates 455 samples to 120 sensors
+and 454 to 100: `120 x 455 + 100 x 454 = 100,000`. The `baseline` scenario set deliberately omits
+the row-removing missing-sensor fault, so the count remains exactly 100,000 after injection.
+`--duration` is rejected if it conflicts with the target-derived duration. The historical full
+configuration remains 316,800 rows when no target is supplied.
+
+The historical `compact` set remains available as a 99,000-row demonstration:
 
 ```bash
 yottaflex pipeline --mode full --seed 20261022 --scenario-set compact --duration 7.5 \
   --output-dir <fresh-output-dir>/compact-run
 ```
-
-`compact` uses 450 one-minute samples, producing exactly 220 x 450 = 99,000 rows. The required
-full-volume configuration remains 316,800 rows.
 
 ### Calibration set
 
@@ -156,8 +182,16 @@ yottaflex detect    --output-dir <fresh-output-dir>/full-run
 yottaflex evaluate  --output-dir <fresh-output-dir>/full-run
 yottaflex validate  --output-dir <fresh-output-dir>/full-run
 yottaflex export-sql --output-dir <fresh-output-dir>/full-run
+yottaflex export-json --output-dir <fresh-output-dir>/full-run
+yottaflex export-sql-script --output-dir <fresh-output-dir>/full-run
 yottaflex run-sql   --output-dir <fresh-output-dir>/full-run --sql-file sql/analysis_queries.sql
 ```
+
+`export-json` defaults to `<output-dir>/json_exports/` and writes one JSON array per table plus a
+manifest with a relative `source_root` (no absolute local path). `export-sql-script` defaults to
+`<output-dir>/yottaflex_seed.sql` and writes a portable schema + INSERT script that can create a new
+SQLite database. The 100k JSON is about 32 MB and the SQL seed about 30 MB; both are generated
+outside version control.
 
 ### Tests
 
@@ -165,15 +199,19 @@ yottaflex run-sql   --output-dir <fresh-output-dir>/full-run --sql-file sql/anal
 python -m pytest -q
 ```
 
-The suite includes unit, data-integrity, scenario, detection, evaluation, validation, integration
-and reproducibility tests. The existing 11 tests are retained.
+The suite includes unit, data-integrity, scenario, detection, evaluation, validation, integration,
+submission-artifact and reproducibility tests. The historical 11 tests are retained and extended;
+the final remediation run reports 68 passed.
 
 ## Data Model
 
 Core entities: facility, pump, tank, valve, pipe, sensor, telemetry, operating mode, alarm,
 simulation run. Version 2.0 adds tank height, sensor roles, alarm category/occurrence/peak/
 attribution, scenario and ground-truth severity/expected sensors, append-only alarm history,
-alarm incidents, and evaluation/validation tables.
+alarm incidents, evaluation/validation tables, and a populated append-only
+`equipment_state_events` history with explicit allowed transitions. The state history is not
+detector input. The exact 100k baseline records 341 state events: 333 initialization events plus
+8 scenario start/recovery events.
 
 ### Sensor composition
 
@@ -229,7 +267,8 @@ sensor-integrity rules are not.
 | `default` | 24 h | 4 | 6 | Demonstration |
 | `calibration` | 24 h | 7 | 8 | Exercise mechanisms and severities |
 | `evaluation` | 24 h | 11 | 8 | Independent reported evaluation |
-| `compact` | 7.5 h | 4 | 5 | 99,000-row configuration |
+| `baseline` | 7.583 h | 4 | 5 | Exact 100,000-row configuration; no missing-sensor fault |
+| `compact` | 7.5 h | 4 | 5 | Historical 99,000-row demonstration |
 
 Mechanisms:
 
@@ -316,7 +355,8 @@ The defects are documented in [`docs/baseline_findings.md`](docs/baseline_findin
 |---|---:|---|---|---|---:|
 | starter, default | 51,840 | 4 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9921 / 0.9778 | 7 / 4 |
 | full, default | 316,800 | 4 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9910 / 0.9800 | 7 / 4 |
-| full, compact (99k) | 99,000 | 4 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9801 / 0.9318 | 7 / 4 |
+| full, exact 100k baseline | 100,000 | 4 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9800 / 0.9280 | 107 / 62 |
+| full, compact (99k historical) | 99,000 | 4 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9801 / 0.9318 | 7 / 4 |
 | full, calibration | 316,740 | 7 / 0 / 0 | 1.000 / 1.000 / 1.000 | 0.9864 / 0.8467 | 10 / 7 |
 | **full, evaluation** | **316,740** | **10 / 1 / 0** | **1.000 / 0.9091 / 0.9524** | **0.9883 / 0.8038** | **15 / 10** |
 
@@ -341,18 +381,27 @@ Detailed per-event tables and false-alarm analysis are in
   physics, alarm lifecycle, evaluation formulas, ground-truth isolation, negative cases and SQLite
   integrity. Final result: **87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED** in
   `validation_results.csv`.
-- **Two review-level WARNs are tracked separately** and are not rows in that CSV: light-leak
-  detection coverage and the reconstructed 1.x prompt record. They are explained in
-  [`docs/validation_report.md`](docs/validation_report.md) §10.
+- **Four review-level WARNs are tracked separately** and are not rows in that CSV: light-leak
+  detection coverage, the reconstructed prompt records, the un-repeated cross-version clean
+  environment, and publication pending explicit authorization. They are explained in
+  [`docs/validation_report.md`](docs/validation_report.md) ?10.
 - **20 SQL statements** in `sql/analysis_queries.sql` each declare `expect=nonempty` or
   `expect=zero_rows`. The runner executes them and fails on an unmet expectation. Final result:
   **20 PASS**.
-- **62 pytest tests** cover IDs, generation, physics, detection lifecycle/grouping/mode suppression/
-  isolation, evaluation units and zero denominators, data integrity, scenarios, validation, SQL and
-  reproducibility. Final result: **62 passed** in the main environment; **62 passed** in a fresh
-  virtual environment. The audit also fixed a pandas 3.1 fill-value deprecation warning and a
-  point-coverage counter that counted unobserved positive rows as observed; regression assertions
-  were added.
+- **68 pytest tests** cover IDs, generation, physics, detection lifecycle/grouping/mode suppression/
+  isolation, evaluation units and zero denominators, data integrity, scenarios, validation, SQL,
+  exact-target allocation, state-history transitions, CSV/JSON/SQLite/SQL consistency and
+  reproducibility. Final result: **68 passed** in the main environment. The prior 62-test suite
+  also passed in a fresh virtual environment; the new remediation suite was not re-created there.
+  The audit also fixed a pandas 3.1 fill-value deprecation warning and a point-coverage counter
+  that counted unobserved positive rows as observed; regression assertions were added.
+- **State history** is generated and exported rather than left as an empty placeholder. The 100k
+  baseline has 341 events; tests validate every allowed transition, references, timestamps and the
+  database row count. The schema adds `previous_state`/`new_state`/`reason`/`source` fields without
+  changing the 2.0.0 schema version.
+- **Portable export** commands write JSON and SQL from the same CSVs. A 100k export was executed
+  into a new SQLite database with `integrity_check=ok`, zero foreign-key violations and matching
+  telemetry IDs across CSV, JSON, SQLite and the SQL seed.
 
 ## Reproducibility
 
@@ -366,21 +415,25 @@ fixes in the main environment produced identical:
 - simulation run and metadata records;
 - SQL report.
 
-The path-independent configuration hash is identical (`d422f3bbee3dcadc` for full/default). The
-comparison includes 19 artifacts and is recorded in
-[`reports/final/reproducibility.json`](reports/final/reproducibility.json). `config.json` contains
-absolute output paths, and `evaluation_metrics.csv` / `validation_results.csv` contain wall-clock
-timestamps, so those files are excluded from byte-level comparison. `run_manifest.json` hashes
-those timestamped/path-bearing files and therefore also differs; its per-file hashes for
-deterministic artifacts match. The two SQLite databases also matched logically: 19 schema tables
-(17 populated, plus the legacy empty `detection_results` and `equipment_state_events`), `integrity_check`
-`ok`, zero foreign-key violations, and identical populated rows after excluding the wall-clock
-`evaluated_at` / `validated_at` columns. A fresh evaluation-set run after the audit fixes reproduced
-the stored `alarms.csv`, `alarm_events.csv`, `alarm_incidents.csv`, `evaluation_events.csv`,
-`evaluation_metrics.json`, `evaluation_summary.md`, `simulation_metadata.json`, `simulation_runs.csv`
-and `sql_query_report.json` byte-for-byte. The 19/19 comparison is within the main environment;
-a fresh pandas 3.1.0 / NumPy 2.5.4 environment reproduced every metric and 17/19 artifacts, with
-`alarms.csv` and its SQL report differing only in a few `peak_value` floats at about `8e-13`.
+The path-independent configuration hash is identical for the same configuration. For the exact
+100k baseline, two fresh runs were compared across 23 artifacts: **20 were byte-identical**,
+including telemetry, state history, master data, scenarios/truth, alarms, incidents, evaluation
+events, evaluation metrics JSON, simulation metadata and the SQL report. The remaining three
+(`evaluation_metrics.csv`, `validation_results.csv`, `validation_summary.json`) differ only in
+wall-clock `evaluated_at` / `validated_at` fields; after removing those documented fields they are
+logically identical. `config.json` contains absolute output paths and `run_manifest.json` hashes
+path/timestamp-bearing files, so they are excluded from byte-level comparison. The two SQLite
+databases matched logically across all 19 tables, with 18 populated tables (the legacy
+`detection_results` table is the only empty one), `integrity_check=ok`, zero foreign-key violations
+and identical rows after excluding the wall-clock columns. The comparison is recorded in
+[`reports/final/reproducibility_100k.json`](reports/final/reproducibility_100k.json).
+
+The prior full/default and evaluation reproducibility evidence remains in
+[`reports/final/reproducibility.json`](reports/final/reproducibility.json); those results were
+obtained before the state-history/export additions. A fresh pandas 3.1.0 / NumPy 2.5.4 environment
+reproduced every prior metric and 17/19 prior artifacts, with two files differing only in
+`peak_value` floats at about `1e-13`; the clean-environment rerun was not repeated for the
+2026-10-28 remediation.
 
 ## Limitations
 
@@ -408,8 +461,9 @@ See [`docs/assumptions.md`](docs/assumptions.md) for the full list and interpret
 | [`docs/detection_methodology.md`](docs/detection_methodology.md) | Rules, thresholds, lifecycle, uncertainty |
 | [`docs/evaluation_methodology.md`](docs/evaluation_methodology.md) | Event/point units, matching, unknown labels |
 | [`docs/implementation_decisions.md`](docs/implementation_decisions.md) | Decisions, evidence, rejected alternatives |
-| [`docs/validation_report.md`](docs/validation_report.md) | Final metrics, per-event results, requirement matrix |
-| [`docs/data_dictionary.md`](docs/data_dictionary.md) | CSV/SQLite field definitions |
+| [`docs/validation_report.md`](docs/validation_report.md) | Final metrics, per-event results, validation evidence |
+| [`docs/requirement_matrix.md`](docs/requirement_matrix.md) | Requirement-by-requirement implementation, evidence and status |
+| [`docs/data_dictionary.md`](docs/data_dictionary.md) | CSV/SQLite field definitions for core entities and history |
 | [`docs/architecture.md`](docs/architecture.md) | Modules, data flow, reporting |
 | [`docs/assumptions.md`](docs/assumptions.md) | Modelling and evaluation assumptions |
 | [`docs/handover_guide.md`](docs/handover_guide.md) | Onboarding and reproduction guide |
@@ -421,4 +475,6 @@ This is a synthetic project for evaluation purposes. AI prompt history, tool usa
 implementation decisions are recorded in [`ai_usage/`](ai_usage/). The 2.0 implementation was
 committed as `6103e1a` and published to `origin/main` only after explicit authorization. The
 2026-10-27 audit corrections were committed and pushed to `origin/main` after separate explicit
-authorization; no force-push or shared-history rewrite occurred.
+authorization. The 2026-10-28 remediation is committed locally after review; publication is pending
+explicit confirmation in the current prompt and is not claimed as pushed. No force-push or
+shared-history rewrite occurred.

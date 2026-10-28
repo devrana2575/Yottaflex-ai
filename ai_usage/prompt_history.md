@@ -1,6 +1,8 @@
 # AI Prompt History
 
-This document records all prompts submitted to AI tools during the development of the YottaFlex project.
+This document records every prompt that is recoverable from the project history. Where the original
+wording was not retained, the record is explicitly labelled **reconstructed**; no reconstructed
+record is presented as a verbatim quotation.
 
 ## Project: Industrial Pump, Tank, Valve and Flow Anomaly Detection Simulator
 **Candidate:** YottaFlex Candidate
@@ -226,11 +228,51 @@ Current evidence: [`docs/validation_report.md`](../docs/validation_report.md),
 [`reports/final/`](../reports/final/), and the current audit section in
 [`verification_notes.md`](verification_notes.md).
 
+## 2026-10-28 Exact-100k, State-History and Export Remediation
+
+- **Timestamp:** 2026-10-28
+- **Tool:** OpenCode
+- **Model:** DeepSeek V4.1 Flash Free
+- **Task:** Complete the final remediation and submission-readiness pass for the existing YottaFlex
+  2.0 repository.
+- **Record status:** **RECONSTRUCTED — the full verbatim prompt was not present in the retained
+  continuation record.** The recovered requirement summary is stored in
+  [`prompts/2026-10-28-remediation.md`](prompts/2026-10-28-remediation.md) and is not represented as
+  a quotation.
+
+### Work performed
+
+- Added `--target-telemetry-rows`, deterministic quotient/remainder allocation, derived duration and
+  the exact `baseline` scenario set; retained the historical 316,800-row path.
+- Added real append-only `equipment_state_events` generation, schema fields and transition
+  validation; the exact-100k baseline contains 341 events (333 initialization + 8 scenario).
+- Added deterministic per-table JSON and portable SQL seed exports; verified CSV/JSON/SQLite/SQL
+  telemetry-ID consistency and executed the seed into a new SQLite database.
+- Rewrote the ten-entity data dictionary, requirement matrix, README, architecture, assumptions,
+  validation, handover and evidence documents.
+- Added targeted tests for exact allocation, state transitions, export consistency and negative
+  controls; final suite **68 passed** in the main environment.
+- Re-ran exact-100k pipelines twice: 20/23 files byte-identical; the other three were timestamp-only
+  and logically equal. Full/default and evaluation metrics were unchanged; the light-leak miss was
+  preserved.
+- Re-ran validation (87 PASS), SQL (20/20 PASS), SQLite integrity (`ok`) and foreign-key checks.
+- Ran secret/PII/large-file/untracked-file audits; no secret/PII hits, no tracked file over 1 MB.
+- Prepared the remediation for a local commit. Publication remains pending explicit authorization.
+
+### Evidence
+
+- [`docs/requirement_matrix.md`](../docs/requirement_matrix.md)
+- [`docs/validation_report.md`](../docs/validation_report.md)
+- [`reports/final/baseline_100k/`](../reports/final/baseline_100k/)
+- [`reports/final/reproducibility_100k.json`](../reports/final/reproducibility_100k.json)
+
 ## Notes
 - This is the initial implementation session
 - All code has been written by the AI agent following the specifications
 - Candidate should review and understand all implementation decisions
 - The 2.0 session brief above is reconstructed because the original verbatim prompt was not retained;
-  it is not presented as a quotation
-- The 2026-10-27 submission-readiness prompt above is recorded as the current audit request; the
-  2.0 implementation prompt remains explicitly marked as reconstructed.
+  it is not presented as a quotation.
+- The 2026-10-27 submission-readiness prompt above is recorded verbatim.
+- The 2026-10-28 remediation prompt is reconstructed from the retained requirement summary; the
+  original verbatim text was not available. The 2.0 implementation prompt remains explicitly marked
+  as reconstructed. Prompt completeness is therefore a documented WARN, not a claim of completeness.
