@@ -1,0 +1,59 @@
+{
+  "generated": "2026-10-29",
+  "source_run": "<external-temp>/yottaflex-final-verification-20261029/evaluation",
+  "seed": 20261022,
+  "scenario_set": "evaluation",
+  "gt_id": "GT-000001",
+  "issue_type": "LEAK",
+  "severity": "light",
+  "affected_equipment_id": "TANK-002",
+  "expected_sensor_ids": [
+    "SNS-019"
+  ],
+  "status": "MISSED",
+  "event_window": {
+    "start": "2026-01-01T02:00:00",
+    "end": "2026-01-01T03:30:00"
+  },
+  "sensor_roles": {
+    "level": "SNS-019",
+    "pressure": "SNS-020",
+    "inlet": "SNS-021",
+    "outlet": "SNS-022"
+  },
+  "samples": 90,
+  "residual_median_m3_h": 8.322721090908406,
+  "residual_mean_m3_h": 7.968123109090473,
+  "residual_min_m3_h": 1.3630174545451794,
+  "residual_max_m3_h": 10.399979454545825,
+  "absolute_floor_m3_h": 5.0,
+  "samples_above_absolute_floor": 82,
+  "samples_above_threshold": 82,
+  "decline_median_pp": -0.13149999999999906,
+  "decline_min_pp": -0.23199999999999932,
+  "decline_max_pp": 0.009000000000000341,
+  "decline_window_minutes": 5.0,
+  "corroboration_threshold_pp": 0.15,
+  "corroborated_samples": 30,
+  "active_and_corroborated_samples": 29,
+  "active_without_corroboration_samples": 53,
+  "persistence_seconds": 480,
+  "longest_active_and_corroborated": {
+    "samples": 5,
+    "elapsed_seconds": 240.0,
+    "sample_count_duration_seconds": 300,
+    "start": "2026-01-01T03:23:00",
+    "end": "2026-01-01T03:27:00"
+  },
+  "longest_active_without_corroboration": {
+    "samples": 7,
+    "elapsed_seconds": 360.0,
+    "sample_count_duration_seconds": 420,
+    "start": "2026-01-01T02:24:00",
+    "end": "2026-01-01T02:30:00"
+  },
+  "overlapping_alarm_episodes": 0,
+  "overlapping_alarm_ids": [],
+  "reason": "The 10-minute balance residual is above the 5 m3/h absolute floor, but the 5-minute level decline corroboration and 480 s persistence do not both hold; RULE-006/RULE-006U therefore do not fire.",
+  "threshold_change_made": false
+}

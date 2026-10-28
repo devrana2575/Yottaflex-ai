@@ -1,212 +1,283 @@
 {
   "generated": "2026-10-29",
+  "verification_pass": "2026-10-29 final verification rerun (fresh two-run main comparison plus fresh clean-environment reruns)",
   "target_rows": 100000,
   "scenario_set": "baseline",
   "seed": 20261022,
   "source_runs": [
-    "<external-temp>/yottaflex-final-audit-20261028/exact-a",
-    "<external-temp>/yottaflex-final-audit-20261028/exact-b"
+    "<external-temp>/yottaflex-final-verification-20261029/baseline-100k",
+    "<external-temp>/yottaflex-final-verification-20261029/baseline-100k-b"
   ],
   "compared_files": 23,
   "byte_identical_count": 20,
   "timestamp_only_difference_count": 3,
+  "logical_equal_count": 23,
   "files": [
     {
       "artifact": "alarm_events.csv",
-      "bytes": 14946,
+      "bytes_a": 14946,
+      "bytes_b": 14946,
       "sha256_a": "073c2b9765cd0e624acf17c16a284ae5b61e8cf2342d600937719098a693dc85",
       "sha256_b": "073c2b9765cd0e624acf17c16a284ae5b61e8cf2342d600937719098a693dc85",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "alarm_incidents.csv",
-      "bytes": 12364,
+      "bytes_a": 12364,
+      "bytes_b": 12364,
       "sha256_a": "7eb79e0df9cf6f4376374231cfd632af3b9790f31e800375207878f6f02e263a",
       "sha256_b": "7eb79e0df9cf6f4376374231cfd632af3b9790f31e800375207878f6f02e263a",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "alarms.csv",
-      "bytes": 35091,
+      "bytes_a": 35091,
+      "bytes_b": 35091,
       "sha256_a": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
       "sha256_b": "2da4e13835ca9569e7f52c6cabe3e7d510733132d8ec7ccd2404b30ea5d6ca10",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "equipment_state_events.csv",
-      "bytes": 75401,
+      "bytes_a": 75401,
+      "bytes_b": 75401,
       "sha256_a": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
       "sha256_b": "2759aa10a1786bdd2017e35a0bc6b496a2623244e03d66fdb2627f941a319dcb",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "evaluation_events.csv",
-      "bytes": 1663,
+      "bytes_a": 1663,
+      "bytes_b": 1663,
       "sha256_a": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
       "sha256_b": "b4a462a5513da63f11b534fe7c82cbd56c2de1e84917f7133fd81ea52296bf20",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "evaluation_metrics.csv",
-      "bytes": 7264,
-      "sha256_a": "6500b764d12903f0327d319b94908a8062b3a2d293dd3bf9b47365f5cf8a0cfd",
-      "sha256_b": "6d86d0c768b3fc9c8f637ff4fdcd90a2db8386fefffb0f0a6abb8cba30086aca",
+      "bytes_a": 7264,
+      "bytes_b": 7264,
+      "sha256_a": "bc36062cc09a3292f86f76987d2aba7ad8f89ff4d21314e54c59916cd189b72f",
+      "sha256_b": "c6949683a365c1920be63361a599be25dd6e8c41f14530c4304c5f0b2ce98c91",
       "byte_identical": false,
+      "dropped_columns": [
+        "evaluated_at"
+      ],
       "timestamp_only_difference": true,
-      "logical_equal_without_timestamp": true
+      "logical_equal_without_timestamp": true,
+      "logical_equal": true
     },
     {
       "artifact": "evaluation_metrics.json",
-      "bytes": 11646,
+      "bytes_a": 11646,
+      "bytes_b": 11646,
       "sha256_a": "a9820c60e2775be1784201e28ff3807292f13663b7255a10231eb4fa301fd987",
       "sha256_b": "a9820c60e2775be1784201e28ff3807292f13663b7255a10231eb4fa301fd987",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "evaluation_summary.md",
-      "bytes": 1139,
+      "bytes_a": 1139,
+      "bytes_b": 1139,
       "sha256_a": "a7556f7a6dfa768a52ee37d072b6a499ef8b6a56dedc98c5cb6bedf95ac49c14",
       "sha256_b": "a7556f7a6dfa768a52ee37d072b6a499ef8b6a56dedc98c5cb6bedf95ac49c14",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "facilities.csv",
-      "bytes": 262,
+      "bytes_a": 262,
+      "bytes_b": 262,
       "sha256_a": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
       "sha256_b": "1b491f51794cfdb8a45bf4e452edc11ef14c4c4f4bfae0028986d456a54a8c62",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "ground_truth.csv",
-      "bytes": 1899,
+      "bytes_a": 1899,
+      "bytes_b": 1899,
       "sha256_a": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
       "sha256_b": "052a9da28ee576edc2bce6ce6dc6129b0643512ae0261273f86c3faf26f10496",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "operating_modes.csv",
-      "bytes": 483,
+      "bytes_a": 483,
+      "bytes_b": 483,
       "sha256_a": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
       "sha256_b": "c19a1aa93b24165fc134f432897921a219bcf8cac3997cfd625ad8c79ffe6d4a",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "pipes.csv",
-      "bytes": 10153,
+      "bytes_a": 10153,
+      "bytes_b": 10153,
       "sha256_a": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
       "sha256_b": "74b99a5fe7824e9bf25074857bdc609e1b7b6bca7fb887be06cb3271a5afef25",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "pumps.csv",
-      "bytes": 1213,
+      "bytes_a": 1213,
+      "bytes_b": 1213,
       "sha256_a": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
       "sha256_b": "23ddbeb2e87d47f17ac6008b434bf04192ab2a534ce870978d36ee9a420aaf35",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "scenario_definitions.csv",
-      "bytes": 2172,
+      "bytes_a": 2172,
+      "bytes_b": 2172,
       "sha256_a": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
       "sha256_b": "9a33d6cfb3cb21f17a84a31f137897af8981001ac3471ef59586fdd02ddfe8d1",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "sensors.csv",
-      "bytes": 14595,
+      "bytes_a": 14595,
+      "bytes_b": 14595,
       "sha256_a": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
       "sha256_b": "05e4f2283ff051710d06d144dd445573a1b31fecd6c276d588cf0973c4aba8fd",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "simulation_metadata.json",
-      "bytes": 5183,
+      "bytes_a": 5183,
+      "bytes_b": 5183,
       "sha256_a": "199ab94e98adc9dc036fad1bf9594cdf812f818623ca06afab3684bd4996f017",
       "sha256_b": "199ab94e98adc9dc036fad1bf9594cdf812f818623ca06afab3684bd4996f017",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "simulation_runs.csv",
-      "bytes": 1385,
+      "bytes_a": 1385,
+      "bytes_b": 1385,
       "sha256_a": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
       "sha256_b": "e908b2b9fbb8217e86731817d7393b600982cf48ba037349b9f00fa710b1e55c",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "sql_query_report.json",
-      "bytes": 38413,
+      "bytes_a": 38413,
+      "bytes_b": 38413,
       "sha256_a": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
       "sha256_b": "fec67cc137f9bfbb85cb48e351bb05f7fda28433cb50199090ca8dc727aa5dbf",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "tanks.csv",
-      "bytes": 1590,
+      "bytes_a": 1590,
+      "bytes_b": 1590,
       "sha256_a": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
       "sha256_b": "6fd1a72625400fcded072ac05ad7a7d6e696b70fd351f6d9e91f91e6b775836e",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "telemetry.csv",
-      "bytes": 9262846,
+      "bytes_a": 9262846,
+      "bytes_b": 9262846,
       "sha256_a": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
       "sha256_b": "625c38b2ca6285fd05abbe637f74609110bb6d57d52d84812546d17ce6400eeb",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     },
     {
       "artifact": "validation_results.csv",
-      "bytes": 12906,
-      "sha256_a": "00bd9fe26ca9d1051ee68f5350b8525c17327406a7f925660eb382e0fd8a4e96",
-      "sha256_b": "eb3d7704d6d2a54c9b81579247b259a055d34b2b4edb73926a54bf4af1fc9c70",
+      "bytes_a": 12906,
+      "bytes_b": 12906,
+      "sha256_a": "e6ead52b1245b553128505de4f51d14fe9e25559a21dd83b4a667c8b217a2d66",
+      "sha256_b": "504d4391c58d81442150acdb4e9e614619ab23546dbbb420376605399e326bd3",
       "byte_identical": false,
+      "dropped_columns": [
+        "validated_at"
+      ],
       "timestamp_only_difference": true,
-      "logical_equal_without_timestamp": true
+      "logical_equal_without_timestamp": true,
+      "logical_equal": true
     },
     {
       "artifact": "validation_summary.json",
-      "bytes": 33842,
-      "sha256_a": "650b652ac22aaedeb2eb44a2aa7a0e70faaa43bdb97617a08d45f44489cfdbdd",
-      "sha256_b": "f38b359e1f6b5d85e442b7b52c733398a69fb458fcffd0dd88940be4ac04f4e1",
+      "bytes_a": 33842,
+      "bytes_b": 33842,
+      "sha256_a": "9aad479e65a71cea748456af4c24ac30ba7d0125066ba2ee0144267f9ce9176e",
+      "sha256_b": "a5ecee3a93b572003ff77a7f3adb26ce4e5b14e1f00115ed0a3b2bf5b81428a2",
       "byte_identical": false,
       "timestamp_only_difference": true,
-      "logical_equal_without_timestamp": true
+      "logical_equal_without_timestamp": true,
+      "logical_equal": true
     },
     {
       "artifact": "valves.csv",
-      "bytes": 3123,
+      "bytes_a": 3123,
+      "bytes_b": 3123,
       "sha256_a": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
       "sha256_b": "f3be734756f8311fc4e77b310116758019670c42e74ba64aa347f2aa5d43eefc",
-      "byte_identical": true
+      "byte_identical": true,
+      "logical_equal": true
     }
   ],
   "sqlite": {
     "integrity_a": "ok",
     "integrity_b": "ok",
+    "foreign_key_violations_a": 0,
+    "foreign_key_violations_b": 0,
     "tables": 19,
     "populated_tables": 18,
+    "raw_exact_count": 17,
+    "timestamp_removed_exact_count": 19,
+    "logical_equal_count": 19,
     "table_rows": [
       {
         "table": "alarm_events",
         "rows": 114,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "alarm_incidents",
         "rows": 62,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "alarms",
         "rows": 107,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "detection_results",
         "rows": 0,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": [
           "evaluated_at"
         ]
@@ -214,19 +285,28 @@
       {
         "table": "equipment_state_events",
         "rows": 341,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "evaluation_events",
         "rows": 9,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "evaluation_metrics",
         "rows": 64,
+        "raw_exact": false,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": [
           "evaluated_at"
         ]
@@ -234,67 +314,100 @@
       {
         "table": "facilities",
         "rows": 3,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "ground_truth",
         "rows": 9,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "operating_modes",
         "rows": 4,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "pipes",
         "rows": 135,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "pumps",
         "rows": 20,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "scenario_definitions",
         "rows": 9,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "sensors",
         "rows": 220,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "simulation_runs",
         "rows": 1,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "tanks",
         "rows": 30,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "telemetry",
         "rows": 100000,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       },
       {
         "table": "validation_results",
         "rows": 87,
+        "raw_exact": false,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": [
           "validated_at"
         ]
@@ -302,56 +415,86 @@
       {
         "table": "valves",
         "rows": 60,
+        "raw_exact": true,
+        "timestamp_removed_exact": true,
         "logical_equal": true,
+        "float_only": false,
         "dropped_columns": []
       }
     ],
-    "all_logical_equal": true,
-    "foreign_key_violations": 0,
-    "raw_exactly_equal_tables": 17,
-    "timestamp_removed_exactly_equal_tables": 19,
-    "logically_equal_tables": 19
+    "notes": "19 schema tables; detection_results is empty. Raw exact 17/19; 19/19 after removing evaluated_at/validated_at wall-clock columns."
   },
   "portable_exports": {
     "exported_tables": 18,
     "json_tables": 18,
     "json_total_rows": 101275,
-    "json_manifest_sha256": "d3109b267dc738bb9ef9985676ce39260118561daec316266c4ae12663c58f30",
+    "json_manifest_sha256": "b952b5a26134a42ef44855499c973a134f55d3ae92fce755535f19539eb05ca5",
+    "json_manifest_sha256_b": "85e922665a8feb3021e6dfa56410a5fc76b4242596619f95fe11f3b2a5f0e63c",
+    "json_telemetry_rows": 100000,
+    "json_telemetry_sha256": "74cd888e6ff35608d72c05683d8db73ddaf84062ea4d29cb763de0826cb6654d",
+    "json_telemetry_sha256_b": "74cd888e6ff35608d72c05683d8db73ddaf84062ea4d29cb763de0826cb6654d",
     "sql_bytes": 29733009,
     "sql_rows": 101275,
-    "sql_sha256": "6db3a5d47ea836b79184ef98555133f3ad6bd3a067da29ce2d69c4d408182f0d",
+    "sql_sha256": "380154ad9dd8b72de9592e63181ceed8dcbe4cf1b675bc88a79a4704686a7338",
+    "sql_sha256_b": "fcac66dfe7d13dce90d03aeb31758a5c107898980cae60cc69ed830cce62e5d7",
     "sql_seed_db_integrity": "ok",
     "sql_seed_fk_violations": 0,
     "sql_seed_telemetry_rows": 100000,
     "sql_seed_state_event_rows": 341,
-    "csv_json_sqlite_sql_telemetry_ids_match": true
+    "csv_json_sqlite_sql_telemetry_ids_match": true,
+    "a": {
+      "json_manifest_sha256": "b952b5a26134a42ef44855499c973a134f55d3ae92fce755535f19539eb05ca5",
+      "json_manifest_rows": 101275,
+      "json_telemetry_rows": 100000,
+      "json_telemetry_sha256": "74cd888e6ff35608d72c05683d8db73ddaf84062ea4d29cb763de0826cb6654d",
+      "sql_bytes": 29733009,
+      "sql_sha256": "380154ad9dd8b72de9592e63181ceed8dcbe4cf1b675bc88a79a4704686a7338",
+      "sql_seed_integrity": "ok",
+      "sql_seed_fk": 0,
+      "sql_seed_telemetry": 100000,
+      "sql_seed_state_events": 341
+    },
+    "b": {
+      "json_manifest_sha256": "85e922665a8feb3021e6dfa56410a5fc76b4242596619f95fe11f3b2a5f0e63c",
+      "json_manifest_rows": 101275,
+      "json_telemetry_rows": 100000,
+      "json_telemetry_sha256": "74cd888e6ff35608d72c05683d8db73ddaf84062ea4d29cb763de0826cb6654d",
+      "sql_bytes": 29733009,
+      "sql_sha256": "fcac66dfe7d13dce90d03aeb31758a5c107898980cae60cc69ed830cce62e5d7",
+      "sql_seed_integrity": "ok",
+      "sql_seed_fk": 0,
+      "sql_seed_telemetry": 100000,
+      "sql_seed_state_events": 341
+    }
   },
-  "portable_exports_source": "Fresh 2026-10-29 final-audit exact-a run; CSV, JSON, SQLite and SQL telemetry IDs were compared directly; the SQL seed was executed into a new SQLite database.",
+  "portable_exports_source": "Fresh 2026-10-29 verification runs A and B; CSV, JSON, SQLite and SQL telemetry IDs were compared directly; both SQL seeds were executed into separate new SQLite databases.",
   "validation_summary_logical_equal_after_timestamp_removal": true,
   "excluded_from_byte_comparison": [
     "config.json",
     "run_manifest.json"
   ],
   "notes": [
-    "Main environment: twenty of 23 compared files are byte-identical. The three differing files contain documented wall-clock evaluated_at/validated_at fields only and are logically equal after those fields are removed; validation_summary.json was compared recursively with clock fields removed.",
+    "Main environment: 20/23 compared files are byte-identical. The three differing files contain documented wall-clock evaluated_at/validated_at fields only and are logically equal after those fields are removed; validation_summary.json was compared recursively with clock fields removed.",
     "config.json differences are limited to output/database path fields; run_manifest.json is excluded because it hashes the path-bearing config and timestamped evaluation CSV.",
-    "JSON and SQL exports are generated on demand and are not committed because of their size. The JSON manifest has a relative source_root; the SQL seed was executed into a fresh SQLite database.",
-    "All 19 SQLite tables matched logically across the two main-environment runs; 18 were populated and detection_results was empty. Main-environment raw SQLite tables: 17/19 exact and 19/19 after timestamp columns are removed; no last-bit float differences remain in the main comparison. integrity_check=ok in both runs; zero foreign-key violations.",
-    "The final exact-100k run had 100,000 telemetry rows, 220 sensors, distribution {455:120,454:100}, 341 state events, 87 validation PASS and 20/20 SQL PASS.",
-    "The SQL seed includes evaluated_at/validated_at values and therefore has a different file hash from older reports; its 101,275 rows, 100,000 telemetry IDs and 341 state events were verified after execution.",
-    "A clean pandas 3.1.0 / NumPy 2.5.4 environment passed all 68 tests and reproduced the exact-100k counts and metrics; its last-bit float differences are recorded under clean_environment."
+    "JSON and SQL exports are generated on demand and are not committed because of their size. The JSON manifest has a relative source_root; each SQL seed was executed into a fresh SQLite database.",
+    "All 19 SQLite tables matched logically across the two main-environment runs; 18 were populated and detection_results was empty. Main-environment raw SQLite tables: 17/19 exact and 19/19 after timestamp columns are removed; integrity_check=ok in both runs; zero foreign-key violations.",
+    "Each main exact-100k run had 100,000 telemetry rows, 220 sensors, distribution {455: 120, 454: 100}, 341 state events, 87 validation PASS and 20/20 SQL PASS.",
+    "The SQL seed includes evaluated_at/validated_at values and therefore has a different file hash between A and B; both contain 101,275 rows, 100,000 telemetry IDs and 341 state events after execution.",
+    "The fresh clean environment passed all 68 tests and regenerated exact-100k, full/default, and evaluation pipelines; counts, classifications and metrics match the main environment. Its cross-version float differences are recorded under clean_environment."
   ],
   "commands": [
     "python -m pytest -q",
-    "python -m pytest -q tests/test_negative_scenarios.py tests/test_submission_artifacts.py",
-    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-a",
-    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-b",
+    "python -m pytest -q tests/test_negative_scenarios.py tests/test_scenarios.py tests/test_submission_artifacts.py",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k-b",
     "yottaflex pipeline --mode full --seed 20261022 --scenario-set default --output-dir <fresh-output-dir>/full-default",
-    "yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation-run",
+    "yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation",
     "<clean-venv>/Scripts/python -m pip install -e .",
     "<clean-venv>/Scripts/python -m pip install pytest",
     "<clean-venv>/Scripts/python -m pytest -q",
-    "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
+    "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean-current",
+    "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set default --output-dir <fresh-output-dir>/full-default-clean-current",
+    "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation-clean-current"
   ],
   "main_environment": {
     "python": "3.14.4",
@@ -359,8 +502,12 @@
     "numpy": "2.4.6",
     "pytest": "9.1.1",
     "platform": "Windows",
-    "tests": "68 passed in 104.89 s",
-    "targeted_tests": "6 passed in 78.01 s"
+    "tests": "68 passed in 43.31 s; 0 failed; 0 skipped",
+    "targeted_tests": "17 passed in 31.56 s; 0 failed; 0 skipped",
+    "exact_100k_runs": [
+      "baseline-100k",
+      "baseline-100k-b"
+    ]
   },
   "clean_environment": {
     "python": "3.14.4",
@@ -370,17 +517,15 @@
     "commands": [
       "python -m venv <clean-venv>",
       "<clean-venv>/Scripts/python -m pip install --upgrade pip",
-      "<clean-venv>/Scripts/python -m pip install -e .",
-      "<clean-venv>/Scripts/python -m pip install pytest",
+      "<clean-venv>/Scripts/python -m pip install -e . pytest",
       "<clean-venv>/Scripts/yottaflex --version",
-      "<clean-venv>/Scripts/python -m pytest -q",
-      "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
+      "<clean-venv>/Scripts/python -m pytest -q"
     ],
     "tests": {
       "passed": 68,
       "failed": 0,
       "skipped": 0,
-      "seconds": 85.25
+      "seconds": 34.52
     },
     "exact_100k": {
       "telemetry_rows": 100000,
@@ -397,6 +542,46 @@
         "false_positives": 5,
         "true_negatives": 41915,
         "false_negatives": 19
+      }
+    },
+    "full_default": {
+      "telemetry_rows": 316800,
+      "state_event_rows": 341,
+      "validation": "87 PASS",
+      "sql": "20 PASS / 0 FAIL",
+      "event_level": {
+        "true_positives": 4,
+        "false_negatives": 0,
+        "false_positives": 0
+      },
+      "point_level": {
+        "true_positives": 882,
+        "false_positives": 8,
+        "true_negatives": 145192,
+        "false_negatives": 18
+      }
+    },
+    "evaluation": {
+      "telemetry_rows": 316740,
+      "state_event_rows": 355,
+      "validation": "87 PASS",
+      "sql": "20 PASS / 0 FAIL",
+      "event_level": {
+        "true_positives": 10,
+        "false_negatives": 1,
+        "false_positives": 0,
+        "precision": 1.0,
+        "recall": 0.9090909090909091,
+        "f1": 0.9523809523809523
+      },
+      "point_level": {
+        "true_positives": 844,
+        "false_positives": 10,
+        "true_negatives": 112190,
+        "false_negatives": 206,
+        "precision": 0.9882903981264637,
+        "recall": 0.8038095238095239,
+        "f1": 0.8865546218487397
       }
     },
     "comparison_to_main": {

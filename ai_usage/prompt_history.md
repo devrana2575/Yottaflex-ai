@@ -334,13 +334,17 @@ force-push or history rewrite was used.
 
 ### Work performed
 
-- Confirmed the clean starting tree at `main` commit `5969314`; no source-code defect was found and
-  no detector, threshold, scenario, label or matching logic was changed.
-- Re-ran the main test suite (**68 passed**, 104.89 s), targeted negative/state suite (**6 passed**,
-  78.01 s), and a fresh clean venv (**68 passed**, 85.25 s; CLI 2.0.0).
-- Generated fresh exact-100k (`exact-a`, `exact-b`), full/default and evaluation runs. Verified
-  actual CSV/SQLite rows, 3/20/30/60 master counts, 135 pipes, 220 sensors, 341 state events,
-  unique IDs, 60 s cadence, foreign keys, topology, run lineage and 87/20 validation/SQL checks.
+- Confirmed the clean starting tree at `main` commit
+  `f8f8d6ae208cf3024ec031dbecc5b80c69841c19`; no source-code defect was found and no detector,
+  threshold, scenario, label or matching logic was changed.
+- Re-ran the main test suite (**68 passed**, 43.31 s), the targeted negative/state/submission suite
+  (**17 passed**, 31.56 s), and a fresh clean venv (**68 passed**, 34.52 s; CLI 2.0.0). Both suites
+  reported zero failures and zero skips.
+- Generated two fresh main exact-100k runs (`baseline-100k`, `baseline-100k-b`), a clean
+  `exact-clean-current` run, main full/default and evaluation runs, and clean full/default and
+  evaluation runs. Verified actual CSV/SQLite rows, 3/20/30/60 master counts, 135 pipes, 220 sensors,
+  341 state events, unique IDs, 60 s cadence, foreign keys, topology, run lineage and 87/20
+  validation/SQL checks.
 - Independently recomputed evaluation metrics from raw ground truth, alarms, incidents and
   telemetry: event `10/1/0`, point `844/10/112190/206`, latency `60/300/702/3180 s`; checked
   duplicate, unknown-label and sensor-fault handling, and retained the `GT-000001` light-leak miss.
@@ -348,7 +352,8 @@ force-push or history rewrite was used.
   101,275 rows, executed the seed into a fresh SQLite DB, and matched CSV/JSON/SQLite/SQL IDs.
 - Repeated exact-100k reproducibility: main **20/23** byte-identical with three timestamp-only
   differences; all 19 SQLite tables logically equal (raw 17/19). Clean environment **19/23**
-  byte-identical plus one last-bit SQL-report float difference; no metric/count changes.
+  byte-identical plus one last-bit SQL-report float difference; no metric/count changes. Clean
+  full/default and evaluation counts and event/point metrics matched main.
 - Audited the requirement matrix, data dictionary, validation/reproducibility summaries, AI-use
   records and repository hygiene; updated only documentation/report/prompt evidence.
 

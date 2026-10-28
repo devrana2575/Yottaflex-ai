@@ -15,13 +15,15 @@ runs produced 20/23 byte-identical files; the other three differed only in wall-
 artifacts byte-identical and only timestamp/last-bit float differences. See `yf2-100k/`,
 `yf2-compact-99k/` (historical 99k) and `reproducibility_100k.json`.
 
-**2026-10-29 final audit:** Re-ran the main, targeted and fresh-clean test suites; fresh exact-100k,
-full/default and evaluation pipelines; JSON/SQL-seed exports; independent metrics; five negative
-controls; and repository hygiene checks. The exact-100k results were 100,000 rows, 341 state events,
-87/87 validation PASS, 20/20 SQL PASS and 18 populated SQLite tables. Main exact-a/b remained 20/23
+**2026-10-29 final verification:** Re-ran the main suite (68 passed in 43.31 s), the targeted
+negative/state/submission suite (17 passed in 31.56 s), and a fresh clean venv (68 passed in
+34.52 s). Two fresh exact-100k main runs, a clean exact-100k run, main and clean full/default and
+evaluation runs, JSON/SQL-seed exports, independent metrics, five negative controls and repository
+hygiene checks were executed. The exact-100k results were 100,000 rows, 341 state events, 87/87
+validation PASS, 20/20 SQL PASS and 18 populated SQLite tables. Main exact A/B remained 20/23
 byte-identical with three timestamp-only differences; the clean comparison was 19/23 with three
-timestamp-only and one last-bit float-only difference. No source logic, thresholds, labels,
-scenarios or matching rules were changed.
+timestamp-only and one last-bit float-only difference. Clean full/default and evaluation counts and
+metrics matched main. No source logic, thresholds, labels, scenarios or matching rules were changed.
 
 **Prior audit re-verification:** The 2026-10-27 submission-readiness audit re-ran the
 full/evaluation pipeline, validation, SQL and tests in the main and fresh environments, and re-ran
@@ -58,13 +60,15 @@ Each run directory contains:
 Top-level files:
 
 - `summary.json` — machine-readable metrics, validation/SQL counts and per-event results for the
-  prior five primary runs plus the exact-100k baseline.
+  primary runs, the exact-100k baseline and the current clean-environment verification.
 - `reproducibility.json` — prior byte-level comparison of two fresh full/default audit runs across
   19 deterministic artifacts, including SHA-256 hashes, configuration hashes and SQLite logical
   comparison. Neutral run labels replace absolute local paths.
 - `reproducibility_100k.json` — 2026-10-29 exact-100k two-run comparison (20/23 byte-identical,
   3 timestamp-only), clean-environment comparison, SQLite logical equality, and portable
   CSV/JSON/SQLite/SQL export checks.
+- `light_leak_diagnostic.json` — current `GT-000001` residual/decline diagnostic, longest
+  corroboration and persistence runs, and zero overlapping alarms.
 - `yf2-100k/` ? compact exact-100k evidence: redacted config, simulation metadata, direct
   telemetry count/hash manifest, master CSVs, alarms, evaluation events, 87 validation rows, SQL
   report, 341 state events and a hash/count summary.
@@ -77,9 +81,8 @@ Top-level files:
   demonstration/regression configuration, not a replacement evaluation set.
 - `validation_results.csv` is the complete 87-row executable PASS/FAIL/WARN/NOT_IMPLEMENTED record:
   87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED. Review-level caveats (light-leak coverage,
-  reconstructed earlier prompt records, cross-version full/default and evaluation pipelines not
-  repeated, and ignored generated outputs) are documented in `docs/validation_report.md` and are
-  not CSV rows.
+  reconstructed earlier prompt records, and cross-version last-bit float serialization) are
+  documented in `docs/validation_report.md` and are not CSV rows.
 - `sql_query_report.json` contains each SQL statement, expectation, result rows and status.
 - `evaluation_metrics.json` is the full nested result; `evaluation_summary.md` is the readable
   version.

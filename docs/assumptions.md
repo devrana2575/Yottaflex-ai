@@ -105,8 +105,8 @@
   byte-identical, with three timestamp-only differences and one last-bit float report difference.
   The clean SQLite comparison was 16/19 tables exactly equal, 17/19 after timestamp removal, and
   19/19 logically equal; `telemetry` and `evaluation_metrics` differed only at about
-  `7e-15`/`1e-16`. The 2026-10-29 audit repeated the clean installation and exact-100k run; the
-  full/default and evaluation pipelines were not repeated in the clean environment.
+  `7e-15`/`1e-16`. The 2026-10-29 verification repeated the clean installation and exact-100k run,
+  and also reproduced the full/default and evaluation pipelines with matching counts and metrics.
 - **SQLite.** Suitable for local analytics, not high-concurrency or very large-scale deployment.
 - **No real-time or dashboard.** Batch CLI only; the optional dashboard remains unimplemented.
 - **State-event semantics.** Scenario injection does not mutate the master `lifecycle_state`

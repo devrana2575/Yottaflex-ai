@@ -18,10 +18,9 @@ yottaflex --version
 ```
 
 Expected version: `2.0.0`. Python 3.11+ is required; all reported runs used Python 3.14.4. A fresh
-virtual environment (pandas 3.1.0 / NumPy 2.5.4) was recreated for final acceptance on 2026-10-28
-using the README core install (`pip install -e .` plus `pip install pytest`); all 68 tests passed,
-and the exact-100k pipeline reproduced the counts and metrics. The full/default and evaluation
-pipelines were not repeated in the clean environment.
+virtual environment (pandas 3.1.0 / NumPy 2.5.4, pytest 9.2.0) was recreated for final acceptance on
+2026-10-29 using the README core install (`pip install -e . pytest`); all 68 tests passed, and the
+exact-100k, full/default and evaluation pipelines reproduced the counts and metrics.
 
 ## 2. Recommended Runs
 
@@ -208,10 +207,9 @@ Evaluation set details:
 - The 2 unknown predictions at SNS-003 11:00-11:01 are excluded and reported, not counted as FP.
 - Sensor-fault latency is longer (60-3,180 s) than process latency (240-360 s), by design.
 - All 87 executable validation rows, 20 SQL assertions and 68 tests pass in both the main and fresh
-  clean environments. Review-level caveats (light leak, reconstructed earlier prompt records,
-  cross-version full/default and evaluation pipelines not repeated, and ignored generated outputs)
-  are tracked separately in the validation report; they are not rows in the 87-row validation CSV.
-  Publication was explicitly authorized on 2026-10-28.
+  clean environments. Review-level caveats (light leak, reconstructed earlier prompt records, and
+  cross-version last-bit float serialization) are tracked separately in the validation report; they
+  are not rows in the 87-row validation CSV. Publication was explicitly authorized on 2026-10-28.
 
 ## 9. Verification and Evidence
 
@@ -244,7 +242,8 @@ configuration hash (`d422f3bbee3dcadc`); at that time 17 tables were populated. 
 metrics; 19/23 artifacts were byte-identical, with three timestamp-only differences and one
 last-bit float report difference. The prior full/default clean-environment comparison remains
 17/19 artifacts with two files differing only in `peak_value` floats at about `1e-13`. The
-full/default and evaluation pipelines were not repeated in the 2026-10-28/29 clean environment.
+2026-10-29 verification also reproduced clean full/default and evaluation counts and event/point
+metrics, matching main.
 
 ## 10. The Five Original Negative Tests and the Two Executable Guards
 

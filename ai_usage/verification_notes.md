@@ -13,12 +13,13 @@
 - **Tool/model:** OpenCode / DeepSeek V4.1 Flash Free
 - **Scope:** Re-audit the existing repository and actual generated outputs, correct only inaccurate
   documentation/evidence, and preserve the detector, thresholds, labels, scenarios and matching
-  behavior. Starting state: `main` at `5969314` with a clean tree and remote
-  `https://github.com/devrana2575/Yottaflex-ai.git`.
-- **Tests:** `python -m pytest -q` → **68 passed in 104.89 s**; targeted negative/state suite
-  `python -m pytest -q tests/test_negative_scenarios.py tests/test_submission_artifacts.py` →
-  **6 passed in 78.01 s**. Fresh clean venv: **68 passed in 85.25 s**, `yottaflex --version` 2.0.0.
-- **Exact-100k:** fresh `exact-a` and `exact-b`; both **100,000** rows (`120 x 455 + 100 x 454`),
+  behavior. Starting state: `main` at `f8f8d6ae208cf3024ec031dbecc5b80c69841c19` with a clean tree
+  and remote `https://github.com/devrana2575/Yottaflex-ai.git`.
+- **Tests:** `python -m pytest -q` → **68 passed in 43.31 s**; targeted negative/state suite
+  `python -m pytest -q tests/test_negative_scenarios.py tests/test_scenarios.py tests/test_submission_artifacts.py` →
+  **17 passed in 31.56 s**. Fresh clean venv: **68 passed in 34.52 s**, `yottaflex --version` 2.0.0.
+- **Exact-100k:** fresh `baseline-100k` and `baseline-100k-b`, plus clean `exact-clean-current`; all
+  **100,000** rows (`120 x 455 + 100 x 454`),
   3 facilities / 20 pumps / 30 tanks / 60 valves, 135 pipes, 220 sensors, 341 state events,
   87/87 validation PASS, 20/20 SQL PASS and 18 populated SQLite tables. All telemetry IDs and
   sensor/timestamp pairs are unique; references, 60 s cadence, ordering and topology checks pass.
@@ -32,15 +33,18 @@
   `SENSOR_FAULT` incidents.
 - **Light leak:** 90 samples, residual median `8.322721 m3/h`, mean `7.968123`, 82/90 above
   `5 m3/h`; decline median `-0.1315 pp`; no overlapping alarms; `GT-000001` remains MISSED.
-- **Exports:** JSON 18 tables / 101,275 rows; SQL seed 29,733,009 bytes / 101,275 rows (SHA-256
-  `6db3a5d47ea836b79184ef98555133f3ad6bd3a067da29ce2d69c4d408182f0d`); fresh SQLite execution
+- **Exports:** JSON 18 tables / 101,275 rows; SQL seed 29,733,009 bytes / 101,275 rows. Run A
+  SHA-256 values are `380154ad9dd8b72de9592e63181ceed8dcbe4cf1b675bc88a79a4704686a7338` (SQL) and
+  `b952b5a26134a42ef44855499c973a134f55d3ae92fce755535f19539eb05ca5` (JSON manifest); run B values
+  are recorded in `reports/final/reproducibility_100k.json`. Both SQL seeds executed with
   `integrity_check=ok`, zero FK violations, 100,000 telemetry rows and 341 state events;
   CSV/JSON/SQLite/SQL telemetry IDs match.
-- **Reproducibility:** main exact-a/b **20/23** byte-identical, remaining three timestamp-only and
+- **Reproducibility:** main baseline A/B **20/23** byte-identical, remaining three timestamp-only and
   logically equal; all 19 SQLite tables logically equal (raw 17/19; 19/19 after timestamp removal).
   Clean exact-clean comparison **19/23** byte-identical, three timestamp-only differences plus one
   last-bit `sql_query_report.json` float difference; raw SQLite 16/19, 17/19 after timestamps, and
-  `telemetry`/`evaluation_metrics` differ only at about `7e-15`/`1e-16`; metrics unchanged.
+  `telemetry`/`evaluation_metrics` differ only at about `7e-15`/`1e-16`; metrics unchanged. Clean
+  full/default and evaluation also matched the main counts and event/point metrics.
 - **Negative/state:** `NEG-001`–`NEG-005` all PASS with unchanged baseline shapes; 341 state events
   = 333 initialization + 8 scenario transitions, allowed/append-only and referenced.
 - **Audit hygiene:** no source changes; documentation/report/prompt records updated. Secret/PII/
@@ -89,10 +93,10 @@
 - Git: final audit and local commit followed by an explicit `push` authorization from the user;
   pushed to `origin/main` without force-push or history rewrite.
 
-**Remaining caveats:** light-leak sensitivity (WARN); reconstructed prompt records because the
-original 1.x and prior 2026-10-28 prompt text were not retained verbatim (WARN; the latest `push`
-prompt is verbatim); ignored local generated outputs remain untracked (WARN). The final acceptance
-pass below re-ran the clean environment and supersedes the earlier "not repeated" note.
+**Remaining caveats (historical):** light-leak sensitivity (WARN); reconstructed prompt records
+because the original 1.x and prior 2026-10-28 prompt text were not retained verbatim (WARN; the
+latest `push` prompt is verbatim). The ignored generated outputs noted here were removed during the
+2026-10-29 verification cleanup. The current caveat list is the one at the top of this file.
 
 ## 2026-10-28 Final Acceptance Verification (Historical)
 

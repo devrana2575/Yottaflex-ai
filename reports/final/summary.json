@@ -1,5 +1,5 @@
 {
-  "description": "Final YottaFlex 2.0.0 evidence summary, re-verified 2026-10-29. Metrics are read from each evaluation_metrics.json; exact-100k evidence is in reports/final/yf2-100k/ and the historical 99k compact run is in reports/final/yf2-compact-99k/.",
+  "description": "Final YottaFlex 2.0.0 evidence summary, re-verified 2026-10-29 from fresh main and clean-environment runs. Metrics are read from each evaluation_metrics.json; exact-100k evidence is in reports/final/yf2-100k/ and the historical 99k compact run is in reports/final/yf2-compact-99k/.",
   "seed": 20261022,
   "sampling_interval_seconds": 60,
   "runs": {
@@ -2121,7 +2121,7 @@
   },
   "validation_reconciliation": {
     "generated": "2026-10-29",
-    "source": "all reports/final/*/validation_results.csv files read directly, plus the fresh 2026-10-29 exact/full/evaluation runs",
+    "source": "all reports/final/*/validation_results.csv files read directly, plus the fresh 2026-10-29 main and clean exact/full/default/evaluation runs",
     "files": {
       "yf2-100k": {
         "rows": 87,
@@ -2193,34 +2193,87 @@
         "separate_from_csv": true
       },
       {
-        "item": "clean-environment installation, 68-test suite and exact-100k rerun",
+        "item": "clean-environment installation, 68-test suite, exact-100k, full/default and evaluation reruns",
         "status": "PASS",
         "separate_from_csv": true
       },
       {
-        "item": "cross-version full/default and evaluation pipelines not repeated",
-        "status": "WARN",
-        "separate_from_csv": true
-      },
-      {
-        "item": "ignored local generated outputs",
+        "item": "cross-version last-bit float serialization; no metric or semantic change",
         "status": "WARN",
         "separate_from_csv": true
       }
     ],
     "publication": "authorized on 2026-10-28 and reaffirmed by the 2026-10-29 final-audit instruction; publication is limited to the confirmed origin main branch",
-    "final_acceptance_evidence": "Fresh 2026-10-29 external runs exact-a, exact-b, exact-clean, full-default and evaluation-run; commands, checksums, independent metrics and clean-environment comparison are in reproducibility_100k.json. Five negative controls and state-history tests passed; no source logic changed."
+    "final_acceptance_evidence": "Fresh 2026-10-29 external runs baseline-100k, baseline-100k-b, exact-clean-current, full-default, evaluation, full-default-clean-current and evaluation-clean-current; commands, checksums, independent metrics and clean-environment comparison are in reproducibility_100k.json. Five negative controls and state-history tests passed; no source logic changed.",
+    "fresh_runs": {
+      "baseline-100k": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "baseline-100k-b": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "full-default": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "evaluation": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "exact-clean-current": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "full-default-clean-current": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      },
+      "evaluation-clean-current": {
+        "rows": 87,
+        "PASS": 87,
+        "FAIL": 0,
+        "WARN": 0,
+        "NOT_IMPLEMENTED": 0
+      }
+    }
   },
   "final_acceptance_20261029": {
     "status": "PASS with review-level caveats",
+    "verification_pass": "2026-10-29 final verification rerun",
     "commands": {
       "main_tests": "python -m pytest -q",
-      "negative_and_state_tests": "python -m pytest -q tests/test_negative_scenarios.py tests/test_submission_artifacts.py",
-      "exact_100k": "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-a",
+      "targeted_negative_state_tests": "python -m pytest -q tests/test_negative_scenarios.py tests/test_scenarios.py tests/test_submission_artifacts.py",
+      "exact_100k_a": "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k",
+      "exact_100k_b": "yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/baseline-100k-b",
       "full_default": "yottaflex pipeline --mode full --seed 20261022 --scenario-set default --output-dir <fresh-output-dir>/full-default",
-      "evaluation": "yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation-run",
+      "evaluation": "yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation",
       "clean_tests": "<clean-venv>/Scripts/python -m pytest -q",
-      "clean_exact_100k": "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean"
+      "clean_exact_100k": "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set baseline --target-telemetry-rows 100000 --output-dir <fresh-output-dir>/exact-clean-current",
+      "clean_full_default": "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set default --output-dir <fresh-output-dir>/full-default-clean-current",
+      "clean_evaluation": "<clean-venv>/Scripts/yottaflex pipeline --mode full --seed 20261022 --scenario-set evaluation --output-dir <fresh-output-dir>/evaluation-clean-current"
+    },
+    "exit_codes": {
+      "all_pipeline_and_test_commands": 0
     },
     "exact_100k": {
       "telemetry_rows": 100000,
@@ -2238,7 +2291,12 @@
       "sql": "20 PASS / 0 FAIL",
       "populated_sqlite_tables": 18,
       "sqlite_integrity": "ok",
-      "foreign_key_violations": 0
+      "foreign_key_violations": 0,
+      "independent_runs": [
+        "baseline-100k",
+        "baseline-100k-b"
+      ],
+      "clean_run": "exact-clean-current"
     },
     "full_default": {
       "telemetry_rows": 316800,
@@ -2255,7 +2313,8 @@
         "FP": 8,
         "TN": 145192,
         "FN": 18
-      }
+      },
+      "clean_environment_match": true
     },
     "evaluation": {
       "telemetry_rows": 316740,
@@ -2290,7 +2349,8 @@
         "max": 3180
       },
       "unknown_samples": 203490,
-      "unknown_predictions": 2
+      "unknown_predictions": 2,
+      "clean_environment_match": true
     },
     "independent_recompute": {
       "source": "raw ground_truth.csv, alarms.csv, alarm_incidents.csv, telemetry.csv",
@@ -2318,7 +2378,19 @@
       "residual_mean_m3_h": 7.968123109090473,
       "samples_above_5_m3_h": 82,
       "level_decline_median_pp": -0.1315,
-      "reason": "decline corroboration and 480 s persistence do not both hold"
+      "longest_active_and_corroborated": {
+        "samples": 5,
+        "elapsed_seconds": 240,
+        "sample_count_duration_seconds": 300
+      },
+      "longest_active_without_corroboration": {
+        "samples": 7,
+        "elapsed_seconds": 360,
+        "sample_count_duration_seconds": 420
+      },
+      "overlapping_alarms": 0,
+      "reason": "decline corroboration and 480 s persistence do not both hold",
+      "diagnostic_file": "reports/final/light_leak_diagnostic.json"
     },
     "negative_controls": {
       "status": "5/5 PASS",
@@ -2335,28 +2407,33 @@
         "passed": 68,
         "failed": 0,
         "skipped": 0,
-        "seconds": 104.89
+        "seconds": 43.31
       },
       "clean_environment": {
         "passed": 68,
         "failed": 0,
         "skipped": 0,
-        "seconds": 85.25
+        "seconds": 34.52
       },
       "targeted_negative_state": {
-        "passed": 6,
+        "passed": 17,
         "failed": 0,
-        "seconds": 78.01
+        "skipped": 0,
+        "seconds": 31.56
       }
     },
     "exports": {
       "json_tables": 18,
       "json_rows": 101275,
-      "json_manifest_sha256": "d3109b267dc738bb9ef9985676ce39260118561daec316266c4ae12663c58f30",
+      "json_manifest_sha256": "b952b5a26134a42ef44855499c973a134f55d3ae92fce755535f19539eb05ca5",
+      "json_manifest_sha256_b": "85e922665a8feb3021e6dfa56410a5fc76b4242596619f95fe11f3b2a5f0e63c",
+      "json_telemetry_sha256": "74cd888e6ff35608d72c05683d8db73ddaf84062ea4d29cb763de0826cb6654d",
       "sql_rows": 101275,
       "sql_bytes": 29733009,
-      "sql_sha256": "6db3a5d47ea836b79184ef98555133f3ad6bd3a067da29ce2d69c4d408182f0d",
+      "sql_sha256": "380154ad9dd8b72de9592e63181ceed8dcbe4cf1b675bc88a79a4704686a7338",
+      "sql_sha256_b": "fcac66dfe7d13dce90d03aeb31758a5c107898980cae60cc69ed830cce62e5d7",
       "sql_seed_db_integrity": "ok",
+      "sql_seed_fk_violations": 0,
       "csv_json_sqlite_sql_ids_match": true
     },
     "clean_environment": {
@@ -2365,20 +2442,22 @@
       "numpy": "2.5.4",
       "pytest": "9.2.0",
       "tests_passed": 68,
+      "tests_seconds": 34.52,
       "exact_100k_reproduced": true,
+      "full_default_reproduced": true,
+      "evaluation_reproduced": true,
       "byte_identical_files": "19/23",
       "timestamp_only_differences": 3,
       "float_only_differences": [
         "sql_query_report.json"
       ],
-      "sqlite_tables_exactly_equal": 17,
+      "sqlite_tables_exactly_equal_raw": 16,
+      "sqlite_tables_exactly_equal_after_timestamp_removal": 17,
+      "sqlite_tables_logically_equal": 19,
       "sqlite_float_only_differences": [
         "telemetry",
         "evaluation_metrics"
       ],
-      "sqlite_tables_exactly_equal_raw": 16,
-      "sqlite_tables_exactly_equal_after_timestamp_removal": 17,
-      "sqlite_tables_logically_equal": 19,
       "metrics_match": true
     },
     "review_level_caveats": [
@@ -2391,24 +2470,20 @@
         "status": "WARN"
       },
       {
-        "item": "cross-version full/default and evaluation pipelines were not repeated in the clean environment; clean exact-100k was repeated",
-        "status": "WARN"
-      },
-      {
-        "item": "ignored local generated outputs under data/processed/ remain untracked and are not evidence",
+        "item": "cross-version last-bit float serialization differences in one SQL report and two SQLite tables; no metric or semantic change",
         "status": "WARN"
       }
     ],
     "verification_date": "2026-10-29",
     "repository": {
-      "starting_head": "59693143a9acf5eae5601134996820ed24cb57ec",
+      "starting_head": "f8f8d6ae208cf3024ec031dbecc5b80c69841c19",
       "branch": "main",
       "remote": "https://github.com/devrana2575/Yottaflex-ai.git",
       "working_tree_before_audit": "clean",
       "source_logic_changed": false,
-      "changes_in_this_audit": "Documentation, machine-readable evidence and AI-use/prompt records only.",
-      "publication": "Authorized for the confirmed remote; reviewed documentation commit pushed to main without force."
+      "changes_in_this_audit": "Documentation, machine-readable evidence, the light-leak diagnostic and AI-use/prompt records only.",
+      "publication": "Authorized for the confirmed remote; reviewed documentation/evidence changes committed and pushed to main without force."
     },
-    "notes": "Fresh 2026-10-29 rerun: 68 main tests, 6 targeted tests, fresh 68-test clean environment, exact-100k main/clean, full/default, evaluation, exports, independent metrics, five negative controls and prompt-history audit. No source logic, thresholds, labels, scenarios or matching rules changed."
+    "notes": "Fresh 2026-10-29 rerun: 68 main tests in 43.31 s, 17 targeted tests in 31.56 s, 68 clean-environment tests in 34.52 s, two exact-100k main runs, fresh clean exact/full/default/evaluation runs, exports, independent metrics, five negative controls and prompt-history audit. No source logic, thresholds, labels, scenarios or matching rules changed."
   }
 }

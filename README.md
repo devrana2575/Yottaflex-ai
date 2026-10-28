@@ -29,10 +29,10 @@ industrial control system and not a validated digital twin.
 
 The full evidence, including per-event results, false-alarm analysis and the requirement matrix, is
 in [`docs/validation_report.md`](docs/validation_report.md). The `87` count is the executable
-validation CSV only. Review-level caveats (light-leak coverage, reconstructed prompt history, the
-un-repeated cross-version clean environment, and ignored local generated outputs) are tracked there
-separately and are not added to that denominator. Publication was explicitly authorized on
-2026-10-28 and reaffirmed by the 2026-10-29 final-audit instruction.
+validation CSV only. Review-level caveats (light-leak coverage, reconstructed prompt history, and
+cross-version last-bit float serialization) are tracked there separately and are not added to that
+denominator. Publication was explicitly authorized on 2026-10-28 and reaffirmed by the 2026-10-29
+final-audit instruction.
 
 ## What Changed in 2.0
 
@@ -121,15 +121,11 @@ yottaflex --version
 yottaflex --help
 ```
 
-A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4) was installed and tested
-during the 2026-10-27 submission-readiness audit; the full pipeline, 87 validation checks, 20 SQL
-assertions and 62 tests passed at that time. The 2026-10-28 remediation was re-run in the main
-environment, including the exact 100k pipeline, exports and the full test suite. For final
-acceptance, a new clean environment was created with the README core install on 2026-10-28; it
-passed all 68 tests and regenerated the exact-100k baseline with matching counts and metrics. The
-2026-10-29 final audit repeated the clean installation and exact-100k run, plus fresh full/default
-and evaluation runs in the main environment; the full/default and evaluation pipelines were still
-not repeated in the clean environment. The current tree contains six additional submission tests
+A fresh virtual environment (Python 3.14.4, pandas 3.1.0, NumPy 2.5.4, pytest 9.2.0) was installed
+and tested during the 2026-10-29 final verification. It passed all 68 tests and reproduced the
+exact-100k, full/default and evaluation pipelines with matching counts and metrics. The main
+environment also ran two fresh exact-100k runs, full/default, evaluation, exports, independent
+metrics and the 17-test targeted suite. The current tree contains six additional submission tests
 and collects **68 tests**. The package has no
 `pyproject.toml`; `setup.py` is the packaging metadata, and editable installation works with current
 pip/setuptools.
@@ -398,8 +394,8 @@ Detailed per-event tables and false-alarm analysis are in
   integrity. Final result: **87 PASS, 0 FAIL, 0 WARN, 0 NOT_IMPLEMENTED** in
   `validation_results.csv`.
 - **Review-level caveats are tracked separately** and are not rows in that CSV: light-leak
-  detection coverage, the reconstructed prompt records, the un-repeated cross-version clean
-  environment, and ignored local generated outputs. They are explained in
+  detection coverage, the reconstructed prompt records, and cross-version last-bit float
+  serialization. They are explained in
   [`docs/validation_report.md`](docs/validation_report.md) section 10.
 - **20 SQL statements** in `sql/analysis_queries.sql` each declare `expect=nonempty` or
   `expect=zero_rows`. The runner executes them and fails on an unmet expectation. Final result:
@@ -447,12 +443,11 @@ and identical rows after excluding the wall-clock columns. The comparison is rec
 The prior full/default and evaluation reproducibility evidence remains in
 [`reports/final/reproducibility.json`](reports/final/reproducibility.json); those results predate
 the state-history/export additions. The exact-100k baseline was also generated in a fresh Python
-3.14.4 / pandas 3.1.0 / NumPy 2.5.4 virtual environment on 2026-10-28 and repeated on 2026-10-29.
-It matched the main environment's
-counts and metrics; 19/23 files were byte-identical, three differed only in wall-clock fields and
-`sql_query_report.json` differed only in last-bit float serialization. The cross-version
-full/default and evaluation pipelines were not repeated; the 17/19 prior full/default comparison
-and its `peak_value` caveat remain historical.
+3.14.4 / pandas 3.1.0 / NumPy 2.5.4 virtual environment on 2026-10-29. It matched the main
+environment's counts and metrics; 19/23 files were byte-identical, three differed only in wall-clock
+fields and `sql_query_report.json` differed only in last-bit float serialization. The clean
+environment also reproduced the full/default and evaluation runs with matching event/point metrics.
+The 17/19 prior full/default artifact comparison and its `peak_value` caveat remain historical.
 
 ## Limitations
 
